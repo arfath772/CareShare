@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CARESSHARE - Product Marketplace</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .app-header {
+            background-color: #1976d2;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .app-title {
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .app-nav {
+            display: flex;
+            gap: 20px;
+        }
+
+        .app-nav a {
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+        }
+
+        .container {
+            display: flex;
+            max-width: 1200px;
+            margin: 0 auto;
+            gap: 20px;
+        }
+
+        .products-section {
+            flex: 1;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .chat-section {
+            flex: 1;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            display: none; /* Initially hidden */
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #333;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .product-card {
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            transition: all 0.3s;
+        }
+
+        .product-card:hover {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .product-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .product-price {
+            font-size: 18px;
+            font-weight: 700;
+            color: #2e7d32;
+            margin-bottom: 10px;
+        }
+
+        .product-description {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .product-meta {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .product-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .contact-button, .buy-button {
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            border: none;
+        }
+
+        .contact-button {
+            background-color: #1976d2;
+            color: white;
+        }
+
+        .contact-button:hover {
+            background-color: #1565c0;
+        }
+
+        .buy-button {
+            background-color: #4caf50;
+            color: white;
+        }
+
+        .buy-button:hover {
+            background-color: #43a047;
+        }
+
+        .chat-header {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chat-header h1 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .close-chat {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .product-info {
+            padding: 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .product-title-chat {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .product-price-chat {
+            font-size: 18px;
+            font-weight: 700;
+            color: #2e7d32;
+            margin-bottom: 10px;
+        }
+
+        .product-description-chat {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .product-meta-chat {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .offer-section {
+            padding: 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .offer-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .offer-options {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .offer-option {
+            background-color: #f0f0f0;
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .offer-option:hover {
+            background-color: #e0e0e0;
+        }
+
+        .offer-option.selected {
+            background-color: #1976d2;
+            color: white;
+        }
+
+        .offer-note {
+            background-color: #e8f5e9;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #2e7d32;
+            margin-bottom: 15px;
+        }
+
+        .send-button {
+            background-color: #1976d2;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            width: 100%;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .send-button:hover {
+            background-color: #1565c0;
+        }
+
+        .chat-area {
+            padding: 15px;
+        }
+
+        .chat-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .chat-description {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        .quick-replies {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .quick-reply {
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 20px;
+            font-size: 14px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .quick-reply:hover {
+            background-color: #e0e0e0;
+        }
+
+        .chat-messages {
+            max-height: 300px;
+            overflow-y: auto;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+        }
+
+        .message {
+            padding: 10px 15px;
+            border-radius: 18px;
+            margin-bottom: 10px;
+            max-width: 80%;
+            font-size: 14px;
+        }
+
+        .message.sent {
+            background-color: #1976d2;
+            color: white;
+            margin-left: auto;
+            border-bottom-right-radius: 4px;
+        }
+
+        .message.received {
+            background-color: #f0f0f0;
+            color: #333;
+            margin-right: auto;
+            border-bottom-left-radius: 4px;
+        }
+
+        .message-input {
+            display: flex;
+            border-top: 1px solid #e0e0e0;
+            padding: 10px 15px;
+        }
+
+        .message-input input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 20px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .message-input button {
+            background-color: #1976d2;
+            color: white;
+            border: none;
+            padding: 0 20px;
+            border-radius: 20px;
+            margin-left: 10px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #4caf50;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 4px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            display: none;
+        }
+
+        /* Make chat visible when active */
+        .chat-section.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+<div class="app-header">
+    <div class="app-title">CARESSHARE</div>
+    <div class="app-nav">
+        <a href="#">Available Items</a>
+        <a href="#">Activity</a>
+        <a href="#">Profile</a>
+    </div>
+</div>
+
+<div class="container">
+    <div class="products-section">
+        <div class="section-title">Available Items</div>
+        <div id="products-list">
+            <!-- Products will be dynamically loaded here -->
+        </div>
+    </div>
+
+    <div class="chat-section" id="chat-interface">
+        <div class="chat-header">
+            <h1>Contact Seller</h1>
+            <button class="close-chat" id="close-chat">×</button>
+        </div>
+
+        <div class="product-info" id="chat-product-info">
+            <!-- Product details will be dynamically loaded here -->
+        </div>
+
+        <div class="offer-section">
+            <div class="offer-title">Make Offer</div>
+            <div class="offer-options">
+                <div class="offer-option">₹950</div>
+                <div class="offer-option">₹900</div>
+                <div class="offer-option">₹850</div>
+                <div class="offer-option">₹800</div>
+            </div>
+            <div class="offer-note">
+                Very good offer! High chances of seller's reply
+            </div>
+            <button class="send-button" id="send-offer">Send Offer</button>
+        </div>
+
+        <div class="chat-area">
+            <div class="chat-title">CHAT</div>
+            <div class="chat-description">Chat to know more! Close the deal faster by asking more about the product or person.</div>
+
+            <div class="quick-replies">
+                <div class="quick-reply">hello</div>
+                <div class="quick-reply">is it available?</div>
+                <div class="quick-reply">okay</div>
+                <div class="quick-reply">no problem</div>
+                <div class="quick-reply">please reply</div>
+                <div class="quick-reply">not interested</div>
+            </div>
+
+            <div class="chat-messages" id="chat-messages">
+                <!-- Messages will appear here -->
+            </div>
+
+            <div class="message-input">
+                <input type="text" placeholder="Type a message" id="message-input">
+                <button id="send-message">Send</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="notification" id="notification">
+    Contact seller for product ID: <span id="product-id-notification"></span>
+</div>
+
+<script>
+    // Sample product data
+    const products = [
+        {
+            id: 1,
+            title: "LANGUAUL: A step by step guide to learn Programming in 7 days",
+            price: "₹500",
+            description: "Complete programming guide for beginners",
+            seller: "Sri",
+            date: "03/11/2025",
+            condition: "Like new",
+            category: "Books"
+        },
+        {
+            id: 2,
+            title: "C PROGRAMMING BOOK",
+            price: "₹500",
+            description: "It is a old book but still looks like new one",
+            seller: "Sri",
+            date: "03/11/2025",
+            condition: "Good",
+            category: "Books"
+        },
+        {
+            id: 3,
+            title: "Volkswagen Vento 1.6 Highline",
+            price: "₹450,000",
+            description: "Well maintained car with low mileage",
+            seller: "BLINK CARS",
+            date: "02/11/2025",
+            condition: "Excellent",
+            category: "Cars"
+        },
+        {
+            id: 4,
+            title: "Kia Seltos 1.5 GTX+ Diesel AT",
+            price: "₹1,250,000",
+            description: "2022 model with all features, single owner",
+            seller: "OLY AUTOS KAR4u",
+            date: "01/11/2025",
+            condition: "Like new",
+            category: "Cars"
+        },
+        {
+            id: 5,
+            title: "Furnished 1/2 BHK Apartment",
+            price: "₹15,000/month",
+            description: "Independent furnished apartment in prime location",
+            seller: "Rakesh Shukla",
+            date: "30/10/2025",
+            condition: "Well maintained",
+            category: "Real Estate"
+        },
+        {
+            id: 6,
+            title: "Smart Watch",
+            price: "₹1,000",
+            description: "Brand new smartwatch with fitness tracking",
+            seller: "Vedant",
+            date: "29/10/2025",
+            condition: "New",
+            category: "Electronics"
+        }
+    ];
+
+    // DOM elements
+    const productsList = document.getElementById('products-list');
+    const chatInterface = document.getElementById('chat-interface');
+    const chatProductInfo = document.getElementById('chat-product-info');
+    const closeChatBtn = document.getElementById('close-chat');
+    const offerOptions = document.querySelectorAll('.offer-option');
+    const sendOfferButton = document.getElementById('send-offer');
+    const quickReplies = document.querySelectorAll('.quick-reply');
+    const messageInput = document.getElementById('message-input');
+    const sendMessageButton = document.getElementById('send-message');
+    const chatMessages = document.getElementById('chat-messages');
+    const notification = document.getElementById('notification');
+    const productIdNotification = document.getElementById('product-id-notification');
+
+    // Initialize the product listing
+    function initializeProducts() {
+        productsList.innerHTML = '';
+
+        products.forEach(product => {
+            const productCard = document.createElement('div');
+            productCard.className = 'product-card';
+            productCard.innerHTML = `
+                <div class="product-title">${product.title}</div>
+                <div class="product-price">${product.price}</div>
+                <div class="product-description">${product.description}</div>
+                <div class="product-meta">
+                    <strong>Seller:</strong> ${product.seller} |
+                    <strong>Date:</strong> ${product.date} |
+                    <strong>Condition:</strong> ${product.condition}
+                </div>
+                <div class="product-actions">
+                    <button class="contact-button" data-id="${product.id}">CONTACT SELLER</button>
+                    <button class="buy-button" data-id="${product.id}">BUY NOW</button>
+                </div>
+            `;
+            productsList.appendChild(productCard);
+        });
+
+        // Add event listeners to contact buttons
+        document.querySelectorAll('.contact-button').forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const productId = this.getAttribute('data-id');
+                openChatInterface(productId);
+
+                // Show notification
+                productIdNotification.textContent = productId;
+                notification.style.display = 'block';
+                setTimeout(() => {
+                    notification.style.display = 'none';
+                }, 3000);
+            });
+        });
+
+        // Add event listeners to buy buttons
+        document.querySelectorAll('.buy-button').forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const productId = this.getAttribute('data-id');
+                alert(`Buy now feature for product ID: ${productId} would be implemented here.`);
+            });
+        });
+    }
+
+    // Open chat interface with product details
+    function openChatInterface(productId) {
+        const product = products.find(p => p.id == productId);
+
+        if (product) {
+            chatProductInfo.innerHTML = `
+                <div class="product-title-chat">${product.title}</div>
+                <div class="product-price-chat">${product.price}</div>
+                <div class="product-description-chat">${product.description}</div>
+                <div class="product-meta-chat">
+                    <strong>Seller:</strong> ${product.seller} |
+                    <strong>Date:</strong> ${product.date} |
+                    <strong>Condition:</strong> ${product.condition}
+                </div>
+            `;
+
+            // Update offer options based on product price
+            updateOfferOptions(product.price);
+
+            // Clear chat messages
+            chatMessages.innerHTML = '';
+
+            // Show chat interface
+            chatInterface.classList.add('active');
+
+            // Add initial message
+            addMessage(`Hi, I'm interested in your ${product.title}. Is it still available?`, 'sent');
+
+            // Simulate seller response
+            setTimeout(() => {
+                addMessage(`Yes, it's available. Would you like to know more details?`, 'received');
+            }, 1000);
+        }
+    }
+
+    // Update offer options based on product price
+    function updateOfferOptions(price) {
+        // Extract numeric value from price string
+        const numericPrice = parseInt(price.replace(/[^0-9]/g, ''));
+
+        if (!isNaN(numericPrice)) {
+            const offerOptions = document.querySelectorAll('.offer-option');
+            offerOptions[0].textContent = `₹${Math.round(numericPrice * 0.95)}`;
+            offerOptions[1].textContent = `₹${Math.round(numericPrice * 0.9)}`;
+            offerOptions[2].textContent = `₹${Math.round(numericPrice * 0.85)}`;
+            offerOptions[3].textContent = `₹${Math.round(numericPrice * 0.8)}`;
+        }
+    }
+
+    // Add message to chat
+    function addMessage(text, type) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${type}`;
+        messageDiv.textContent = text;
+        chatMessages.appendChild(messageDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    // Event Listeners
+    closeChatBtn.addEventListener('click', function() {
+        chatInterface.classList.remove('active');
+    });
+
+    // Handle offer option selection
+    offerOptions.forEach(option => {
+        option.addEventListener('click', function() {
+            offerOptions.forEach(opt => opt.classList.remove('selected'));
+            this.classList.add('selected');
+        });
+    });
+
+    // Handle sending an offer
+    sendOfferButton.addEventListener('click', function() {
+        const selectedOption = document.querySelector('.offer-option.selected');
+        if (selectedOption) {
+            addMessage(`I'd like to offer ${selectedOption.textContent} for this item.`, 'sent');
+
+            // Simulate seller response
+            setTimeout(() => {
+                addMessage(`Thanks for your offer. Let me think about it and get back to you.`, 'received');
+            }, 1500);
+        } else {
+            alert('Please select an offer amount');
+        }
+    });
+
+    // Handle quick replies
+    quickReplies.forEach(reply => {
+        reply.addEventListener('click', function() {
+            addMessage(this.textContent, 'sent');
+
+            // Simulate seller response
+            setTimeout(() => {
+                const responses = {
+                    "hello": "Hello! How can I help you?",
+                    "is it available?": "Yes, it's still available.",
+                    "okay": "Great! Let me know if you have any questions.",
+                    "no problem": "Thanks for understanding.",
+                    "please reply": "I'm here, how can I assist you?",
+                    "not interested": "No problem. Let me know if you change your mind."
+                };
+
+                addMessage(responses[this.textContent] || "Thanks for your message.", 'received');
+            }, 1000);
+        });
+    });
+
+    // Handle sending a message
+    sendMessageButton.addEventListener('click', function() {
+        if (messageInput.value.trim() !== '') {
+            addMessage(messageInput.value, 'sent');
+            messageInput.value = '';
+
+            // Simulate a reply after a short delay
+            setTimeout(() => {
+                addMessage('Thanks for your message. I\'ll get back to you shortly.', 'received');
+            }, 1000);
+        }
+    });
+
+    // Handle pressing Enter in the message input
+    messageInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            sendMessageButton.click();
+        }
+    });
+
+    // Initialize the page
+    initializeProducts();
+</script>
+</body>
+</html>

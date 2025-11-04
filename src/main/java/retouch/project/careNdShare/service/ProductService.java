@@ -74,7 +74,9 @@ public class ProductService {
         product.setStatus(ProductStatus.APPROVED);
         product.setApprovedAt(LocalDateTime.now());
         product.setRejectionReason(null);
-
+// Before saving the product
+        product.setProductType("your_product_type_value"); // e.g., "PHYSICAL", "DIGITAL", etc.
+        productRepository.save(product);
         return productRepository.save(product);
     }
 

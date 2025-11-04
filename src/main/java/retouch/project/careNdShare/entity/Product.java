@@ -43,6 +43,19 @@ public class Product {
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
+    // In your Product entity class
+    @Column(name = "product_type")
+    private String productType;
+
+    // Don't forget getters and setters
+    public String getProductType() {
+        return productType;
+    }
+
+    public void setProductType(String productType) {
+        this.productType = productType;
+    }
+
     private LocalDateTime approvedAt;
     private LocalDateTime rejectedAt;
 
