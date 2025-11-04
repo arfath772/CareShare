@@ -480,6 +480,14 @@
             padding: 5px;
         }
 
+        /* Exchange Request Styles */
+        .exchange-item-image {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border: 2px solid #e9ecef;
+        }
+
         /* Footer */
         .amazon-footer {
           background-color: #1a1a1a;
@@ -584,6 +592,34 @@
             position: relative;
             z-index: 1;
         }
+
+        /* Filter Buttons */
+        .filter-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .filter-btn {
+            padding: 8px 16px;
+            border: 2px solid var(--primary-color);
+            background: white;
+            color: var(--primary-color);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .filter-btn.active {
+            background: var(--primary-color);
+            color: white;
+        }
+        .filter-btn:hover {
+            background: var(--primary-color);
+            color: white;
+            transform: translateY(-2px);
+        }
     </style>
 </head>
 <body>
@@ -676,6 +712,16 @@
             </div>
             <div class="stat-number" id="pendingProductsCount">0</div>
             <div class="stat-label">Pending Products</div>
+            <div class="stat-trend trend-up">
+                <i class="fa-solid fa-clock me-1"></i> Waiting
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fa-solid fa-right-left"></i>
+            </div>
+            <div class="stat-number" id="pendingExchangesCount">0</div>
+            <div class="stat-label">Pending Exchanges</div>
             <div class="stat-trend trend-up">
                 <i class="fa-solid fa-clock me-1"></i> Waiting
             </div>
@@ -781,6 +827,84 @@
         </div>
     </div>
 
+    <!-- Exchange Requests Section -->
+    <div class="admin-section">
+        <div class="section-header">
+            <h3><i class="fa-solid fa-right-left"></i> Exchange Requests Management</h3>
+            <div>
+                <button class="btn btn-modern btn-modern-primary" onclick="loadExchangeRequests()">
+                    <i class="fa-solid fa-refresh me-2"></i>Refresh Exchanges
+                </button>
+            </div>
+        </div>
+
+        <!-- Exchange Request Stats -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fa-solid fa-clock"></i>
+                    </div>
+                    <div class="stat-number" id="pendingExchangesCount2">0</div>
+                    <div class="stat-label">Pending Exchanges</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fa-solid fa-check"></i>
+                    </div>
+                    <div class="stat-number" id="approvedExchangesCount">0</div>
+                    <div class="stat-label">Approved Exchanges</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fa-solid fa-times"></i>
+                    </div>
+                    <div class="stat-number" id="rejectedExchangesCount">0</div>
+                    <div class="stat-label">Rejected Exchanges</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter Buttons -->
+        <div class="filter-buttons">
+            <button class="filter-btn active" onclick="filterExchangeRequests('all')">All</button>
+            <button class="filter-btn" onclick="filterExchangeRequests('PENDING')">Pending</button>
+            <button class="filter-btn" onclick="filterExchangeRequests('APPROVED')">Approved</button>
+            <button class="filter-btn" onclick="filterExchangeRequests('REJECTED')">Rejected</button>
+        </div>
+
+        <!-- Exchange Requests Table -->
+        <div class="table-responsive">
+            <table class="user-table">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Target Product</th>
+                    <th>Exchange Item</th>
+                    <th>Requester</th>
+                    <th>Status</th>
+                    <th>Date</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody id="exchangeRequestsTableBody">
+                <tr>
+                    <td colspan="7" class="text-center py-5">
+                        <div class="spinner-border text-primary loading" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p class="mt-3 text-muted">Loading exchange requests...</p>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
     <!-- Quick Actions -->
     <div class="admin-section">
         <div class="section-header">
@@ -848,6 +972,54 @@
     </div>
 </div>
 
+<!-- Exchange Request Detail Modal -->
+<div class="modal fade" id="exchangeDetailModal" tabindex="-1" aria-labelledby="exchangeDetailModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exchangeDetailModalLabel">Exchange Request Details</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="exchangeDetailContent">
+                    <!-- Exchange request details will be loaded here -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-success" onclick="approveExchangeRequest()" id="approveBtn">
+                    <i class="fa-solid fa-check me-2"></i>Approve
+                </button>
+                <button type="button" class="btn btn-danger" onclick="rejectExchangeRequest()" id="rejectBtn">
+                    <i class="fa-solid fa-times me-2"></i>Reject
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Rejection Reason Modal -->
+<div class="modal fade" id="rejectionModal" tabindex="-1" aria-labelledby="rejectionModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="rejectionModalLabel">Rejection Reason</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="rejectionReason" class="form-label">Please provide a reason for rejection:</label>
+                    <textarea class="form-control" id="rejectionReason" rows="4" placeholder="Enter rejection reason..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" onclick="confirmRejection()">Confirm Rejection</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Debug Button -->
 <button class="btn btn-warning debug-btn" onclick="debugAdmin()">
     <i class="fa-solid fa-bug me-1"></i> Debug
@@ -877,7 +1049,7 @@
                 <h5>Management</h5>
                 <ul>
                     <li><a href="#" onclick="refreshUsers()">Refresh Users</a></li>
-                    <li><a href="#">Backup Data</a></li>
+                    <li><a href="#" onclick="loadExchangeRequests()">Manage Exchanges</a></li>
                     <li><a href="#">System Settings</a></li>
                 </ul>
             </div>
@@ -906,24 +1078,27 @@
     </div>
 </footer>
 
-<!-- All your existing JavaScript remains exactly the same -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 <script>
     const token = localStorage.getItem('jwtToken');
+    let currentExchangeRequestId = null;
+    let currentExchangeRequests = [];
+    let currentExchangeFilter = 'all';
 
     // Debug function
     function debugAdmin() {
         console.log('=== ADMIN PANEL DEBUG INFO ===');
         console.log('JWT Token:', token ? 'Present' : 'Missing');
-        console.log('Table body exists:', !!document.getElementById('pendingProductsTableBody'));
         console.log('Current user stats:', {
             totalUsers: document.getElementById('totalUsers').textContent,
-            pendingProducts: document.getElementById('pendingProductsCount').textContent
+            pendingProducts: document.getElementById('pendingProductsCount').textContent,
+            pendingExchanges: document.getElementById('pendingExchangesCount').textContent
         });
 
         // Test API endpoints
         loadPendingProducts();
         loadProductStats();
+        loadExchangeRequests();
     }
 
     // Check if user is admin
@@ -967,6 +1142,8 @@
             document.getElementById('totalUsers').textContent = data.totalUsers || 0;
             document.getElementById('adminUsers').textContent = data.adminUsers || 0;
             document.getElementById('regularUsers').textContent = data.regularUsers || 0;
+            document.getElementById('pendingProductsCount').textContent = data.pendingProducts || 0;
+            document.getElementById('pendingExchangesCount').textContent = data.pendingExchanges || 0;
         })
         .catch(error => {
             console.error('Error loading stats:', error);
@@ -1264,6 +1441,339 @@
         });
     }
 
+    // Exchange Request Management Functions
+    function loadExchangeRequests(status = 'all') {
+        currentExchangeFilter = status;
+
+        let url = '/api/admin/exchange-requests';
+        if (status !== 'all') {
+            url += `?status=${status}`;
+        }
+
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + token,
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to fetch exchange requests');
+            }
+            return response.json();
+        })
+        .then(requests => {
+            currentExchangeRequests = requests;
+            displayExchangeRequests(requests);
+            updateExchangeStats(requests);
+        })
+        .catch(error => {
+            console.error('Error loading exchange requests:', error);
+            document.getElementById('exchangeRequestsTableBody').innerHTML = `
+                <tr>
+                    <td colspan="7" class="text-center py-5 text-danger">
+                        <i class="fa-solid fa-exclamation-triangle me-2 fa-2x"></i>
+                        <p class="mt-3">Error loading exchange requests</p>
+                        <small>Please try refreshing the page</small>
+                    </td>
+                </tr>
+            `;
+        });
+    }
+
+    function displayExchangeRequests(requests) {
+        const tbody = document.getElementById('exchangeRequestsTableBody');
+
+        if (requests.length === 0) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="7" class="text-center py-5 text-muted">
+                        <i class="fa-solid fa-inbox me-2 fa-2x"></i>
+                        <p class="mt-3">No exchange requests found</p>
+                    </td>
+                </tr>
+            `;
+            return;
+        }
+
+        let html = '';
+        requests.forEach(request => {
+            html += `
+                <tr>
+                    <td><strong>#${request.id}</strong></td>
+                    <td>
+                        <div class="d-flex align-items-center">
+                            <img src="${request.targetProduct?.imagePath || 'https://via.placeholder.com/60x60?text=No+Image'}"
+                                 class="product-image me-2" alt="${request.targetProduct?.name}">
+                            <div>
+                                <strong>${request.targetProduct?.name || 'N/A'}</strong><br>
+                                <small class="text-muted">₹${request.targetProduct?.price || '0'}</small>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="d-flex align-items-center">
+                            <img src="${request.exchangeItemImage || 'https://via.placeholder.com/60x60?text=No+Image'}"
+                                 class="exchange-item-image me-2" alt="${request.exchangeItemName}">
+                            <div>
+                                <strong>${request.exchangeItemName}</strong><br>
+                                <small class="text-muted">${request.exchangeItemCategory}</small>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <strong>${request.requester?.firstName || 'User'} ${request.requester?.lastName || ''}</strong><br>
+                        <small class="text-muted">${request.requester?.email || 'N/A'}</small>
+                    </td>
+                    <td>
+                        <span class="badge ${getExchangeStatusBadgeClass(request.status)}">
+                            ${request.status}
+                        </span>
+                    </td>
+                    <td>
+                        ${request.createdAt ? new Date(request.createdAt).toLocaleDateString() : 'N/A'}
+                    </td>
+                    <td>
+                        <button class="btn btn-sm btn-modern-primary" onclick="viewExchangeDetails(${request.id})">
+                            <i class="fa-solid fa-eye"></i>
+                        </button>
+                        ${request.status === 'PENDING' ? `
+                            <button class="btn btn-sm btn-modern-success ms-1" onclick="approveExchangeRequest(${request.id})">
+                                <i class="fa-solid fa-check"></i>
+                            </button>
+                            <button class="btn btn-sm btn-modern-danger ms-1" onclick="rejectExchangeRequest(${request.id})">
+                                <i class="fa-solid fa-times"></i>
+                            </button>
+                        ` : ''}
+                        <button class="btn btn-sm btn-modern-secondary ms-1" onclick="deleteExchangeRequest(${request.id})">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `;
+        });
+
+        tbody.innerHTML = html;
+    }
+
+    function getExchangeStatusBadgeClass(status) {
+        switch(status) {
+            case 'PENDING': return 'bg-warning';
+            case 'APPROVED': return 'bg-success';
+            case 'REJECTED': return 'bg-danger';
+            default: return 'bg-secondary';
+        }
+    }
+
+    function updateExchangeStats(requests) {
+        const pending = requests.filter(r => r.status === 'PENDING').length;
+        const approved = requests.filter(r => r.status === 'APPROVED').length;
+        const rejected = requests.filter(r => r.status === 'REJECTED').length;
+
+        document.getElementById('pendingExchangesCount2').textContent = pending;
+        document.getElementById('approvedExchangesCount').textContent = approved;
+        document.getElementById('rejectedExchangesCount').textContent = rejected;
+    }
+
+    function filterExchangeRequests(status) {
+        // Update active button
+        document.querySelectorAll('.filter-buttons .filter-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        event.target.classList.add('active');
+
+        loadExchangeRequests(status);
+    }
+
+    function viewExchangeDetails(requestId) {
+        const request = currentExchangeRequests.find(req => req.id === requestId);
+        if (!request) return;
+
+        currentExchangeRequestId = requestId;
+
+        const modalContent = document.getElementById('exchangeDetailContent');
+        modalContent.innerHTML = `
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Target Product</h5>
+                    <div class="card mb-3">
+                        <img src="${request.targetProduct?.imagePath || 'https://via.placeholder.com/300x200?text=No+Image'}"
+                             class="card-img-top" alt="${request.targetProduct?.name}" style="height: 200px; object-fit: cover;">
+                        <div class="card-body">
+                            <h6 class="card-title">${request.targetProduct?.name || 'N/A'}</h6>
+                            <p class="card-text">${request.targetProduct?.description || 'No description available'}</p>
+                            <div class="d-flex justify-content-between">
+                                <span class="badge bg-secondary">${request.targetProduct?.category || 'N/A'}</span>
+                                <span class="text-primary fw-bold">₹${request.targetProduct?.price || '0'}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <h5>Exchange Item</h5>
+                    <div class="card mb-3">
+                        <img src="${request.exchangeItemImage || 'https://via.placeholder.com/300x200?text=No+Image'}"
+                             class="card-img-top" alt="${request.exchangeItemName}" style="height: 200px; object-fit: cover;">
+                        <div class="card-body">
+                            <h6 class="card-title">${request.exchangeItemName}</h6>
+                            <p class="card-text">${request.exchangeItemDescription || 'No description available'}</p>
+                            <div class="d-flex justify-content-between">
+                                <span class="badge bg-secondary">${request.exchangeItemCategory}</span>
+                                <span class="badge bg-info">Exchange</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-3">
+                <div class="col-12">
+                    <h5>Requester Information</h5>
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p><strong>Name:</strong> ${request.requester?.firstName || 'User'} ${request.requester?.lastName || ''}</p>
+                                    <p><strong>Email:</strong> ${request.requester?.email || 'N/A'}</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p><strong>Request Date:</strong> ${request.createdAt ? new Date(request.createdAt).toLocaleString() : 'N/A'}</p>
+                                    <p><strong>Status:</strong> <span class="badge ${getExchangeStatusBadgeClass(request.status)}">${request.status}</span></p>
+                                </div>
+                            </div>
+                            ${request.additionalMessage ? `
+                                <div class="mt-3">
+                                    <strong>Additional Message:</strong>
+                                    <p class="mt-1">${request.additionalMessage}</p>
+                                </div>
+                            ` : ''}
+                            ${request.rejectionReason ? `
+                                <div class="mt-3">
+                                    <strong>Rejection Reason:</strong>
+                                    <p class="mt-1 text-danger">${request.rejectionReason}</p>
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        // Show/hide action buttons based on status
+        document.getElementById('approveBtn').style.display = request.status === 'PENDING' ? 'inline-block' : 'none';
+        document.getElementById('rejectBtn').style.display = request.status === 'PENDING' ? 'inline-block' : 'none';
+
+        const modal = new bootstrap.Modal(document.getElementById('exchangeDetailModal'));
+        modal.show();
+    }
+
+    function approveExchangeRequest(requestId = null) {
+        const id = requestId || currentExchangeRequestId;
+        if (!id) return;
+
+        if (!confirm('Are you sure you want to approve this exchange request?')) {
+            return;
+        }
+
+        fetch(`/api/admin/exchange-requests/${id}/approve`, {
+            method: 'PUT',
+            headers: {
+                'Authorization': 'Bearer ' + token,
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to approve exchange request');
+            }
+            return response.json();
+        })
+        .then(data => {
+            showNotification('Exchange request approved successfully!', 'success');
+            loadExchangeRequests(currentExchangeFilter);
+            const modal = bootstrap.Modal.getInstance(document.getElementById('exchangeDetailModal'));
+            modal.hide();
+        })
+        .catch(error => {
+            console.error('Error approving exchange request:', error);
+            showNotification('Error approving exchange request', 'error');
+        });
+    }
+
+    function rejectExchangeRequest(requestId = null) {
+        const id = requestId || currentExchangeRequestId;
+        if (!id) return;
+
+        currentExchangeRequestId = id;
+        const rejectionModal = new bootstrap.Modal(document.getElementById('rejectionModal'));
+        rejectionModal.show();
+    }
+
+    function confirmRejection() {
+        const reason = document.getElementById('rejectionReason').value.trim();
+        if (!reason) {
+            showNotification('Please provide a rejection reason', 'error');
+            return;
+        }
+
+        fetch(`/api/admin/exchange-requests/${currentExchangeRequestId}/reject`, {
+            method: 'PUT',
+            headers: {
+                'Authorization': 'Bearer ' + token,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ rejectionReason: reason })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to reject exchange request');
+            }
+            return response.json();
+        })
+        .then(data => {
+            showNotification('Exchange request rejected successfully!', 'success');
+            loadExchangeRequests(currentExchangeFilter);
+            const rejectionModal = bootstrap.Modal.getInstance(document.getElementById('rejectionModal'));
+            rejectionModal.hide();
+            const detailModal = bootstrap.Modal.getInstance(document.getElementById('exchangeDetailModal'));
+            if (detailModal) detailModal.hide();
+            document.getElementById('rejectionReason').value = '';
+        })
+        .catch(error => {
+            console.error('Error rejecting exchange request:', error);
+            showNotification('Error rejecting exchange request', 'error');
+        });
+    }
+
+    function deleteExchangeRequest(requestId) {
+        if (!confirm('Are you sure you want to delete this exchange request? This action cannot be undone.')) {
+            return;
+        }
+
+        fetch(`/api/admin/exchange-requests/${requestId}`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': 'Bearer ' + token,
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to delete exchange request');
+            }
+            return response.json();
+        })
+        .then(data => {
+            showNotification('Exchange request deleted successfully!', 'success');
+            loadExchangeRequests(currentExchangeFilter);
+        })
+        .catch(error => {
+            console.error('Error deleting exchange request:', error);
+            showNotification('Error deleting exchange request', 'error');
+        });
+    }
+
     // Toggle admin role
     function toggleAdmin(userId, makeAdmin) {
         if (!confirm(`Are you sure you want to ${makeAdmin ? 'make this user an admin' : 'remove admin rights from this user'}?`)) {
@@ -1320,6 +1830,7 @@
         loadUsers();
         loadProductStats();
         loadPendingProducts();
+        loadExchangeRequests();
         document.getElementById('lastUpdated').textContent = new Date().toLocaleString();
         showNotification('Data refreshed successfully', 'success');
     }

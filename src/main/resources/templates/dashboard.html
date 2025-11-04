@@ -8,673 +8,1066 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
     <style>
         :root {
-          --primary-color: #00A0E3; /* Mercedes blue */
-          --secondary-color: #000000; /* Black for contrast */
-          --accent-color: #E6F7FF; /* Light blue accent */
-          --bg-light: #f8fafc;
-          --text-dark: #1E293B;
-          --card-shadow: rgba(0,0,0,0.05);
+            --primary-color: #00A0E3; /* Mercedes blue */
+            --secondary-color: #000000; /* Black for contrast */
+            --accent-color: #E6F7FF; /* Light blue accent */
+            --bg-light: #f8fafc;
+            --text-dark: #1E293B;
+            --card-shadow: rgba(0,0,0,0.05);
         }
         body {
-          font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-          background: #fff;
-          color: var(--text-dark);
-          padding-top: 80px;
-          transition: all 0.3s ease;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #fff;
+            color: var(--text-dark);
+            padding-top: 80px;
+            transition: all 0.3s ease;
         }
         body.fullscreen-available {
-          padding-top: 0;
+            padding-top: 0;
         }
         .navbar-custom {
-          background: rgba(255, 255, 255, 0.95);
-          box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-          position: fixed;
-          width: 100%;
-          z-index: 1050;
-          backdrop-filter: blur(10px);
-          transition: all 0.3s ease;
-          border-bottom: 1px solid #e9ecef;
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: fixed;
+            width: 100%;
+            z-index: 1050;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            border-bottom: 1px solid #e9ecef;
         }
         .navbar-brand {
-          font-weight: 700;
-          color: var(--primary-color);
-          font-size: 1.6rem;
-          cursor: pointer;
-          display: flex;
-          align-items: center;
+            font-weight: 700;
+            color: var(--primary-color);
+            font-size: 1.6rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
         }
         .navbar-brand:hover {
-          color: var(--primary-color);
+            color: var(--primary-color);
         }
         .nav-link {
-          color: var(--text-dark) !important;
-          font-weight: 500;
-          margin-left: 1rem;
-          cursor: pointer;
-          position: relative;
-          transition: color 0.3s ease;
+            color: var(--text-dark) !important;
+            font-weight: 500;
+            margin-left: 1rem;
+            cursor: pointer;
+            position: relative;
+            transition: color 0.3s ease;
         }
         .nav-link:hover {
-          color: var(--primary-color) !important;
+            color: var(--primary-color) !important;
         }
         .nav-link::after {
-          content: '';
-          position: absolute;
-          width: 0;
-          height: 2px;
-          bottom: 0;
-          left: 0;
-          background-color: var(--primary-color);
-          transition: width 0.3s ease;
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 0;
+            background-color: var(--primary-color);
+            transition: width 0.3s ease;
         }
         .nav-link:hover::after {
-          width: 100%;
+            width: 100%;
         }
         .dropdown-menu {
-          border: none;
-          box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-          border-radius: 0;
-          border-top: 3px solid var(--primary-color);
+            border: none;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-radius: 0;
+            border-top: 3px solid var(--primary-color);
         }
         .dropdown-item {
-          padding: 10px 16px;
-          cursor: pointer;
-          transition: all 0.3s ease;
+            padding: 10px 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
         }
         .dropdown-item:hover {
-          background-color: var(--primary-color);
-          color: white;
+            background-color: var(--primary-color);
+            color: white;
         }
 
         /* Dashboard Styles */
         .dashboard-header {
-          background: linear-gradient(135deg, var(--primary-color), #0078b5);
-          color: white;
-          padding: 80px 0;
-          margin-bottom: 40px;
-          position: relative;
-          overflow: hidden;
-          transition: all 0.3s ease;
-        }
-        .fullscreen-available .dashboard-header {
-          display: none;
-        }
-        .dashboard-header::before {
-          content: '';
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          background: url('https://images.unsplash.com/photo-1559027615-cd4628902d4a?auto=format&fit=crop&w=1350&q=80') no-repeat center center/cover;
-          opacity: 0.1;
-          z-index: 0;
-        }
-        .dashboard-header .container {
-          position: relative;
-          z-index: 1;
-        }
-        .stats-card {
-          background: white;
-          border-radius: 0;
-          padding: 30px;
-          box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-          text-align: center;
-          margin-bottom: 30px;
-          transition: transform 0.3s ease, box-shadow 0.3s ease;
-          border-top: 3px solid var(--primary-color);
-          position: relative;
-          overflow: hidden;
-        }
-        .stats-card::before {
-          content: '';
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 0;
-          background: var(--accent-color);
-          transition: height 0.3s ease;
-          z-index: 0;
-        }
-        .stats-card:hover::before {
-          height: 100%;
-        }
-        .stats-card:hover {
-          transform: translateY(-8px);
-          box-shadow: 0 15px 30px rgba(0,0,0,0.15);
-        }
-        .stats-icon {
-          font-size: 3rem;
-          color: var(--primary-color);
-          margin-bottom: 15px;
-          position: relative;
-          z-index: 1;
-        }
-        .stats-number {
-          font-size: 2.5rem;
-          font-weight: bold;
-          color: var(--text-dark);
-          margin-bottom: 10px;
-          position: relative;
-          z-index: 1;
-        }
-        .stats-label {
-          color: #666;
-          font-size: 1.1rem;
-          position: relative;
-          z-index: 1;
-        }
-        .profile-section {
-          background: white;
-          border-radius: 0;
-          padding: 40px;
-          box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-          margin-bottom: 40px;
-          border-top: 3px solid var(--primary-color);
-          position: relative;
-        }
-        .profile-section::before {
-          content: '';
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 0;
-          background: var(--accent-color);
-          transition: height 0.3s ease;
-          z-index: 0;
-        }
-        .profile-section:hover::before {
-          height: 100%;
-        }
-        .profile-header {
-          text-align: center;
-          margin-bottom: 30px;
-          position: relative;
-          z-index: 1;
-        }
-        .profile-avatar {
-          width: 120px;
-          height: 120px;
-          background: linear-gradient(135deg, var(--primary-color), #0078b5);
-          border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          margin: 0 auto 20px;
-          font-size: 3rem;
-          color: white;
-          border: 3px solid white;
-          box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-        .profile-info {
-          margin-bottom: 25px;
-          position: relative;
-          z-index: 1;
-        }
-        .info-item {
-          display: flex;
-          justify-content: space-between;
-          padding: 12px 0;
-          border-bottom: 1px solid #eee;
-          transition: background-color 0.3s ease;
-        }
-        .info-item:hover {
-          background-color: rgba(0, 160, 227, 0.05);
-        }
-        .info-label {
-          font-weight: 600;
-          color: #555;
-        }
-        .info-value {
-          color: var(--text-dark);
-          font-weight: 500;
-        }
-
-        /* Product image styles */
-        .product-image {
-            width: 80px;
-            height: 80px;
-            border-radius: 0;
-            object-fit: cover;
-            border: 2px solid #e9ecef;
+            background: linear-gradient(135deg, var(--primary-color), #0078b5);
+            color: white;
+            padding: 80px 0;
+            margin-bottom: 40px;
+            position: relative;
+            overflow: hidden;
             transition: all 0.3s ease;
         }
-        .product-image:hover {
-            transform: scale(1.05);
-            border-color: var(--primary-color);
-        }
-        .image-placeholder {
-            width: 80px;
-            height: 80px;
-            background: linear-gradient(45deg, #f8f9fa, #e9ecef);
-            border-radius: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #6c757d;
-            font-size: 0.7rem;
-            border: 2px dashed #dee2e6;
-            text-align: center;
-            padding: 5px;
-        }
-
-        /* Amazon-style footer */
-        .amazon-footer {
-          background-color: #1a1a1a;
-          color: white;
-          padding: 60px 0 40px;
-          transition: all 0.3s ease;
-        }
-        .fullscreen-available .amazon-footer,
-        .fullscreen-available footer {
-          display: none;
-        }
-        .amazon-footer h5 {
-          margin-bottom: 20px;
-          font-weight: 600;
-          text-transform: uppercase;
-          letter-spacing: 1px;
-          font-size: 1.1rem;
-        }
-        .amazon-footer ul {
-          list-style: none;
-          padding: 0;
-        }
-        .amazon-footer ul li {
-          margin-bottom: 10px;
-        }
-        .amazon-footer ul li a {
-          color: #ccc;
-          text-decoration: none;
-          cursor: pointer;
-          transition: color 0.3s ease;
-        }
-        .amazon-footer ul li a:hover {
-          color: white;
-          text-decoration: none;
-        }
-        footer {
-          background: var(--secondary-color);
-          color: white;
-          padding: 25px 0;
-          transition: all 0.3s ease;
-        }
-        footer a {
-          color: white;
-          margin: 0 10px;
-          font-size: 1.2rem;
-          cursor: pointer;
-          transition: color 0.3s ease;
-        }
-        footer a:hover {
-          color: var(--primary-color);
-          text-decoration: none;
-        }
-        footer .social-icons {
-          margin-top: 10px;
-        }
-
-        /* Quick Actions */
-        .quick-actions {
-          margin-bottom: 40px;
-        }
-        .action-btn {
-          background: white;
-          border: 2px solid var(--primary-color);
-          color: var(--primary-color);
-          padding: 15px 25px;
-          border-radius: 0;
-          text-decoration: none;
-          display: block;
-          text-align: center;
-          transition: all 0.3s ease;
-          margin-bottom: 15px;
-          cursor: pointer;
-          font-weight: 600;
-          letter-spacing: 0.5px;
-          position: relative;
-          overflow: hidden;
-        }
-        .action-btn::before {
-          content: '';
-          position: absolute;
-          top: 0;
-          left: -100%;
-          width: 100%;
-          height: 100%;
-          background: var(--primary-color);
-          transition: left 0.3s ease;
-          z-index: 0;
-        }
-        .action-btn:hover::before {
-          left: 0;
-        }
-        .action-btn:hover {
-          color: white;
-          transform: translateY(-2px);
-          box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }
-        .action-btn span {
-          position: relative;
-          z-index: 1;
-        }
-
-        /* Active nav link */
-        .nav-link.active {
-          color: var(--primary-color) !important;
-          font-weight: 600;
-        }
-        .nav-link.active::after {
-          width: 100%;
-        }
-
-        /* Section styles for dashboard navigation */
-        .dashboard-section {
+        .fullscreen-available .dashboard-header {
             display: none;
         }
-        .dashboard-section.active {
-            display: block;
-        }
-
-        /* Fullscreen Available Items */
-        .fullscreen-available-items {
-            position: fixed;
+        .dashboard-header::before {
+            content: '';
+            position: absolute;
             top: 0;
             left: 0;
             width: 100%;
-            height: 100vh;
+            height: 100%;
+            background: url('https://images.unsplash.com/photo-1559027615-cd4628902d4a?auto=format&fit=crop&w=1350&q=80') no-repeat center center/cover;
+            opacity: 0.1;
+            z-index: 0;
+        }
+        .dashboard-header .container {
+            position: relative;
+            z-index: 1;
+        }
+        .stats-card {
             background: white;
-            z-index: 1040;
-            display: none;
-            flex-direction: column;
+            border-radius: 0;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            text-align: center;
+            margin-bottom: 30px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-top: 3px solid var(--primary-color);
+            position: relative;
             overflow: hidden;
         }
-        .fullscreen-available-items.active {
-            display: flex;
+        .stats-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 0;
+            background: var(--accent-color);
+            transition: height 0.3s ease;
+            z-index: 0;
         }
-        .fullscreen-header {
-            background: var(--primary-color);
-            color: white;
-            padding: 20px 0;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        .stats-card:hover::before {
+            height: 100%;
+        }
+        .stats-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+        }
+        .stats-icon {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 15px;
             position: relative;
-            z-index: 2;
+            z-index: 1;
         }
-        .fullscreen-header .container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        .stats-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--text-dark);
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
         }
-        .fullscreen-title {
-            margin: 0;
-            font-size: 1.8rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+        .stats-label {
+            color: #666;
+            font-size: 1.1rem;
+            position: relative;
+            z-index: 1;
         }
-        .close-fullscreen {
-            background: rgba(255,255,255,0.2);
-            border: 2px solid white;
-            color: white;
-            width: 40px;
-            height: 40px;
+        .profile-section {
+            background: white;
             border-radius: 0;
+            padding: 40px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            margin-bottom: 40px;
+            border-top: 3px solid var(--primary-color);
+            position: relative;
+        }
+        .profile-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 0;
+            background: var(--accent-color);
+            transition: height 0.3s ease;
+            z-index: 0;
+        }
+        .profile-section:hover::before {
+            height: 100%;
+        }
+        .profile-header {
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+            z-index: 1;
+        }
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, var(--primary-color), #0078b5);
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 1.2rem;
-        }
-        .close-fullscreen:hover {
-            background: white;
-            color: var(--primary-color);
-            transform: rotate(90deg);
-        }
-        .fullscreen-content {
-            flex: 1;
-            overflow-y: auto;
-            padding: 30px 0;
-            background: #f8f9fa;
-        }
-
-        /* Admin badge */
-        .admin-badge {
-            background: #dc3545;
+            margin: 0 auto 20px;
+            font-size: 3rem;
             color: white;
-            padding: 4px 8px;
-            border-radius: 0;
-            font-size: 0.7rem;
-            margin-left: 5px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            border: 3px solid white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
-
-        /* Card headers */
-        .card {
-            border: none;
-            border-radius: 0;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-            border-top: 3px solid var(--primary-color);
-        }
-        .card-header {
-            background: white;
-            border-bottom: 1px solid #e9ecef;
-            padding: 20px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: var(--text-dark);
-        }
-
-        /* Form controls */
-        .form-control, .form-select {
-            border-radius: 0;
-            border: 1px solid #ddd;
-            padding: 12px 15px;
-            transition: all 0.3s ease;
-        }
-        .form-control:focus, .form-select:focus {
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 2px rgba(0, 160, 227, 0.2);
-        }
-
-        /* Buttons */
-        .btn {
-            border-radius: 0;
-            padding: 12px 24px;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-            transition: all 0.3s ease;
-        }
-        .btn-primary {
-            background: var(--primary-color);
-            border: none;
-        }
-        .btn-primary:hover {
-            background: var(--secondary-color);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }
-        .btn-outline-primary {
-            border: 2px solid var(--primary-color);
-            color: var(--primary-color);
-            background: transparent;
-        }
-        .btn-outline-primary:hover {
-            background: var(--primary-color);
-            color: white;
-            transform: translateY(-2px);
-        }
-
-        /* Badges */
-        .badge {
-            border-radius: 0;
-            font-weight: 500;
-            letter-spacing: 0.5px;
-        }
-
-        /* Alert styling */
-        .alert {
-            border-radius: 0;
-            border: none;
-            border-left: 4px solid;
-        }
-        .alert-info {
-            background: rgba(0, 160, 227, 0.1);
-            color: var(--primary-color);
-            border-left-color: var(--primary-color);
-        }
-
-        h2, h3, h4, h5, h6 {
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: var(--text-dark);
-        }
-        h2 {
-            position: relative;
-            padding-bottom: 15px;
+        .profile-info {
             margin-bottom: 25px;
+            position: relative;
+            z-index: 1;
         }
-        h2::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 60px;
-            height: 3px;
-            background-color: var(--primary-color);
-        }
-
-        /* Available Items Styles */
-        .product-card {
-            transition: all 0.3s ease;
-            border-top: 3px solid var(--primary-color);
-        }
-
-        .product-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-        }
-
-        .product-card .card-img-top {
-            transition: transform 0.3s ease;
-        }
-
-        .product-card:hover .card-img-top {
-            transform: scale(1.05);
-        }
-
-        /* Filter section styles */
-        .filter-section {
-            background: white;
-            border-radius: 0;
-            padding: 20px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-            margin-bottom: 20px;
-        }
-
-        /* Fullscreen specific styles */
-        .fullscreen-filters {
-            background: white;
-            padding: 25px 0;
-            border-bottom: 1px solid #e9ecef;
-            margin-bottom: 30px;
-        }
-        .fullscreen-filters .row {
-            align-items: center;
-        }
-        .fullscreen-stats {
-            text-align: center;
-        }
-        .items-count-badge {
-            background: var(--primary-color);
-            color: white;
-            padding: 8px 16px;
-            border-radius: 0;
-            font-size: 1.1rem;
-            font-weight: 600;
-        }
-
-        /* Product Detail Modal */
-        .product-detail-modal .modal-content {
-            border-radius: 0;
-            border: none;
-            border-top: 3px solid var(--primary-color);
-        }
-        .product-detail-modal .modal-header {
-            background: var(--primary-color);
-            color: white;
-            border-bottom: none;
-            padding: 25px;
-        }
-        .product-detail-modal .modal-title {
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        .product-detail-modal .modal-body {
-            padding: 30px;
-        }
-        .product-detail-image {
-            width: 100%;
-            height: 300px;
-            object-fit: cover;
-            border: 2px solid #e9ecef;
-        }
-        .product-info-item {
+        .info-item {
             display: flex;
             justify-content: space-between;
             padding: 12px 0;
             border-bottom: 1px solid #eee;
+            transition: background-color 0.3s ease;
         }
-        .product-info-label {
+        .info-item:hover {
+            background-color: rgba(0, 160, 227, 0.05);
+        }
+        .info-label {
             font-weight: 600;
             color: #555;
-            min-width: 120px;
         }
-        .product-info-value {
+        .info-value {
             color: var(--text-dark);
             font-weight: 500;
-            text-align: right;
-            flex: 1;
-        }
-        .seller-info {
-            background: #f8f9fa;
-            padding: 20px;
-            border-left: 3px solid var(--primary-color);
-            margin-top: 20px;
         }
 
+        /* Product image styles */
+        .product-image {
+             width: 80px;
+             height: 80px;
+             border-radius: 0;
+             object-fit: cover;
+             border: 2px solid #e9ecef;
+             transition: all 0.3s ease;
+        }
+        .product-image:hover {
+             transform: scale(1.05);
+             border-color: var(--primary-color);
+        }
+        .image-placeholder {
+             width: 80px;
+             height: 80px;
+             background: linear-gradient(45deg, #f8f9fa, #e9ecef);
+             border-radius: 0;
+             display: flex;
+             align-items: center;
+             justify-content: center;
+             color: #6c757d;
+             font-size: 0.7rem;
+             border: 2px dashed #dee2e6;
+             text-align: center;
+             padding: 5px;
+        }
+
+        /* Amazon-style footer */
+        .amazon-footer {
+            background-color: #1a1a1a;
+            color: white;
+            padding: 60px 0 40px;
+            transition: all 0.3s ease;
+        }
+        .fullscreen-available .amazon-footer,
+        .fullscreen-available footer {
+            display: none;
+        }
+        .amazon-footer h5 {
+            margin-bottom: 20px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 1.1rem;
+        }
+        .amazon-footer ul {
+            list-style: none;
+            padding: 0;
+        }
+        .amazon-footer ul li {
+            margin-bottom: 10px;
+        }
+        .amazon-footer ul li a {
+            color: #ccc;
+            text-decoration: none;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+        .amazon-footer ul li a:hover {
+            color: white;
+            text-decoration: none;
+        }
+        footer {
+            background: var(--secondary-color);
+            color: white;
+            padding: 25px 0;
+            transition: all 0.3s ease;
+        }
+        footer a {
+            color: white;
+            margin: 0 10px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+        footer a:hover {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+        footer .social-icons {
+            margin-top: 10px;
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            margin-bottom: 40px;
+        }
+        .action-btn {
+            background: white;
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            padding: 15px 25px;
+            border-radius: 0;
+            text-decoration: none;
+            display: block;
+            text-align: center;
+            transition: all 0.3s ease;
+            margin-bottom: 15px;
+            cursor: pointer;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            position: relative;
+            overflow: hidden;
+        }
+        .action-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: var(--primary-color);
+            transition: left 0.3s ease;
+            z-index: 0;
+        }
+        .action-btn:hover::before {
+            left: 0;
+        }
+        .action-btn:hover {
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .action-btn span {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Active nav link */
+        .nav-link.active {
+            color: var(--primary-color) !important;
+            font-weight: 600;
+        }
+        .nav-link.active::after {
+            width: 100%;
+        }
+
+        /* Section styles for dashboard navigation */
+        .dashboard-section {
+             display: none;
+        }
+        .dashboard-section.active {
+             display: block;
+        }
+
+        /* Fullscreen Available Items */
+        .fullscreen-available-items {
+             position: fixed;
+             top: 0;
+             left: 0;
+             width: 100%;
+             height: 100vh;
+             background: white;
+             z-index: 1040;
+             display: none;
+             flex-direction: column;
+             overflow: hidden;
+        }
+        .fullscreen-available-items.active {
+             display: flex;
+        }
+        .fullscreen-header {
+             background: var(--primary-color);
+             color: white;
+             padding: 20px 0;
+             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+             position: relative;
+             z-index: 2;
+        }
+        .fullscreen-header .container {
+             display: flex;
+             justify-content: space-between;
+             align-items: center;
+        }
+        .fullscreen-title {
+             margin: 0;
+             font-size: 1.8rem;
+             font-weight: 700;
+             text-transform: uppercase;
+             letter-spacing: 1px;
+        }
+        .close-fullscreen {
+             background: rgba(255,255,255,0.2);
+             border: 2px solid white;
+             color: white;
+             width: 40px;
+             height: 40px;
+             border-radius: 0;
+             display: flex;
+             align-items: center;
+             justify-content: center;
+             cursor: pointer;
+             transition: all 0.3s ease;
+             font-size: 1.2rem;
+        }
+        .close-fullscreen:hover {
+             background: white;
+             color: var(--primary-color);
+             transform: rotate(90deg);
+        }
+        .fullscreen-content {
+             flex: 1;
+             overflow-y: auto;
+             padding: 30px 0;
+             background: #f8f9fa;
+        }
+
+        /* Admin badge */
+        .admin-badge {
+             background: #dc3545;
+             color: white;
+             padding: 4px 8px;
+             border-radius: 0;
+             font-size: 0.7rem;
+             margin-left: 5px;
+             text-transform: uppercase;
+             letter-spacing: 0.5px;
+        }
+
+        /* Card headers */
+        .card {
+             border: none;
+             border-radius: 0;
+             box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+             border-top: 3px solid var(--primary-color);
+        }
+        .card-header {
+             background: white;
+             border-bottom: 1px solid #e9ecef;
+             padding: 20px;
+             font-weight: 600;
+             text-transform: uppercase;
+             letter-spacing: 1px;
+             color: var(--text-dark);
+        }
+
+        /* Form controls */
+        .form-control, .form-select {
+             border-radius: 0;
+             border: 1px solid #ddd;
+             padding: 12px 15px;
+             transition: all 0.3s ease;
+        }
+        .form-control:focus, .form-select:focus {
+             border-color: var(--primary-color);
+             box-shadow: 0 0 0 2px rgba(0, 160, 227, 0.2);
+        }
+
+        /* Buttons */
+        .btn {
+             border-radius: 0;
+             padding: 12px 24px;
+             font-weight: 600;
+             letter-spacing: 0.5px;
+             text-transform: uppercase;
+             transition: all 0.3s ease;
+        }
+        .btn-primary {
+             background: var(--primary-color);
+             border: none;
+        }
+        .btn-primary:hover {
+             background: var(--secondary-color);
+             transform: translateY(-2px);
+             box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .btn-outline-primary {
+             border: 2px solid var(--primary-color);
+             color: var(--primary-color);
+             background: transparent;
+        }
+        .btn-outline-primary:hover {
+             background: var(--primary-color);
+             color: white;
+             transform: translateY(-2px);
+        }
+
+        /* ADDED FROM CODE 2 */
+        .btn-outline-warning {
+            border: 2px solid #ffc107;
+            color: #ffc107;
+            background: transparent;
+        }
+        .btn-outline-warning:hover {
+            background: #ffc107;
+            color: #000;
+            transform: translateY(-2px);
+        }
+        /* END ADD */
+
+        .btn-success {
+             background: #28a745;
+             border: none;
+        }
+        .btn-success:hover {
+             background: #218838;
+             transform: translateY(-2px);
+             box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        /* Badges */
+        .badge {
+             border-radius: 0;
+             font-weight: 500;
+             letter-spacing: 0.5px;
+        }
+
+        /* Alert styling */
+        .alert {
+             border-radius: 0;
+             border: none;
+             border-left: 4px solid;
+        }
+        .alert-info {
+             background: rgba(0, 160, 227, 0.1);
+             color: var(--primary-color);
+             border-left-color: var(--primary-color);
+        }
+
+        h2, h3, h4, h5, h6 {
+             font-weight: 700;
+             text-transform: uppercase;
+             letter-spacing: 1px;
+             color: var(--text-dark);
+        }
+        h2 {
+             position: relative;
+             padding-bottom: 15px;
+             margin-bottom: 25px;
+        }
+        h2::after {
+             content: '';
+             position: absolute;
+             bottom: 0;
+             left: 0;
+             width: 60px;
+             height: 3px;
+             background-color: var(--primary-color);
+        }
+
+        /* Available Items Styles */
+        .product-card {
+             transition: all 0.3s ease;
+             border-top: 3px solid var(--primary-color);
+        }
+
+        .product-card:hover {
+             transform: translateY(-5px);
+             box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+
+        .product-card .card-img-top {
+             transition: transform 0.3s ease;
+        }
+
+        .product-card:hover .card-img-top {
+             transform: scale(1.05);
+        }
+
+        /* Filter section styles */
+        .filter-section {
+             background: white;
+             border-radius: 0;
+             padding: 20px;
+             box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+             margin-bottom: 20px;
+        }
+
+        /* Fullscreen specific styles */
+        .fullscreen-filters {
+             background: white;
+             padding: 25px 0;
+             border-bottom: 1px solid #e9ecef;
+             margin-bottom: 30px;
+        }
+        .fullscreen-filters .row {
+             align-items: center;
+        }
+        .fullscreen-stats {
+             text-align: center;
+        }
+        .items-count-badge {
+             background: var(--primary-color);
+             color: white;
+             padding: 8px 16px;
+             border-radius: 0;
+             font-size: 1.1rem;
+             font-weight: 600;
+        }
+
+        /* Product Detail Modal */
+        .product-detail-modal .modal-content {
+             border-radius: 0;
+             border: none;
+             border-top: 3px solid var(--primary-color);
+        }
+        .product-detail-modal .modal-header {
+             background: var(--primary-color);
+             color: white;
+             border-bottom: none;
+             padding: 25px;
+        }
+        .product-detail-modal .modal-title {
+             font-weight: 700;
+             text-transform: uppercase;
+             letter-spacing: 1px;
+        }
+        .product-detail-modal .modal-body {
+             padding: 30px;
+        }
+        .product-detail-image {
+             width: 100%;
+             height: 300px;
+             object-fit: cover;
+             border: 2px solid #e9ecef;
+        }
+        .product-info-item {
+             display: flex;
+             justify-content: space-between;
+             padding: 12px 0;
+             border-bottom: 1px solid #eee;
+        }
+        .product-info-label {
+             font-weight: 600;
+             color: #555;
+             min-width: 120px;
+        }
+        .product-info-value {
+             color: var(--text-dark);
+             font-weight: 500;
+             text-align: right;
+             flex: 1;
+        }
+        .seller-info {
+             background: #f8f9fa;
+             padding: 20px;
+             border-left: 3px solid var(--primary-color);
+             margin-top: 20px;
+        }
+
+        /* --- ADDED FROM CODE 2: EXCHANGE MODAL STYLES --- */
+        .exchange-request-modal .modal-content {
+            border-radius: 0;
+            border: none;
+            border-top: 3px solid #ffc107;
+        }
+        .exchange-request-modal .modal-header {
+            background: #ffc107;
+            color: #000;
+            border-bottom: none;
+            padding: 25px;
+        }
+        .exchange-request-modal .modal-title {
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* My Exchange Requests Section */
+        .exchange-request-card {
+            transition: all 0.3s ease;
+            border-top: 3px solid #ffc107;
+        }
+
+        .exchange-request-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+        }
+        /* --- END ADD --- */
+
+
+        /* --- FROM CODE 1: PURCHASE FORM STYLES --- */
+        .purchase-container {
+             max-width: 800px;
+             margin: 0 auto;
+             background-color: white;
+             border-radius: 8px;
+             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+             padding: 30px;
+             margin-bottom: 40px;
+        }
+
+        .purchase-product-info {
+             display: flex;
+             justify-content: space-between;
+             align-items: center;
+             padding: 15px 0;
+             border-bottom: 1px solid #eee;
+             margin-bottom: 20px;
+        }
+
+        .purchase-product-details {
+             flex-grow: 1;
+        }
+
+        .purchase-product-name {
+             font-weight: bold;
+             margin-bottom: 5px;
+             font-size: 1.2rem;
+        }
+
+        .purchase-product-seller {
+             color: #666;
+             font-size: 14px;
+        }
+
+        .purchase-product-price {
+             font-weight: bold;
+             color: #333;
+             font-size: 1.2rem;
+        }
+
+        .purchase-form-group {
+             margin-bottom: 20px;
+        }
+
+        .purchase-label {
+             display: block;
+             margin-bottom: 8px;
+             font-weight: bold;
+             font-size: 14px;
+        }
+
+        .purchase-input {
+             width: 100%;
+             padding: 12px;
+             border: 1px solid #ddd;
+             border-radius: 4px;
+             font-size: 14px;
+             transition: border-color 0.3s;
+        }
+
+        .purchase-input:focus {
+             border-color: var(--primary-color);
+             outline: none;
+             box-shadow: 0 0 0 2px rgba(0, 160, 227, 0.2);
+        }
+
+        .purchase-divider {
+             height: 1px;
+             background-color: #eee;
+             margin: 25px 0;
+        }
+
+        .purchase-payment-method {
+             margin: 25px 0;
+        }
+
+        .purchase-payment-option {
+             margin-bottom: 15px;
+             padding: 15px;
+             border: 1px solid #ddd;
+             border-radius: 4px;
+             cursor: pointer;
+             transition: all 0.3s ease;
+        }
+
+        .purchase-payment-option:hover {
+             border-color: var(--primary-color);
+        }
+
+        .purchase-payment-option.active {
+             border-color: var(--primary-color);
+             background-color: #f0f7ff;
+        }
+
+        .purchase-payment-title {
+             font-weight: bold;
+             margin-bottom: 5px;
+        }
+
+        .purchase-payment-desc {
+             font-size: 14px;
+             color: #666;
+        }
+
+        .purchase-action-buttons {
+             display: flex;
+             justify-content: space-between;
+             margin-top: 30px;
+        }
+
+        .purchase-btn {
+             padding: 12px 25px;
+             border: none;
+             border-radius: 4px;
+             font-size: 16px;
+             cursor: pointer;
+             font-weight: bold;
+             transition: all 0.3s ease;
+        }
+
+        .purchase-btn-cancel {
+             background-color: #f5f5f5;
+             color: #333;
+        }
+
+        .purchase-btn-cancel:hover {
+             background-color: #e0e0e0;
+        }
+
+        .purchase-btn-complete {
+             background-color: var(--primary-color);
+             color: white;
+        }
+
+        .purchase-btn-complete:hover {
+             background-color: var(--secondary-color);
+        }
+
+        .purchase-btn-cod {
+             background-color: #f5f5f5;
+             color: #333;
+             width: 100%;
+             text-align: left;
+             margin-bottom: 10px;
+             padding: 15px;
+             border-radius: 4px;
+             border: 1px solid #ddd;
+             cursor: pointer;
+             transition: all 0.3s ease;
+        }
+
+        .purchase-btn-cod:hover {
+             background-color: #e9ecef;
+        }
+
+        .purchase-cod-desc {
+             font-size: 14px;
+             color: #666;
+             margin-top: 5px;
+             margin-left: 15px;
+        }
+
+        .purchase-section-title {
+             margin-top: 30px;
+             margin-bottom: 15px;
+             color: var(--text-dark);
+        }
+
+        /* Purchase Form Overlay */
+        .purchase-overlay {
+             position: fixed;
+             top: 0;
+             left: 0;
+             width: 100%;
+             height: 100%;
+             background-color: rgba(0, 0, 0, 0.7);
+             display: none;
+             justify-content: center;
+             align-items: center;
+             z-index: 1060;
+             padding: 20px;
+        }
+
+        .purchase-overlay.active {
+             display: flex;
+        }
+
+        .purchase-overlay-content {
+             background: white;
+             border-radius: 8px;
+             width: 100%;
+             max-width: 800px;
+             max-height: 90vh;
+             overflow-y: auto;
+             box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .purchase-overlay-header {
+             display: flex;
+             justify-content: space-between;
+             align-items: center;
+             padding: 20px 30px;
+             border-bottom: 1px solid #eee;
+             background: var(--primary-color);
+             color: white;
+             border-radius: 8px 8px 0 0;
+        }
+
+        .purchase-overlay-title {
+             margin: 0;
+             font-size: 1.5rem;
+             font-weight: 700;
+        }
+
+        .purchase-overlay-close {
+             background: none;
+             border: none;
+             color: white;
+             font-size: 1.5rem;
+             cursor: pointer;
+             width: 40px;
+             height: 40px;
+             display: flex;
+             align-items: center;
+             justify-content: center;
+             border-radius: 50%;
+             transition: background-color 0.3s;
+        }
+
+        .purchase-overlay-close:hover {
+             background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Enhanced Purchase Form Styles */
+        .purchase-product-card {
+             background-color: #f9f9f9;
+             border-radius: 8px;
+             padding: 20px;
+             margin-bottom: 25px;
+             border-left: 4px solid var(--primary-color);
+        }
+
+        .purchase-product-title {
+             font-size: 1.4rem;
+             font-weight: bold;
+             margin-bottom: 10px;
+             color: #333;
+        }
+
+        .purchase-product-price {
+             font-size: 1.3rem;
+             font-weight: bold;
+             color: #e74c3c;
+             margin-bottom: 5px;
+        }
+
+        .purchase-product-seller {
+             font-size: 1rem;
+             color: #666;
+        }
+
+        .purchase-form-section {
+             margin-bottom: 25px;
+        }
+
+        .purchase-form-section-title {
+             font-size: 1.2rem;
+             font-weight: bold;
+             margin-bottom: 15px;
+             color: #333;
+             border-bottom: 2px solid #eee;
+             padding-bottom: 8px;
+        }
+
+        .purchase-payment-options {
+             display: flex;
+             flex-direction: column;
+             gap: 10px;
+        }
+
+        .purchase-payment-btn {
+             display: flex;
+             align-items: center;
+             padding: 15px;
+             border: 1px solid #ddd;
+             border-radius: 4px;
+             background: white;
+             cursor: pointer;
+             transition: all 0.3s ease;
+        }
+
+        .purchase-payment-btn:hover {
+             border-color: var(--primary-color);
+        }
+
+        .purchase-payment-btn.active {
+             border-color: var(--primary-color);
+             background-color: #f0f7ff;
+        }
+
+        .purchase-payment-icon {
+             margin-right: 10px;
+             font-size: 1.2rem;
+             color: var(--primary-color);
+        }
+
+        .purchase-payment-text {
+             flex-grow: 1;
+             text-align: left;
+        }
+
+        .purchase-payment-name {
+             font-weight: bold;
+             margin-bottom: 3px;
+        }
+
+        .purchase-payment-desc {
+             font-size: 0.85rem;
+             color: #666;
+        }
+        /* --- END PURCHASE FORM STYLES --- */
+
+
         @media (max-width: 768px) {
-            .dashboard-header {
-                padding: 60px 0;
-            }
-            .stats-card {
-                padding: 20px;
-            }
-            .profile-section {
-                padding: 30px 20px;
-            }
-            .fullscreen-title {
-                font-size: 1.4rem;
-            }
-            .fullscreen-filters .row > div {
-                margin-bottom: 15px;
-            }
-            .product-detail-modal .modal-body {
-                padding: 20px;
-            }
+             .dashboard-header {
+                 padding: 60px 0;
+             }
+             .stats-card {
+                 padding: 20px;
+             }
+             .profile-section {
+                 padding: 30px 20px;
+             }
+             .fullscreen-title {
+                 font-size: 1.4rem;
+             }
+             .fullscreen-filters .row > div {
+                 margin-bottom: 15px;
+             }
+             .product-detail-modal .modal-body {
+                 padding: 20px;
+             }
+             .purchase-container {
+                 padding: 20px;
+             }
+             .purchase-action-buttons {
+                 flex-direction: column;
+                 gap: 10px;
+             }
+             .purchase-btn {
+                 width: 100%;
+             }
+             .purchase-overlay {
+                 padding: 10px;
+             }
+             .purchase-overlay-content {
+                 max-height: 95vh;
+             }
         }
     </style>
 </head>
 <body>
 
-<!-- Navbar (Modified for Dashboard) -->
 <nav class="navbar navbar-expand-lg navbar-light navbar-custom fixed-top shadow-sm">
     <div class="container">
         <a class="navbar-brand" onclick="showDashboardHome()">
@@ -698,11 +1091,14 @@
                 <a class="nav-link" onclick="showAvailableItemsFullscreen()">
                     <i class="fa-solid fa-grid"></i> Available Items
                 </a>
+
+                <a class="nav-link" onclick="showSection('exchangeRequests')">
+                    <i class="fa-solid fa-right-left"></i> My Exchanges
+                </a>
                 <a class="nav-link" onclick="showSection('activity')">
                     <i class="fa-solid fa-clock-rotate-left"></i> Activity
                 </a>
 
-                <!-- User Dropdown -->
                 <div class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
                        data-bs-toggle="dropdown" aria-expanded="false">
@@ -717,7 +1113,6 @@
                         <li><a class="dropdown-item" onclick="showDashboardHome()">
                             <i class="fa-solid fa-chart-line me-2"></i>Dashboard Home
                         </a></li>
-                        <!-- Admin Link - Only show if user is admin -->
                         <li id="adminLink" style="display: none;">
                             <a class="dropdown-item" href="/admin">
                                 <i class="fa-solid fa-shield-halved me-2"></i>Admin Panel
@@ -734,7 +1129,6 @@
     </div>
 </nav>
 
-<!-- Dashboard Header -->
 <div class="dashboard-header">
     <div class="container text-center">
         <h1 id="dashboardTitle" style="color: white; text-transform: uppercase; letter-spacing: 2px;">Welcome to Your Dashboard</h1>
@@ -742,11 +1136,8 @@
     </div>
 </div>
 
-<!-- Dashboard Content -->
 <div class="container">
-    <!-- Dashboard Home Section (Default) -->
     <div id="dashboardHome" class="dashboard-section active">
-        <!-- Quick Stats -->
         <div class="row">
             <div class="col-md-3">
                 <div class="stats-card">
@@ -833,7 +1224,6 @@
         </div>
     </div>
 
-    <!-- Profile Section -->
     <div id="profileSection" class="dashboard-section profile-section">
         <div class="profile-header">
             <div class="profile-avatar">
@@ -911,7 +1301,6 @@
         </div>
     </div>
 
-    <!-- My Actions Section -->
     <div id="actionsSection" class="dashboard-section">
         <div class="profile-section">
             <h2>My Actions</h2>
@@ -924,13 +1313,11 @@
         </div>
     </div>
 
-    <!-- My Items Section -->
     <div id="itemsSection" class="dashboard-section">
         <div class="profile-section">
             <h2>My Items</h2>
             <p class="text-muted">Manage items you've listed for donation, exchange, or resale</p>
 
-            <!-- Add Product Form -->
             <div class="card mb-4">
                 <div class="card-header">
                     <h5 class="mb-0"><i class="fa-solid fa-plus me-2"></i>Add New Product</h5>
@@ -984,7 +1371,6 @@
                 </div>
             </div>
 
-            <!-- My Products List -->
             <div class="card">
                 <div class="card-header">
                     <h5 class="mb-0"><i class="fa-solid fa-list me-2"></i>My Products</h5>
@@ -999,14 +1385,36 @@
                         </div>
                     </div>
                     <div id="productsList" class="row">
-                        <!-- Products will be loaded here -->
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Activity Section -->
+    <div id="exchangeRequestsSection" class="dashboard-section">
+        <div class="profile-section">
+            <h2>My Exchange Requests</h2>
+            <p class="text-muted">Manage your exchange requests and track their status</p>
+
+            <div class="mb-4">
+                <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-outline-primary active" onclick="filterMyExchangeRequests('all')">All</button>
+                    <button type="button" class="btn btn-outline-warning" onclick="filterMyExchangeRequests('PENDING')">Pending</button>
+                    <button type="button" class="btn btn-outline-success" onclick="filterMyExchangeRequests('APPROVED')">Approved</button>
+                    <button type="button" class="btn btn-outline-danger" onclick="filterMyExchangeRequests('REJECTED')">Rejected</button>
+                </div>
+            </div>
+
+            <div id="myExchangeRequestsList" class="row">
+                <div class="col-12 text-center py-5">
+                    <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="text-muted mt-3">Loading your exchange requests...</p>
+                </div>
+            </div>
+        </div>
+    </div>
     <div id="activitySection" class="dashboard-section">
         <div class="profile-section">
             <h2>Activity History</h2>
@@ -1020,7 +1428,98 @@
     </div>
 </div>
 
-<!-- Fullscreen Available Items Section -->
+<div class="purchase-overlay" id="purchaseOverlay">
+    <div class="purchase-overlay-content">
+        <div class="purchase-overlay-header">
+            <h2 class="purchase-overlay-title">Complete Your Purchase</h2>
+            <button class="purchase-overlay-close" onclick="closePurchaseForm()">
+                <i class="fa-solid fa-times"></i>
+            </button>
+        </div>
+        <div class="purchase-container">
+            <input type="hidden" id="purchaseProductId" value="">
+
+            <div class="purchase-product-card">
+                <div class="purchase-product-title" id="purchaseProductName">Product Name</div>
+                <div class="purchase-product-price" id="purchasePrice">₹0.00</div>
+                <div class="purchase-product-seller" id="purchaseSeller">Seller: Loading...</div>
+            </div>
+
+            <div class="purchase-form-section">
+                <h3 class="purchase-form-section-title">Your Information</h3>
+                <div class="purchase-form-group">
+                    <label for="fullName" class="purchase-label">Your Full Name *</label>
+                    <input type="text" id="fullName" name="fullName" class="purchase-input" required>
+                </div>
+
+                <div class="purchase-form-group">
+                    <label for="email" class="purchase-label">Your Email *</label>
+                    <input type="email" id="email" name="email" class="purchase-input" required>
+                </div>
+
+                <div class="purchase-form-group">
+                    <label for="phone" class="purchase-label">Phone Number *</label>
+                    <input type="tel" id="phone" name="phone" class="purchase-input" required>
+                </div>
+
+                <div class="purchase-form-group">
+                    <label for="address" class="purchase-label">Shipping Address *</label>
+                    <textarea id="address" name="address" class="purchase-input" rows="3" required></textarea>
+                </div>
+            </div>
+
+            <div class="purchase-form-section">
+                <h3 class="purchase-form-section-title">Payment Method</h3>
+                <div class="purchase-payment-options">
+                    <div class="purchase-payment-btn" id="purchaseUpiOption">
+                        <div class="purchase-payment-icon">
+                            <i class="fa-solid fa-mobile-screen"></i>
+                        </div>
+                        <div class="purchase-payment-text">
+                            <div class="purchase-payment-name">UPI</div>
+                            <div class="purchase-payment-desc">Save upto ₹1,000 - 12 offers available</div>
+                        </div>
+                    </div>
+
+                    <div class="purchase-payment-btn" id="purchaseCardOption">
+                        <div class="purchase-payment-icon">
+                            <i class="fa-solid fa-credit-card"></i>
+                        </div>
+                        <div class="purchase-payment-text">
+                            <div class="purchase-payment-name">Credit / Debit / ATM Card</div>
+                            <div class="purchase-payment-desc">Save with multiple card options</div>
+                        </div>
+                    </div>
+
+                    <div class="purchase-payment-btn" id="purchaseNetbankingOption">
+                        <div class="purchase-payment-icon">
+                            <i class="fa-solid fa-building-columns"></i>
+                        </div>
+                        <div class="purchase-payment-text">
+                            <div class="purchase-payment-name">Net Banking</div>
+                            <div class="purchase-payment-desc">Pay directly from your bank account</div>
+                        </div>
+                    </div>
+
+                    <div class="purchase-payment-btn" id="purchaseCodOption">
+                        <div class="purchase-payment-icon">
+                            <i class="fa-solid fa-money-bill-wave"></i>
+                        </div>
+                        <div class="purchase-payment-text">
+                            <div class="purchase-payment-name">Cash on Delivery (COD)</div>
+                            <div class="purchase-payment-desc">Pay when you receive your order</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="purchase-action-buttons">
+                <button type="button" class="purchase-btn purchase-btn-cancel" id="purchaseCancel">Cancel</button>
+                <button type="button" class="purchase-btn purchase-btn-complete" id="purchaseComplete">Complete Purchase</button>
+            </div>
+        </div>
+    </div>
+</div>
 <div id="fullscreenAvailableItems" class="fullscreen-available-items">
     <div class="fullscreen-header">
         <div class="container">
@@ -1039,7 +1538,6 @@
 
     <div class="fullscreen-content">
         <div class="container">
-            <!-- Enhanced Filter Controls -->
             <div class="fullscreen-filters">
                 <div class="row align-items-center">
                     <div class="col-md-3">
@@ -1078,9 +1576,7 @@
                 </div>
             </div>
 
-            <!-- Available Items Grid -->
             <div id="fullscreenAvailableItemsList" class="row">
-                <!-- Items will be loaded here -->
                 <div class="col-12 text-center py-5">
                     <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
                         <span class="visually-hidden">Loading...</span>
@@ -1092,7 +1588,6 @@
     </div>
 </div>
 
-<!-- Product Detail Modal -->
 <div class="modal fade product-detail-modal" id="productDetailModal" tabindex="-1" aria-labelledby="productDetailModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -1102,7 +1597,6 @@
             </div>
             <div class="modal-body">
                 <div id="productDetailContent">
-                    <!-- Product details will be loaded here -->
                 </div>
             </div>
             <div class="modal-footer">
@@ -1110,12 +1604,100 @@
                 <button type="button" class="btn btn-primary" onclick="contactSellerFromModal()">
                     <i class="fa-solid fa-message me-2"></i>Contact Seller
                 </button>
+                <button type="button" class="btn btn-outline-warning" id="modalExchangeButton" onclick="exchangeFromModal()" style="display: none;">
+                    <i class="fa-solid fa-right-left me-2"></i>Request Exchange
+                </button>
+                <button type="button" class="btn btn-success" onclick="buyNowFromModal()">
+                    <i class="fa-solid fa-cart-shopping me-2"></i>Buy Now
+                </button>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Amazon-style footer -->
+<div class="modal fade exchange-request-modal" id="exchangeRequestModal" tabindex="-1" aria-labelledby="exchangeRequestModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exchangeRequestModalLabel">Exchange Request</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-info">
+                    <i class="fa-solid fa-info-circle me-2"></i>
+                    Please provide details about the item you want to exchange.
+                </div>
+
+                <form id="exchangeRequestForm">
+                    <input type="hidden" id="targetProductId">
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="exchangeItemName" class="form-label">Item Name *</label>
+                                <input type="text" class="form-control" id="exchangeItemName" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="exchangeItemCategory" class="form-label">Category *</label>
+                                <select class="form-select" id="exchangeItemCategory" required>
+                                    <option value="">Select Category</option>
+                                    <option value="Electronics">Electronics</option>
+                                    <option value="Clothing">Clothing</option>
+                                    <option value="Books">Books</option>
+                                    <option value="Furniture">Furniture</option>
+                                    <option value="Home Appliances">Home Appliances</option>
+                                    <option value="Sports">Sports</option>
+                                    <option value="Toys">Toys</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="exchangeItemImage" class="form-label">Item Image *</label>
+                                <input type="file" class="form-control" id="exchangeItemImage" accept="image/*" required>
+                                <div class="form-text">Upload a clear image of your exchange item</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="exchangeItemDescription" class="form-label">Description *</label>
+                                <textarea class="form-control" id="exchangeItemDescription" rows="8" placeholder="Describe your item in detail..." required></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="exchangeMessage" class="form-label">Additional Message (Optional)</label>
+                        <textarea class="form-control" id="exchangeMessage" rows="3" placeholder="Add any additional information for the seller..."></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-warning" onclick="submitExchangeRequest()">
+                    <i class="fa-solid fa-paper-plane me-2"></i>Submit Exchange Request
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="exchangeDetailModal" tabindex="-1" aria-labelledby="exchangeDetailModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exchangeDetailModalLabel">Exchange Request Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="exchangeDetailContent">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 <section class="amazon-footer">
     <div class="container">
         <div class="row text-start">
@@ -1160,7 +1742,6 @@
     </div>
 </section>
 
-<!-- Original Footer -->
 <footer class="text-center">
     <div class="container">
         <p>© 2025 Care & Share. All rights reserved.</p>
@@ -1177,6 +1758,11 @@
 <script>
     // Global variable to store current product details
     let currentProductDetails = null;
+
+    // --- ADDED FROM CODE 2 ---
+    let currentExchangeProductId = null;
+    let currentExchangeRequests = [];
+    // --- END ADD ---
 
     // Function to show dashboard home
     function showDashboardHome() {
@@ -1229,6 +1815,16 @@
                 updateDashboardHeader('My Items', 'Manage items you\'ve listed for donation, exchange, or resale');
                 loadMyProducts();
                 break;
+
+            // --- ADDED FROM CODE 2 ---
+            case 'exchangeRequests':
+                document.getElementById('exchangeRequestsSection').classList.add('active');
+                updateNavActiveState('exchangeRequests');
+                updateDashboardHeader('My Exchange Requests', 'Manage your exchange requests and track their status');
+                loadMyExchangeRequests();
+                break;
+            // --- END ADD ---
+
             case 'activity':
                 document.getElementById('activitySection').classList.add('active');
                 updateNavActiveState('activity');
@@ -1236,6 +1832,28 @@
                 break;
         }
     }
+
+    // --- FROM CODE 1: Purchase Form Functions ---
+    // Function to show purchase form with product details
+    function showPurchaseForm(productId, productName = 'Product Name', seller = 'Seller Name', price = '₹0.00') {
+        // Update product details in purchase form
+        document.getElementById('purchaseProductId').value = productId;
+        document.getElementById('purchaseProductName').textContent = productName;
+        document.getElementById('purchaseSeller').textContent = `Seller: ${seller}`;
+        document.getElementById('purchasePrice').textContent = price;
+
+        // Show purchase overlay
+        document.getElementById('purchaseOverlay').classList.add('active');
+        document.body.style.overflow = 'hidden'; // Prevent scrolling
+    }
+
+    // Function to close purchase form
+    function closePurchaseForm() {
+        document.getElementById('purchaseOverlay').classList.remove('active');
+        document.body.style.overflow = ''; // Restore scrolling
+    }
+    // --- END PURCHASE FORM FUNCTIONS ---
+
 
     // Function to show fullscreen available items
     function showAvailableItemsFullscreen() {
@@ -1474,6 +2092,7 @@
         }
     }
 
+    // --- MERGED FUNCTION ---
     function displayFullscreenAvailableItems(products) {
         const container = document.getElementById('fullscreenAvailableItemsList');
         const countElement = document.getElementById('fullscreenItemsCount');
@@ -1530,13 +2149,24 @@
                                 <button class="btn btn-primary btn-sm" onclick="contactSeller(${product.id})">
                                     <i class="fa-solid fa-message me-1"></i> Contact Seller
                                 </button>
+
+                                ${product.type === 'Exchange' ? `
+                                <button class="btn btn-outline-warning btn-sm" onclick="openExchangeRequest(${product.id})">
+                                    <i class="fa-solid fa-right-left me-1"></i> Exchange Request
+                                </button>
+                                ` : ''}
+                                <button class="btn btn-success btn-sm" onclick="buyNow(${product.id}, '${product.name}', '${product.user ? (product.user.firstName + ' ' + (product.user.lastName || '')) : 'Seller'}', '₹${product.price}')">
+                                    <i class="fa-solid fa-cart-shopping me-1"></i> Buy Now
+                                </button>
                             </div>
-                        </div>
+                            </div>
                     </div>
                 </div>
             </div>
         `).join('');
     }
+    // --- END MERGED FUNCTION ---
+
 
     function getTypeBadgeClass(type) {
         switch(type) {
@@ -1685,6 +2315,15 @@
 
         // Update modal title
         document.getElementById('productDetailModalLabel').textContent = product.name;
+
+        // --- ADDED: Show/hide modal exchange button ---
+        const exchangeBtn = document.getElementById('modalExchangeButton');
+        if (product.type === 'Exchange') {
+            exchangeBtn.style.display = 'inline-block';
+        } else {
+            exchangeBtn.style.display = 'none';
+        }
+        // --- END ADD ---
     }
 
     function contactSeller(productId) {
@@ -1697,6 +2336,518 @@
             contactSeller(currentProductDetails.id);
         }
     }
+
+    // --- FROM CODE 1: Buy Now Functions ---
+    // Buy Now function - shows purchase form
+    function buyNow(productId, productName = 'Product Name', seller = 'Seller Name', price = '₹0.00') {
+        // Set current product details
+        if (productId) {
+            // Fetch and set the full product details
+            const token = localStorage.getItem('jwtToken');
+            fetch(`/api/products/${productId}`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': 'Bearer ' + token,
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Product not found');
+                }
+                return response.json();
+            })
+            .then(product => {
+                currentProductDetails = product;
+                // Show the purchase form with product details
+                showPurchaseForm(productId, productName, seller, price);
+            })
+            .catch(error => {
+                console.error('Error loading product details:', error);
+                // Fallback: create a minimal product object
+                currentProductDetails = {
+                    id: productId,
+                    name: productName,
+                    price: parseFloat(price.replace('₹', '')),
+                    user: { firstName: seller.split(' ')[0], lastName: seller.split(' ')[1] || '' }
+                };
+                showPurchaseForm(productId, productName, seller, price);
+            });
+        } else {
+            // If no productId provided, set a minimal object
+            currentProductDetails = {
+                id: null,
+                name: productName,
+                price: parseFloat(price.replace('₹', '') || 0),
+                user: { firstName: seller, lastName: '' }
+            };
+            showPurchaseForm(null, productName, seller, price);
+        }
+    }
+
+    function buyNowFromModal() {
+        if (currentProductDetails) {
+            buyNow(
+                currentProductDetails.id,
+                currentProductDetails.name,
+                currentProductDetails.user ? (currentProductDetails.user.firstName + ' ' + (currentProductDetails.user.lastName || '')) : 'Seller',
+                '₹' + currentProductDetails.price
+            );
+        } else {
+            // Show error if no product details available
+            alert('Please view product details first before purchasing.');
+        }
+    }
+
+    // --- ADDED: Function for modal exchange button ---
+    function exchangeFromModal() {
+        if (currentProductDetails) {
+            openExchangeRequest(currentProductDetails.id);
+            // Hide the product detail modal
+            const productModal = bootstrap.Modal.getInstance(document.getElementById('productDetailModal'));
+            if (productModal) {
+                productModal.hide();
+            }
+        } else {
+            alert('Error: Product details not loaded.');
+        }
+    }
+    // --- END ADD ---
+
+
+    // Function to submit purchase
+    function submitPurchase(fullName, email, phone, address, paymentMethod) {
+        const token = localStorage.getItem('jwtToken');
+        const productId = document.getElementById('purchaseProductId').value;
+
+        if (!productId) {
+            alert('Product information is missing');
+            return;
+        }
+
+        const purchaseData = {
+            productId: productId,
+            fullName: fullName,
+            email: email,
+            phone: phone,
+            shippingAddress: address,
+            paymentMethod: paymentMethod
+        };
+
+        fetch('/api/purchases/create', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token
+            },
+            body: JSON.stringify(purchaseData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert(data.message);
+                closePurchaseForm();
+                // Optionally refresh the available items
+                if (document.body.classList.contains('fullscreen-available')) {
+                    loadFullscreenAvailableItems();
+                }
+            } else {
+                alert('Error: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Failed to complete purchase. Please try again.');
+        });
+    }
+
+    // Initialize purchase form functionality
+    function initializePurchaseForm() {
+        // Payment method selection
+        const upiOption = document.getElementById('purchaseUpiOption');
+        const cardOption = document.getElementById('purchaseCardOption');
+        const netbankingOption = document.getElementById('purchaseNetbankingOption');
+        const codOption = document.getElementById('purchaseCodOption');
+
+        if (upiOption && cardOption && netbankingOption && codOption) {
+            // Function to handle payment option selection
+            function selectPaymentOption(selectedOption) {
+                [upiOption, cardOption, netbankingOption, codOption].forEach(option => {
+                    option.classList.remove('active');
+                });
+                selectedOption.classList.add('active');
+            }
+
+            upiOption.addEventListener('click', function() {
+                selectPaymentOption(upiOption);
+            });
+
+            cardOption.addEventListener('click', function() {
+                selectPaymentOption(cardOption);
+            });
+
+            netbankingOption.addEventListener('click', function() {
+                selectPaymentOption(netbankingOption);
+            });
+
+            codOption.addEventListener('click', function() {
+                selectPaymentOption(codOption);
+            });
+
+            // Set default payment method
+            upiOption.classList.add('active');
+
+            // Form submission
+            const completeButton = document.getElementById('purchaseComplete');
+            if (completeButton) {
+                completeButton.addEventListener('click', function() {
+                    const fullName = document.getElementById('fullName').value;
+                    const email = document.getElementById('email').value;
+                    const phone = document.getElementById('phone').value;
+                    const address = document.getElementById('address').value;
+
+                    if (!fullName || !email || !phone || !address) {
+                        alert('Please fill in all required fields');
+                        return;
+                    }
+
+                    // Get selected payment method
+                    let paymentMethod = '';
+                    if (upiOption.classList.contains('active')) paymentMethod = 'UPI';
+                    else if (cardOption.classList.contains('active')) paymentMethod = 'Card';
+                    else if (netbankingOption.classList.contains('active')) paymentMethod = 'Net Banking';
+                    else if (codOption.classList.contains('active')) paymentMethod = 'COD';
+
+                    if (!paymentMethod) {
+                        alert('Please select a payment method');
+                        return;
+                    }
+
+                    submitPurchase(fullName, email, phone, address, paymentMethod);
+                });
+            }
+
+            // Cancel button
+            const cancelButton = document.getElementById('purchaseCancel');
+            if (cancelButton) {
+                cancelButton.addEventListener('click', function() {
+                    if(confirm('Are you sure you want to cancel this purchase?')) {
+                        closePurchaseForm();
+                    }
+                });
+            }
+        }
+    }
+    // --- END PURCHASE FUNCTIONS ---
+
+
+    // --- ADDED FROM CODE 2: EXCHANGE FUNCTIONS ---
+    // Exchange Request Functions
+    function openExchangeRequest(productId) {
+        currentExchangeProductId = productId;
+        document.getElementById('targetProductId').value = productId;
+        document.getElementById('exchangeRequestForm').reset();
+
+        const modal = new bootstrap.Modal(document.getElementById('exchangeRequestModal'));
+        modal.show();
+    }
+
+    function submitExchangeRequest() {
+        // Validate form before submission
+        const itemName = document.getElementById('exchangeItemName').value;
+        const category = document.getElementById('exchangeItemCategory').value;
+        const description = document.getElementById('exchangeItemDescription').value;
+        const imageFile = document.getElementById('exchangeItemImage').files[0];
+
+        if (!itemName || !category || !description || !imageFile) {
+            alert('Please fill in all required fields including the image.');
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('targetProductId', currentExchangeProductId);
+        formData.append('itemName', itemName);
+        formData.append('category', category);
+        formData.append('description', description);
+        formData.append('additionalMessage', document.getElementById('exchangeMessage').value);
+        formData.append('image', imageFile);
+
+        const token = localStorage.getItem('jwtToken');
+
+        // Show loading state
+        const submitBtn = document.querySelector('#exchangeRequestModal .btn-warning');
+        const originalText = submitBtn.innerHTML;
+        submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-2"></i>Submitting...';
+        submitBtn.disabled = true;
+
+        fetch('/api/exchange-requests/submit', {
+            method: 'POST',
+            headers: {
+                'Authorization': 'Bearer ' + token
+            },
+            body: formData
+        })
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(data => {
+                    throw new Error(data.message || 'Failed to submit exchange request');
+                });
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.message) {
+                alert('Exchange request submitted successfully! It will be reviewed by admin.');
+                const modal = bootstrap.Modal.getInstance(document.getElementById('exchangeRequestModal'));
+                modal.hide();
+                document.getElementById('exchangeRequestForm').reset();
+                loadMyExchangeRequests();
+            } else {
+                throw new Error(data.message || 'Unknown error occurred');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error submitting exchange request: ' + error.message);
+        })
+        .finally(() => {
+            // Restore button state
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+        });
+    }
+
+    // My Exchange Requests Functions
+    function loadMyExchangeRequests(status = 'all') {
+        const token = localStorage.getItem('jwtToken');
+        let url = '/api/exchange-requests/my-requests';
+
+        if (status !== 'all') {
+            url += `?status=${status}`;
+        }
+
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + token,
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to fetch exchange requests');
+            }
+            return response.json();
+        })
+        .then(requests => {
+            currentExchangeRequests = requests;
+            displayMyExchangeRequests(requests);
+        })
+        .catch(error => {
+            console.error('Error loading exchange requests:', error);
+            document.getElementById('myExchangeRequestsList').innerHTML = `
+                <div class="col-12 text-center py-5">
+                    <i class="fa-solid fa-exclamation-triangle fa-2x text-muted mb-3"></i>
+                    <p class="text-muted">Failed to load exchange requests</p>
+                    <button class="btn btn-primary mt-2" onclick="loadMyExchangeRequests()">
+                        <i class="fa-solid fa-refresh me-2"></i>Try Again
+                    </button>
+                </div>
+            `;
+        });
+    }
+
+    function displayMyExchangeRequests(requests) {
+        const container = document.getElementById('myExchangeRequestsList');
+
+        if (requests.length === 0) {
+            container.innerHTML = `
+                <div class="col-12 text-center py-5">
+                    <i class="fa-solid fa-inbox fa-3x text-muted mb-3"></i>
+                    <p class="text-muted">No exchange requests found</p>
+                    <p class="text-muted small">You haven't submitted any exchange requests yet</p>
+                </div>
+            `;
+            return;
+        }
+
+        container.innerHTML = requests.map(request => `
+            <div class="col-md-6 mb-4">
+                <div class="card h-100 exchange-request-card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <img src="${request.exchangeItemImage || 'https://via.placeholder.com/150x150?text=No+Image'}"
+                                     class="img-fluid rounded" alt="${request.exchangeItemName}"
+                                     style="height: 120px; object-fit: cover;">
+                            </div>
+                            <div class="col-md-8">
+                                <h5 class="card-title">${request.exchangeItemName}</h5>
+                                <p class="card-text small">${request.exchangeItemDescription || 'No description'}</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="badge bg-secondary">${request.exchangeItemCategory}</span>
+                                    <span class="badge ${getExchangeStatusBadgeClass(request.status)}">
+                                        ${request.status}
+                                    </span>
+                                </div>
+                                <div class="mt-2">
+                                    <small class="text-muted">
+                                        Target: ${request.targetProduct?.name || 'N/A'}
+                                    </small>
+                                </div>
+                                <div class="mt-2">
+                                    <small class="text-muted">
+                                        Submitted: ${request.createdAt ? new Date(request.createdAt).toLocaleDateString() : 'N/A'}
+                                    </small>
+                                </div>
+                                ${request.rejectionReason ? `
+                                    <div class="mt-2">
+                                        <small class="text-danger">
+                                            <strong>Rejection Reason:</strong> ${request.rejectionReason}
+                                        </small>
+                                    </div>
+                                ` : ''}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-transparent">
+                        <button class="btn btn-sm btn-outline-primary" onclick="viewMyExchangeDetails(${request.id})">
+                            <i class="fa-solid fa-eye me-1"></i> View Details
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function getExchangeStatusBadgeClass(status) {
+        switch(status) {
+            case 'PENDING': return 'bg-warning';
+            case 'APPROVED': return 'bg-success';
+            case 'REJECTED': return 'bg-danger';
+            default: return 'bg-secondary';
+        }
+    }
+
+    function filterMyExchangeRequests(status) {
+        // Update active button
+        document.querySelectorAll('#exchangeRequestsSection .btn-group .btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        event.target.classList.add('active');
+
+        loadMyExchangeRequests(status);
+    }
+
+    function viewMyExchangeDetails(requestId) {
+        const request = currentExchangeRequests.find(req => req.id === requestId);
+        if (!request) return;
+
+        const modalContent = document.getElementById('exchangeDetailContent');
+        modalContent.innerHTML = `
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Your Exchange Item</h5>
+                    <div class="card mb-3">
+                        <img src="${request.exchangeItemImage || 'https://via.placeholder.com/300x200?text=No+Image'}"
+                             class="card-img-top" alt="${request.exchangeItemName}" style="height: 200px; object-fit: cover;">
+                        <div class="card-body">
+                            <h6 class="card-title">${request.exchangeItemName}</h6>
+                            <p class="card-text">${request.exchangeItemDescription || 'No description available'}</p>
+                            <div class="d-flex justify-content-between">
+                                <span class="badge bg-secondary">${request.exchangeItemCategory}</span>
+                                <span class="badge ${getExchangeStatusBadgeClass(request.status)}">${request.status}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <h5>Target Product</h5>
+                    <div class="card mb-3">
+                        <img src="${request.targetProduct?.imagePath || 'https://via.placeholder.com/300x200?text=No+Image'}"
+                             class="card-img-top" alt="${request.targetProduct?.name}" style="height: 200px; object-fit: cover;">
+                        <div class="card-body">
+                            <h6 class="card-title">${request.targetProduct?.name || 'N/A'}</h6>
+                            <p class="card-text">${request.targetProduct?.description || 'No description available'}</p>
+                            <div class="d-flex justify-content-between">
+                                <span class="badge bg-secondary">${request.targetProduct?.category || 'N/A'}</span>
+                                <span class="text-primary fw-bold">₹${request.targetProduct?.price || '0'}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-3">
+                <div class="col-12">
+                    <h5>Request Information</h5>
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p><strong>Request Date:</strong> ${request.createdAt ? new Date(request.createdAt).toLocaleString() : 'N/A'}</p>
+                                    <p><strong>Status:</strong> <span class="badge ${getExchangeStatusBadgeClass(request.status)}">${request.status}</span></p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p><strong>Target Product Owner:</strong> ${request.targetProduct?.user?.firstName || 'User'} ${request.targetProduct?.user?.lastName || ''}</p>
+                                    <p><strong>Category:</strong> ${request.exchangeItemCategory}</p>
+                                </div>
+                            </div>
+                            ${request.additionalMessage ? `
+                                <div class="mt-3">
+                                    <strong>Additional Message:</strong>
+                                    <p class="mt-1">${request.additionalMessage}</p>
+                                </div>
+                            ` : ''}
+                            ${request.rejectionReason ? `
+                                <div class="mt-3">
+                                    <strong>Rejection Reason:</strong>
+                                    <p class="mt-1 text-danger">${request.rejectionReason}</p>
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        const modal = new bootstrap.Modal(document.getElementById('exchangeDetailModal'));
+        modal.show();
+    }
+    // --- END ADD ---
+
+
+    // --- FROM CODE 1: "NEW" Functions (Kept for compatibility) ---
+    // After purchase is successful
+    function handlePurchaseSuccess(response) {
+        // Show immediate success popup (FAST)
+        showSuccessPopup("Purchase completed! Product removed.");
+
+        // Remove the purchased product from UI immediately
+        removeProductFromUI(response.productId);
+
+        // Or refresh the entire product list to show only available items
+        loadAvailableProducts();
+    }
+
+    function removeProductFromUI(productId) {
+        // Remove product card from DOM
+        const productCard = document.querySelector(`[data-product-id="${productId}"]`);
+        if (productCard) {
+            productCard.remove();
+        }
+    }
+
+    function loadAvailableProducts() {
+        // Fetch only available (APPROVED) products
+        fetch('/api/products?status=APPROVED')
+            .then(response => response.json())
+            .then(products => {
+                renderProducts(products); // Note: renderProducts is not defined in the provided code, assuming it exists.
+            });
+    }
+    // --- END "NEW" Functions ---
+
 
     // Initialize product form
     document.addEventListener('DOMContentLoaded', function() {
@@ -1712,7 +2863,29 @@
             if (section === 'items') {
                 loadMyProducts();
             }
+            // --- ADDED ---
+            else if (section === 'exchangeRequests') {
+                loadMyExchangeRequests();
+            }
+            // --- END ADD ---
         };
+
+        // Initialize purchase form (From Code 1)
+        initializePurchaseForm();
+
+        // Close purchase form when clicking outside (From Code 1)
+        document.getElementById('purchaseOverlay').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closePurchaseForm();
+            }
+        });
+
+        // Close purchase form with Escape key (From Code 1)
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && document.getElementById('purchaseOverlay').classList.contains('active')) {
+                closePurchaseForm();
+            }
+        });
     });
 
     // Function to update active nav state
@@ -1735,8 +2908,16 @@
             case 'available':
                 navLinks[3].classList.add('active');
                 break;
-            case 'activity':
+
+            // --- ADDED ---
+            case 'exchangeRequests':
                 navLinks[4].classList.add('active');
+                break;
+            // --- END ADD ---
+
+            case 'activity':
+                // --- MODIFIED INDEX ---
+                navLinks[5].classList.add('active');
                 break;
             case 'profile':
                 break;
