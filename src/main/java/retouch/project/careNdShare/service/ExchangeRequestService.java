@@ -15,6 +15,7 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -71,30 +72,11 @@ public class ExchangeRequestService {
     }
 
     public List<ExchangeRequest> getAllExchangeRequests(String status) {
-        List<ExchangeRequest> exchangeRequests;
-
+        // Use the repository method that already handles eager loading
         if (status != null && !status.equals("all")) {
-            exchangeRequests = exchangeRequestRepository.findByStatus(status);
-        } else {
-            exchangeRequests = exchangeRequestRepository.findAll();
+            return exchangeRequestRepository.findAllWithUsersAndProducts(status);
         }
-
-        // Force initialization of lazy-loaded relationships to prevent JSON serialization issues
-        for (ExchangeRequest request : exchangeRequests) {
-            // This forces Hibernate to load the relationships immediately
-            if (request.getRequester() != null) {
-                request.getRequester().getFirstName(); // Access field to force load
-                request.getRequester().getEmail();
-            }
-            if (request.getTargetProduct() != null) {
-                request.getTargetProduct().getName(); // Access field to force load
-                if (request.getTargetProduct().getUser() != null) {
-                    request.getTargetProduct().getUser().getFirstName(); // Access field to force load
-                }
-            }
-        }
-
-        return exchangeRequests;
+        return exchangeRequestRepository.findAllWithUsersAndProducts(null);
     }
 
     public long getExchangeRequestCount(String status) {
@@ -136,5 +118,15 @@ public class ExchangeRequestService {
 
     public List<ExchangeRequest> getPendingExchangeRequests() {
         return exchangeRequestRepository.findByStatus("PENDING");
+    }
+
+    // Add the missing findById method
+    public Optional<ExchangeRequest> findById(Long id) {
+        return exchangeRequestRepository.findById(id);
+    }
+
+    // Add save method if not already present (it seems to be used in your controller)
+    public ExchangeRequest save(ExchangeRequest exchangeRequest) {
+        return exchangeRequestRepository.save(exchangeRequest);
     }
 }

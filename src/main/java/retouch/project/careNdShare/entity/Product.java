@@ -47,14 +47,9 @@ public class Product {
     @Column(name = "product_type")
     private String productType;
 
-    // Don't forget getters and setters
-    public String getProductType() {
-        return productType;
-    }
-
-    public void setProductType(String productType) {
-        this.productType = productType;
-    }
+    // Add condition field - escape with backticks in column name
+    @Column(name = "`condition`", nullable = false)
+    private String condition = "Good"; // New, Like New, Good, Fair, Poor
 
     private LocalDateTime approvedAt;
     private LocalDateTime rejectedAt;
@@ -75,6 +70,19 @@ public class Product {
         this.description = description;
         this.imagePath = imagePath;
         this.user = user;
+    }
+
+    // Updated constructor with condition
+    public Product(String name, Double price, String category, String type, String description, String imagePath, User user, String condition) {
+        this();
+        this.name = name;
+        this.price = price;
+        this.category = category;
+        this.type = type;
+        this.description = description;
+        this.imagePath = imagePath;
+        this.user = user;
+        this.condition = condition;
     }
 
     // Getters and Setters
@@ -107,6 +115,24 @@ public class Product {
 
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+
+    // Don't forget getters and setters
+    public String getProductType() {
+        return productType;
+    }
+
+    public void setProductType(String productType) {
+        this.productType = productType;
+    }
+
+    // Add condition getter and setter
+    public String getCondition() {
+        return condition;
+    }
+
+    public void setCondition(String condition) {
+        this.condition = condition;
+    }
 
     public LocalDateTime getApprovedAt() { return approvedAt; }
     public void setApprovedAt(LocalDateTime approvedAt) { this.approvedAt = approvedAt; }

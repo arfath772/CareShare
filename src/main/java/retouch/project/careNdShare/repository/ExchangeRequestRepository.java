@@ -15,6 +15,10 @@ public interface ExchangeRequestRepository extends JpaRepository<ExchangeRequest
     List<ExchangeRequest> findByStatus(String status);
     long countByStatus(String status);
 
+    // Find exchange requests by product owner
+    List<ExchangeRequest> findByTargetProductUserId(Long ownerId);
+    List<ExchangeRequest> findByTargetProductUserIdAndStatus(Long ownerId, String status);
+
     // Custom query to fetch exchange requests with eager loading of relationships
     @Query("SELECT er FROM ExchangeRequest er " +
             "LEFT JOIN FETCH er.requester " +
@@ -32,4 +36,13 @@ public interface ExchangeRequestRepository extends JpaRepository<ExchangeRequest
             "WHERE er.requester.id = :requesterId AND (:status IS NULL OR er.status = :status) " +
             "ORDER BY er.createdAt DESC")
     List<ExchangeRequest> findByRequesterIdWithDetails(@Param("requesterId") Long requesterId, @Param("status") String status);
+
+    // Custom query for product owner requests with eager loading
+    @Query("SELECT er FROM ExchangeRequest er " +
+            "LEFT JOIN FETCH er.requester " +
+            "LEFT JOIN FETCH er.targetProduct tp " +
+            "LEFT JOIN FETCH tp.user " +
+            "WHERE tp.user.id = :ownerId AND (:status IS NULL OR er.status = :status) " +
+            "ORDER BY er.createdAt DESC")
+    List<ExchangeRequest> findByTargetProductUserIdWithDetails(@Param("ownerId") Long ownerId, @Param("status") String status);
 }

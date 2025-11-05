@@ -1027,6 +1027,81 @@
         }
         /* --- END PURCHASE FORM STYLES --- */
 
+        /* Notification System */
+        .notification-container {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            z-index: 9999;
+            max-width: 400px;
+        }
+
+        .notification {
+            background: white;
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin-bottom: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            border-left: 4px solid var(--primary-color);
+            display: flex;
+            align-items: center;
+            animation: slideInRight 0.3s ease;
+            transition: all 0.3s ease;
+        }
+
+        .notification.success {
+            border-left-color: #28a745;
+            background: #f8fff9;
+        }
+
+        .notification.error {
+            border-left-color: #dc3545;
+            background: #fff5f5;
+        }
+
+        .notification.warning {
+            border-left-color: #ffc107;
+            background: #fffbf0;
+        }
+
+        .notification.info {
+            border-left-color: var(--primary-color);
+            background: #f0f7ff;
+        }
+
+        .notification-icon {
+            margin-right: 12px;
+            font-size: 1.2rem;
+        }
+
+        .notification-content {
+            flex: 1;
+        }
+
+        .notification-close {
+            background: none;
+            border: none;
+            font-size: 1.1rem;
+            cursor: pointer;
+            color: #666;
+            margin-left: 10px;
+            transition: color 0.3s ease;
+        }
+
+        .notification-close:hover {
+            color: #333;
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
 
         @media (max-width: 768px) {
              .dashboard-header {
@@ -1063,10 +1138,18 @@
              .purchase-overlay-content {
                  max-height: 95vh;
              }
+             .notification-container {
+                 right: 10px;
+                 left: 10px;
+                 max-width: none;
+             }
         }
     </style>
 </head>
 <body>
+
+<!-- Notification Container -->
+<div class="notification-container" id="notificationContainer"></div>
 
 <nav class="navbar navbar-expand-lg navbar-light navbar-custom fixed-top shadow-sm">
     <div class="container">
@@ -1090,10 +1173,6 @@
                 </a>
                 <a class="nav-link" onclick="showAvailableItemsFullscreen()">
                     <i class="fa-solid fa-grid"></i> Available Items
-                </a>
-
-                <a class="nav-link" onclick="showSection('exchangeRequests')">
-                    <i class="fa-solid fa-right-left"></i> My Exchanges
                 </a>
                 <a class="nav-link" onclick="showSection('activity')">
                     <i class="fa-solid fa-clock-rotate-left"></i> Activity
@@ -1172,7 +1251,7 @@
                         <i class="fa-solid fa-star"></i>
                     </div>
                     <div class="stats-number" id="rating">4.8</div>
-                    <div class="stats-label">Your Rating</div>
+                    <div class="stats-label">User Rating</div>
                 </div>
             </div>
         </div>
@@ -1197,10 +1276,10 @@
                     <a class="action-btn" onclick="showSection('actions')">
                         <i class="fa-solid fa-hand-holding-heart me-2"></i><span>Donate Items</span>
                     </a>
-                    <a class="action-btn" onclick="showAvailableItemsFullscreen()">
-                        <i class="fa-solid fa-grid me-2"></i><span>Browse All Items</span>
+                    <a class="action-btn" onclick="showAvailableItemsFullscreen('exchange')">
+                        <i class="fa-solid fa-right-left me-2"></i><span>Exchange Items</span>
                     </a>
-                    <a class="action-btn" onclick="showSection('actions')">
+                    <a class="action-btn" onclick="showAvailableItemsFullscreen('resell')">
                         <i class="fa-solid fa-tag me-2"></i><span>Resell Items</span>
                     </a>
                 </div>
@@ -1231,6 +1310,7 @@
             </div>
             <h2>My Profile</h2>
             <p class="text-muted">Manage your personal information</p>
+            <div id="accountTypeBadge" class="badge bg-success">Verified Member</div>
         </div>
 
         <div class="row">
@@ -1346,7 +1426,7 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="productType" class="form-label">Listing Type *</label>
-                                    <select class="form-select" id="productType" required>
+                                    <select class="form-select" id="productType" required onchange="handleListingTypeChange()">
                                         <option value="">Select Type</option>
                                         <option value="Donate">Donate</option>
                                         <option value="Exchange">Exchange</option>
@@ -1391,30 +1471,6 @@
         </div>
     </div>
 
-    <div id="exchangeRequestsSection" class="dashboard-section">
-        <div class="profile-section">
-            <h2>My Exchange Requests</h2>
-            <p class="text-muted">Manage your exchange requests and track their status</p>
-
-            <div class="mb-4">
-                <div class="btn-group" role="group">
-                    <button type="button" class="btn btn-outline-primary active" onclick="filterMyExchangeRequests('all')">All</button>
-                    <button type="button" class="btn btn-outline-warning" onclick="filterMyExchangeRequests('PENDING')">Pending</button>
-                    <button type="button" class="btn btn-outline-success" onclick="filterMyExchangeRequests('APPROVED')">Approved</button>
-                    <button type="button" class="btn btn-outline-danger" onclick="filterMyExchangeRequests('REJECTED')">Rejected</button>
-                </div>
-            </div>
-
-            <div id="myExchangeRequestsList" class="row">
-                <div class="col-12 text-center py-5">
-                    <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
-                        <span class="visually-hidden">Loading...</span>
-                    </div>
-                    <p class="text-muted mt-3">Loading your exchange requests...</p>
-                </div>
-            </div>
-        </div>
-    </div>
     <div id="activitySection" class="dashboard-section">
         <div class="profile-section">
             <h2>Activity History</h2>
@@ -1520,12 +1576,13 @@
         </div>
     </div>
 </div>
+
 <div id="fullscreenAvailableItems" class="fullscreen-available-items">
     <div class="fullscreen-header">
         <div class="container">
             <div class="row align-items-center">
                 <div class="col">
-                    <h1 class="fullscreen-title">Available Items Marketplace</h1>
+                    <h1 class="fullscreen-title" id="fullscreenTitle">Available Items Marketplace</h1>
                 </div>
                 <div class="col-auto">
                     <button class="close-fullscreen" onclick="closeFullscreenAvailableItems()">
@@ -1607,7 +1664,7 @@
                 <button type="button" class="btn btn-outline-warning" id="modalExchangeButton" onclick="exchangeFromModal()" style="display: none;">
                     <i class="fa-solid fa-right-left me-2"></i>Request Exchange
                 </button>
-                <button type="button" class="btn btn-success" onclick="buyNowFromModal()">
+                <button type="button" class="btn btn-success" id="modalBuyButton" onclick="buyNowFromModal()" style="display: none;">
                     <i class="fa-solid fa-cart-shopping me-2"></i>Buy Now
                 </button>
             </div>
@@ -1698,6 +1755,7 @@
         </div>
     </div>
 </div>
+
 <section class="amazon-footer">
     <div class="container">
         <div class="row text-start">
@@ -1723,8 +1781,8 @@
                 <h5>Make a Difference</h5>
                 <ul>
                     <li><a onclick="showSection('actions')">Start Donating</a></li>
-                    <li><a onclick="showSection('actions')">Exchange Items</a></li>
-                    <li><a onclick="showSection('actions')">Resell Items</a></li>
+                    <li><a onclick="showAvailableItemsFullscreen('exchange')">Exchange Items</a></li>
+                    <li><a onclick="showAvailableItemsFullscreen('resell')">Resell Items</a></li>
                     <li><a onclick="showAvailableItemsFullscreen()">Browse All Items</a></li>
                 </ul>
             </div>
@@ -1758,18 +1816,70 @@
 <script>
     // Global variable to store current product details
     let currentProductDetails = null;
-
-    // --- ADDED FROM CODE 2 ---
     let currentExchangeProductId = null;
     let currentExchangeRequests = [];
-    // --- END ADD ---
+    let currentFilterType = 'all';
+
+    // Notification System
+    function showNotification(message, type = 'info', duration = 5000) {
+        const container = document.getElementById('notificationContainer');
+        const notification = document.createElement('div');
+        notification.className = `notification ${type}`;
+
+        const icons = {
+            success: 'fa-check-circle',
+            error: 'fa-exclamation-circle',
+            warning: 'fa-exclamation-triangle',
+            info: 'fa-info-circle'
+        };
+
+        notification.innerHTML = `
+            <div class="notification-icon">
+                <i class="fa-solid ${icons[type] || icons.info}"></i>
+            </div>
+            <div class="notification-content">${message}</div>
+            <button class="notification-close" onclick="this.parentElement.remove()">
+                <i class="fa-solid fa-times"></i>
+            </button>
+        `;
+
+        container.appendChild(notification);
+
+        // Auto remove after duration
+        setTimeout(() => {
+            if (notification.parentElement) {
+                notification.style.opacity = '0';
+                notification.style.transform = 'translateX(100%)';
+                setTimeout(() => {
+                    if (notification.parentElement) {
+                        notification.remove();
+                    }
+                }, 300);
+            }
+        }, duration);
+    }
+
+    // Function to handle listing type change
+    function handleListingTypeChange() {
+        const listingType = document.getElementById('productType').value;
+        const priceInput = document.getElementById('productPrice');
+
+        if (listingType === 'Exchange' || listingType === 'Donate') {
+            priceInput.disabled = true;
+            priceInput.value = '0';
+            priceInput.placeholder = 'Not applicable for ' + listingType;
+        } else {
+            priceInput.disabled = false;
+            priceInput.value = '';
+            priceInput.placeholder = 'Enter price in ₹';
+        }
+    }
 
     // Function to show dashboard home
     function showDashboardHome() {
-        // First, close fullscreen if it's open
         if (document.body.classList.contains('fullscreen-available')) {
             closeFullscreenAvailableItems();
-            return; // Let closeFullscreenAvailableItems handle the navigation
+            return;
         }
 
         hideAllSections();
@@ -1780,7 +1890,6 @@
 
     // Function to show profile section
     function showProfile() {
-        // First, close fullscreen if it's open
         if (document.body.classList.contains('fullscreen-available')) {
             closeFullscreenAvailableItems();
             return;
@@ -1795,7 +1904,6 @@
 
     // Function to show different sections
     function showSection(section) {
-        // First, close fullscreen if it's open
         if (document.body.classList.contains('fullscreen-available')) {
             closeFullscreenAvailableItems();
             return;
@@ -1815,16 +1923,6 @@
                 updateDashboardHeader('My Items', 'Manage items you\'ve listed for donation, exchange, or resale');
                 loadMyProducts();
                 break;
-
-            // --- ADDED FROM CODE 2 ---
-            case 'exchangeRequests':
-                document.getElementById('exchangeRequestsSection').classList.add('active');
-                updateNavActiveState('exchangeRequests');
-                updateDashboardHeader('My Exchange Requests', 'Manage your exchange requests and track their status');
-                loadMyExchangeRequests();
-                break;
-            // --- END ADD ---
-
             case 'activity':
                 document.getElementById('activitySection').classList.add('active');
                 updateNavActiveState('activity');
@@ -1833,44 +1931,53 @@
         }
     }
 
-    // --- FROM CODE 1: Purchase Form Functions ---
-    // Function to show purchase form with product details
+    // Purchase Form Functions
     function showPurchaseForm(productId, productName = 'Product Name', seller = 'Seller Name', price = '₹0.00') {
-        // Update product details in purchase form
         document.getElementById('purchaseProductId').value = productId;
         document.getElementById('purchaseProductName').textContent = productName;
         document.getElementById('purchaseSeller').textContent = `Seller: ${seller}`;
         document.getElementById('purchasePrice').textContent = price;
 
-        // Show purchase overlay
         document.getElementById('purchaseOverlay').classList.add('active');
-        document.body.style.overflow = 'hidden'; // Prevent scrolling
+        document.body.style.overflow = 'hidden';
     }
 
-    // Function to close purchase form
     function closePurchaseForm() {
         document.getElementById('purchaseOverlay').classList.remove('active');
-        document.body.style.overflow = ''; // Restore scrolling
+        document.body.style.overflow = '';
     }
-    // --- END PURCHASE FORM FUNCTIONS ---
 
-
-    // Function to show fullscreen available items
-    function showAvailableItemsFullscreen() {
-        // First hide all regular sections
-        hideAllSections();
-
+    // Function to show fullscreen available items with filtering
+    function showAvailableItemsFullscreen(type = 'all') {
+        currentFilterType = type;
         document.body.classList.add('fullscreen-available');
         document.getElementById('fullscreenAvailableItems').classList.add('active');
-        updateNavActiveState('available');
+
+        // Set title based on type
+        const title = document.getElementById('fullscreenTitle');
+        if (type === 'exchange') {
+            title.textContent = 'Available Exchange Items';
+        } else if (type === 'resell') {
+            title.textContent = 'Available Resell Items';
+        } else {
+            title.textContent = 'Available Items Marketplace';
+        }
+
+        // Set type filter based on selection
+        const typeFilter = document.getElementById('fullscreenItemTypeFilter');
+        if (type === 'exchange' || type === 'resell') {
+            typeFilter.value = type.charAt(0).toUpperCase() + type.slice(1);
+        } else {
+            typeFilter.value = 'all';
+        }
+
         loadFullscreenAvailableItems();
     }
 
-    // Function to close fullscreen available items
     function closeFullscreenAvailableItems() {
         document.body.classList.remove('fullscreen-available');
         document.getElementById('fullscreenAvailableItems').classList.remove('active');
-        // Return to dashboard home when closing fullscreen
+        currentFilterType = 'all';
         showDashboardHome();
     }
 
@@ -1906,16 +2013,16 @@
         .then(response => response.json())
         .then(data => {
             if (data.message) {
-                alert(data.message);
+                showNotification(data.message, 'success');
                 document.getElementById('addProductForm').reset();
                 loadMyProducts();
             } else {
-                alert('Error: ' + (data.message || 'Unknown error'));
+                showNotification('Error: ' + (data.message || 'Unknown error'), 'error');
             }
         })
         .catch(error => {
             console.error('Error:', error);
-            alert('Error submitting product');
+            showNotification('Error submitting product', 'error');
         });
     }
 
@@ -1985,7 +2092,7 @@
                             <span class="badge bg-secondary">${product.category}</span>
                             <span class="badge bg-info">${product.type}</span>
                         </div>
-                        <p class="card-text"><strong>Price: ₹${product.price}</strong></p>
+                        <p class="card-text"><strong>${product.type === 'Resell' ? 'Price: ₹' + product.price : 'Not for sale'}</strong></p>
                         <div class="d-flex justify-content-between align-items-center">
                             <span class="badge ${getStatusBadgeClass(product.status)}">
                                 ${product.status}
@@ -2015,7 +2122,6 @@
     }
 
     function filterProducts(status) {
-        // Update active button
         document.querySelectorAll('.btn-group .btn').forEach(btn => {
             btn.classList.remove('active');
         });
@@ -2028,6 +2134,13 @@
     function loadFullscreenAvailableItems(type = 'all', category = 'all', sort = 'newest') {
         const token = localStorage.getItem('jwtToken');
         let url = '/api/products/available';
+
+        // Apply the current filter type if specified
+        if (currentFilterType === 'exchange') {
+            type = 'Exchange';
+        } else if (currentFilterType === 'resell') {
+            type = 'Resell';
+        }
 
         const params = new URLSearchParams();
         if (type !== 'all') params.append('type', type);
@@ -2052,7 +2165,6 @@
             return response.json();
         })
         .then(products => {
-            // Apply client-side sorting as fallback
             const sortedProducts = sortProducts(products, sort);
             displayFullscreenAvailableItems(sortedProducts);
         })
@@ -2070,7 +2182,7 @@
         });
     }
 
-    // Client-side sorting function (as fallback)
+    // Client-side sorting function
     function sortProducts(products, sortType) {
         const sortedProducts = [...products];
 
@@ -2092,26 +2204,48 @@
         }
     }
 
-    // --- MERGED FUNCTION ---
-    function displayFullscreenAvailableItems(products) {
-        const container = document.getElementById('fullscreenAvailableItemsList');
-        const countElement = document.getElementById('fullscreenItemsCount');
+    // Function to get appropriate action buttons based on product type
+    function getProductActionButtons(product) {
+        let buttons = `
+            <button class="btn btn-outline-primary btn-sm" onclick="viewItemDetails(${product.id})">
+                <i class="fa-solid fa-eye me-1"></i> View Details
+            </button>
+            <button class="btn btn-primary btn-sm" onclick="contactSeller(${product.id})">
+                <i class="fa-solid fa-message me-1"></i> Contact Seller
+            </button>
+        `;
 
-        if (products.length === 0) {
-            container.innerHTML = `
-                <div class="col-12 text-center py-5">
-                    <i class="fa-solid fa-box-open fa-3x text-muted mb-3"></i>
-                    <p class="text-muted">No available items found</p>
-                    <p class="text-muted small">Check back later for new items or try different filters</p>
-                </div>
+        if (product.type === 'Exchange') {
+            buttons += `
+                <button class="btn btn-outline-warning btn-sm" onclick="openExchangeRequest(${product.id})">
+                    <i class="fa-solid fa-right-left me-1"></i> Exchange Request
+                </button>
             `;
-            countElement.textContent = '0 items';
-            return;
+        } else if (product.type === 'Resell') {
+            buttons += `
+                <button class="btn btn-success btn-sm" onclick="buyNow(${product.id}, '${product.name}', '${product.user ? (product.user.firstName + ' ' + (product.user.lastName || '')) : 'Seller'}', '₹${product.price}')">
+                    <i class="fa-solid fa-cart-shopping me-1"></i> Buy Now
+                </button>
+            `;
+        } else if (product.type === 'Donate') {
+            buttons += `
+                <button class="btn btn-info btn-sm" onclick="requestDonation(${product.id})">
+                    <i class="fa-solid fa-hand-holding-heart me-1"></i> Request Donation
+                </button>
+            `;
         }
 
-        countElement.textContent = `${products.length} items`;
+        return buttons;
+    }
 
-        container.innerHTML = products.map(product => `
+    // Function to update product card display based on type
+    function updateProductCardDisplay(product) {
+        const priceDisplay = (product.type === 'Exchange' || product.type === 'Donate') ?
+            '' : `<span class="text-primary fw-bold">₹${product.price}</span>`;
+
+        const buttons = getProductActionButtons(product);
+
+        return `
             <div class="col-md-6 col-lg-4 col-xl-3 mb-4">
                 <div class="card h-100 product-card">
                     <div class="position-relative">
@@ -2129,7 +2263,7 @@
                         <div class="mt-auto">
                             <div class="d-flex justify-content-between align-items-center mb-2">
                                 <span class="badge bg-secondary">${product.category}</span>
-                                <span class="text-primary fw-bold">₹${product.price}</span>
+                                ${priceDisplay}
                             </div>
 
                             <div class="d-flex justify-content-between align-items-center mb-3">
@@ -2143,30 +2277,34 @@
                             </div>
 
                             <div class="d-grid gap-2">
-                                <button class="btn btn-outline-primary btn-sm" onclick="viewItemDetails(${product.id})">
-                                    <i class="fa-solid fa-eye me-1"></i> View Details
-                                </button>
-                                <button class="btn btn-primary btn-sm" onclick="contactSeller(${product.id})">
-                                    <i class="fa-solid fa-message me-1"></i> Contact Seller
-                                </button>
-
-                                ${product.type === 'Exchange' ? `
-                                <button class="btn btn-outline-warning btn-sm" onclick="openExchangeRequest(${product.id})">
-                                    <i class="fa-solid fa-right-left me-1"></i> Exchange Request
-                                </button>
-                                ` : ''}
-                                <button class="btn btn-success btn-sm" onclick="buyNow(${product.id}, '${product.name}', '${product.user ? (product.user.firstName + ' ' + (product.user.lastName || '')) : 'Seller'}', '₹${product.price}')">
-                                    <i class="fa-solid fa-cart-shopping me-1"></i> Buy Now
-                                </button>
+                                ${buttons}
                             </div>
-                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-        `).join('');
+        `;
     }
-    // --- END MERGED FUNCTION ---
 
+    function displayFullscreenAvailableItems(products) {
+        const container = document.getElementById('fullscreenAvailableItemsList');
+        const countElement = document.getElementById('fullscreenItemsCount');
+
+        if (products.length === 0) {
+            container.innerHTML = `
+                <div class="col-12 text-center py-5">
+                    <i class="fa-solid fa-box-open fa-3x text-muted mb-3"></i>
+                    <p class="text-muted">No available items found</p>
+                    <p class="text-muted small">Check back later for new items or try different filters</p>
+                </div>
+            `;
+            countElement.textContent = '0 items';
+            return;
+        }
+
+        countElement.textContent = `${products.length} items`;
+        container.innerHTML = products.map(product => updateProductCardDisplay(product)).join('');
+    }
 
     function getTypeBadgeClass(type) {
         switch(type) {
@@ -2189,7 +2327,6 @@
     function viewItemDetails(productId) {
         const token = localStorage.getItem('jwtToken');
 
-        // Show loading state
         document.getElementById('productDetailContent').innerHTML = `
             <div class="text-center py-4">
                 <div class="spinner-border text-primary" role="status">
@@ -2199,11 +2336,9 @@
             </div>
         `;
 
-        // Create modal instance
         const productModal = new bootstrap.Modal(document.getElementById('productDetailModal'));
         productModal.show();
 
-        // Fetch product details from your actual database
         fetch(`/api/products/${productId}`, {
             method: 'GET',
             headers: {
@@ -2232,9 +2367,27 @@
         });
     }
 
+    // Function to update modal buttons based on product type
+    function updateModalButtons(product) {
+        const exchangeBtn = document.getElementById('modalExchangeButton');
+        const buyBtn = document.getElementById('modalBuyButton');
+
+        exchangeBtn.style.display = 'none';
+        buyBtn.style.display = 'none';
+
+        if (product.type === 'Exchange') {
+            exchangeBtn.style.display = 'inline-block';
+        } else if (product.type === 'Resell') {
+            buyBtn.style.display = 'inline-block';
+        }
+    }
+
     // Function to display product details in modal
     function displayProductDetails(product) {
         const modalContent = document.getElementById('productDetailContent');
+
+        const priceDisplay = (product.type === 'Exchange' || product.type === 'Donate') ?
+            'Not applicable' : `₹${product.price}`;
 
         modalContent.innerHTML = `
             <div class="row">
@@ -2249,7 +2402,7 @@
                     <div class="product-info-list">
                         <div class="product-info-item">
                             <span class="product-info-label">Price:</span>
-                            <span class="product-info-value text-primary fw-bold">₹${product.price}</span>
+                            <span class="product-info-value ${product.type === 'Resell' ? 'text-primary fw-bold' : ''}">${priceDisplay}</span>
                         </div>
                         <div class="product-info-item">
                             <span class="product-info-label">Type:</span>
@@ -2313,22 +2466,12 @@
             </div>
         `;
 
-        // Update modal title
         document.getElementById('productDetailModalLabel').textContent = product.name;
-
-        // --- ADDED: Show/hide modal exchange button ---
-        const exchangeBtn = document.getElementById('modalExchangeButton');
-        if (product.type === 'Exchange') {
-            exchangeBtn.style.display = 'inline-block';
-        } else {
-            exchangeBtn.style.display = 'none';
-        }
-        // --- END ADD ---
+        updateModalButtons(product);
     }
 
     function contactSeller(productId) {
-        // You can implement a messaging system here
-        alert(`Contact seller for product ID: ${productId}\n\nThis feature will open a chat with the seller.`);
+        showNotification(`Contacting seller for product ID: ${productId}`, 'info');
     }
 
     function contactSellerFromModal() {
@@ -2337,12 +2480,9 @@
         }
     }
 
-    // --- FROM CODE 1: Buy Now Functions ---
-    // Buy Now function - shows purchase form
+    // Buy Now Functions
     function buyNow(productId, productName = 'Product Name', seller = 'Seller Name', price = '₹0.00') {
-        // Set current product details
         if (productId) {
-            // Fetch and set the full product details
             const token = localStorage.getItem('jwtToken');
             fetch(`/api/products/${productId}`, {
                 method: 'GET',
@@ -2359,12 +2499,10 @@
             })
             .then(product => {
                 currentProductDetails = product;
-                // Show the purchase form with product details
                 showPurchaseForm(productId, productName, seller, price);
             })
             .catch(error => {
                 console.error('Error loading product details:', error);
-                // Fallback: create a minimal product object
                 currentProductDetails = {
                     id: productId,
                     name: productName,
@@ -2374,7 +2512,6 @@
                 showPurchaseForm(productId, productName, seller, price);
             });
         } else {
-            // If no productId provided, set a minimal object
             currentProductDetails = {
                 id: null,
                 name: productName,
@@ -2394,26 +2531,25 @@
                 '₹' + currentProductDetails.price
             );
         } else {
-            // Show error if no product details available
-            alert('Please view product details first before purchasing.');
+            showNotification('Please view product details first before purchasing.', 'warning');
         }
     }
 
-    // --- ADDED: Function for modal exchange button ---
     function exchangeFromModal() {
         if (currentProductDetails) {
             openExchangeRequest(currentProductDetails.id);
-            // Hide the product detail modal
             const productModal = bootstrap.Modal.getInstance(document.getElementById('productDetailModal'));
             if (productModal) {
                 productModal.hide();
             }
         } else {
-            alert('Error: Product details not loaded.');
+            showNotification('Error: Product details not loaded.', 'error');
         }
     }
-    // --- END ADD ---
 
+    function requestDonation(productId) {
+        showNotification(`Requesting donation for product ID: ${productId}`, 'info');
+    }
 
     // Function to submit purchase
     function submitPurchase(fullName, email, phone, address, paymentMethod) {
@@ -2421,7 +2557,7 @@
         const productId = document.getElementById('purchaseProductId').value;
 
         if (!productId) {
-            alert('Product information is missing');
+            showNotification('Product information is missing', 'error');
             return;
         }
 
@@ -2445,32 +2581,29 @@
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                alert(data.message);
+                showNotification(data.message, 'success');
                 closePurchaseForm();
-                // Optionally refresh the available items
                 if (document.body.classList.contains('fullscreen-available')) {
                     loadFullscreenAvailableItems();
                 }
             } else {
-                alert('Error: ' + data.message);
+                showNotification('Error: ' + data.message, 'error');
             }
         })
         .catch(error => {
             console.error('Error:', error);
-            alert('Failed to complete purchase. Please try again.');
+            showNotification('Failed to complete purchase. Please try again.', 'error');
         });
     }
 
     // Initialize purchase form functionality
     function initializePurchaseForm() {
-        // Payment method selection
         const upiOption = document.getElementById('purchaseUpiOption');
         const cardOption = document.getElementById('purchaseCardOption');
         const netbankingOption = document.getElementById('purchaseNetbankingOption');
         const codOption = document.getElementById('purchaseCodOption');
 
         if (upiOption && cardOption && netbankingOption && codOption) {
-            // Function to handle payment option selection
             function selectPaymentOption(selectedOption) {
                 [upiOption, cardOption, netbankingOption, codOption].forEach(option => {
                     option.classList.remove('active');
@@ -2494,10 +2627,8 @@
                 selectPaymentOption(codOption);
             });
 
-            // Set default payment method
             upiOption.classList.add('active');
 
-            // Form submission
             const completeButton = document.getElementById('purchaseComplete');
             if (completeButton) {
                 completeButton.addEventListener('click', function() {
@@ -2507,11 +2638,10 @@
                     const address = document.getElementById('address').value;
 
                     if (!fullName || !email || !phone || !address) {
-                        alert('Please fill in all required fields');
+                        showNotification('Please fill in all required fields', 'warning');
                         return;
                     }
 
-                    // Get selected payment method
                     let paymentMethod = '';
                     if (upiOption.classList.contains('active')) paymentMethod = 'UPI';
                     else if (cardOption.classList.contains('active')) paymentMethod = 'Card';
@@ -2519,7 +2649,7 @@
                     else if (codOption.classList.contains('active')) paymentMethod = 'COD';
 
                     if (!paymentMethod) {
-                        alert('Please select a payment method');
+                        showNotification('Please select a payment method', 'warning');
                         return;
                     }
 
@@ -2527,7 +2657,6 @@
                 });
             }
 
-            // Cancel button
             const cancelButton = document.getElementById('purchaseCancel');
             if (cancelButton) {
                 cancelButton.addEventListener('click', function() {
@@ -2538,10 +2667,7 @@
             }
         }
     }
-    // --- END PURCHASE FUNCTIONS ---
 
-
-    // --- ADDED FROM CODE 2: EXCHANGE FUNCTIONS ---
     // Exchange Request Functions
     function openExchangeRequest(productId) {
         currentExchangeProductId = productId;
@@ -2553,14 +2679,13 @@
     }
 
     function submitExchangeRequest() {
-        // Validate form before submission
         const itemName = document.getElementById('exchangeItemName').value;
         const category = document.getElementById('exchangeItemCategory').value;
         const description = document.getElementById('exchangeItemDescription').value;
         const imageFile = document.getElementById('exchangeItemImage').files[0];
 
         if (!itemName || !category || !description || !imageFile) {
-            alert('Please fill in all required fields including the image.');
+            showNotification('Please fill in all required fields including the image.', 'warning');
             return;
         }
 
@@ -2574,7 +2699,6 @@
 
         const token = localStorage.getItem('jwtToken');
 
-        // Show loading state
         const submitBtn = document.querySelector('#exchangeRequestModal .btn-warning');
         const originalText = submitBtn.innerHTML;
         submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-2"></i>Submitting...';
@@ -2597,257 +2721,23 @@
         })
         .then(data => {
             if (data.message) {
-                alert('Exchange request submitted successfully! It will be reviewed by admin.');
+                showNotification('Exchange request submitted successfully! It will be reviewed by admin.', 'success');
                 const modal = bootstrap.Modal.getInstance(document.getElementById('exchangeRequestModal'));
                 modal.hide();
                 document.getElementById('exchangeRequestForm').reset();
-                loadMyExchangeRequests();
             } else {
                 throw new Error(data.message || 'Unknown error occurred');
             }
         })
         .catch(error => {
             console.error('Error:', error);
-            alert('Error submitting exchange request: ' + error.message);
+            showNotification('Error submitting exchange request: ' + error.message, 'error');
         })
         .finally(() => {
-            // Restore button state
             submitBtn.innerHTML = originalText;
             submitBtn.disabled = false;
         });
     }
-
-    // My Exchange Requests Functions
-    function loadMyExchangeRequests(status = 'all') {
-        const token = localStorage.getItem('jwtToken');
-        let url = '/api/exchange-requests/my-requests';
-
-        if (status !== 'all') {
-            url += `?status=${status}`;
-        }
-
-        fetch(url, {
-            method: 'GET',
-            headers: {
-                'Authorization': 'Bearer ' + token,
-                'Content-Type': 'application/json'
-            }
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Failed to fetch exchange requests');
-            }
-            return response.json();
-        })
-        .then(requests => {
-            currentExchangeRequests = requests;
-            displayMyExchangeRequests(requests);
-        })
-        .catch(error => {
-            console.error('Error loading exchange requests:', error);
-            document.getElementById('myExchangeRequestsList').innerHTML = `
-                <div class="col-12 text-center py-5">
-                    <i class="fa-solid fa-exclamation-triangle fa-2x text-muted mb-3"></i>
-                    <p class="text-muted">Failed to load exchange requests</p>
-                    <button class="btn btn-primary mt-2" onclick="loadMyExchangeRequests()">
-                        <i class="fa-solid fa-refresh me-2"></i>Try Again
-                    </button>
-                </div>
-            `;
-        });
-    }
-
-    function displayMyExchangeRequests(requests) {
-        const container = document.getElementById('myExchangeRequestsList');
-
-        if (requests.length === 0) {
-            container.innerHTML = `
-                <div class="col-12 text-center py-5">
-                    <i class="fa-solid fa-inbox fa-3x text-muted mb-3"></i>
-                    <p class="text-muted">No exchange requests found</p>
-                    <p class="text-muted small">You haven't submitted any exchange requests yet</p>
-                </div>
-            `;
-            return;
-        }
-
-        container.innerHTML = requests.map(request => `
-            <div class="col-md-6 mb-4">
-                <div class="card h-100 exchange-request-card">
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-4">
-                                <img src="${request.exchangeItemImage || 'https://via.placeholder.com/150x150?text=No+Image'}"
-                                     class="img-fluid rounded" alt="${request.exchangeItemName}"
-                                     style="height: 120px; object-fit: cover;">
-                            </div>
-                            <div class="col-md-8">
-                                <h5 class="card-title">${request.exchangeItemName}</h5>
-                                <p class="card-text small">${request.exchangeItemDescription || 'No description'}</p>
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <span class="badge bg-secondary">${request.exchangeItemCategory}</span>
-                                    <span class="badge ${getExchangeStatusBadgeClass(request.status)}">
-                                        ${request.status}
-                                    </span>
-                                </div>
-                                <div class="mt-2">
-                                    <small class="text-muted">
-                                        Target: ${request.targetProduct?.name || 'N/A'}
-                                    </small>
-                                </div>
-                                <div class="mt-2">
-                                    <small class="text-muted">
-                                        Submitted: ${request.createdAt ? new Date(request.createdAt).toLocaleDateString() : 'N/A'}
-                                    </small>
-                                </div>
-                                ${request.rejectionReason ? `
-                                    <div class="mt-2">
-                                        <small class="text-danger">
-                                            <strong>Rejection Reason:</strong> ${request.rejectionReason}
-                                        </small>
-                                    </div>
-                                ` : ''}
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-footer bg-transparent">
-                        <button class="btn btn-sm btn-outline-primary" onclick="viewMyExchangeDetails(${request.id})">
-                            <i class="fa-solid fa-eye me-1"></i> View Details
-                        </button>
-                    </div>
-                </div>
-            </div>
-        `).join('');
-    }
-
-    function getExchangeStatusBadgeClass(status) {
-        switch(status) {
-            case 'PENDING': return 'bg-warning';
-            case 'APPROVED': return 'bg-success';
-            case 'REJECTED': return 'bg-danger';
-            default: return 'bg-secondary';
-        }
-    }
-
-    function filterMyExchangeRequests(status) {
-        // Update active button
-        document.querySelectorAll('#exchangeRequestsSection .btn-group .btn').forEach(btn => {
-            btn.classList.remove('active');
-        });
-        event.target.classList.add('active');
-
-        loadMyExchangeRequests(status);
-    }
-
-    function viewMyExchangeDetails(requestId) {
-        const request = currentExchangeRequests.find(req => req.id === requestId);
-        if (!request) return;
-
-        const modalContent = document.getElementById('exchangeDetailContent');
-        modalContent.innerHTML = `
-            <div class="row">
-                <div class="col-md-6">
-                    <h5>Your Exchange Item</h5>
-                    <div class="card mb-3">
-                        <img src="${request.exchangeItemImage || 'https://via.placeholder.com/300x200?text=No+Image'}"
-                             class="card-img-top" alt="${request.exchangeItemName}" style="height: 200px; object-fit: cover;">
-                        <div class="card-body">
-                            <h6 class="card-title">${request.exchangeItemName}</h6>
-                            <p class="card-text">${request.exchangeItemDescription || 'No description available'}</p>
-                            <div class="d-flex justify-content-between">
-                                <span class="badge bg-secondary">${request.exchangeItemCategory}</span>
-                                <span class="badge ${getExchangeStatusBadgeClass(request.status)}">${request.status}</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <h5>Target Product</h5>
-                    <div class="card mb-3">
-                        <img src="${request.targetProduct?.imagePath || 'https://via.placeholder.com/300x200?text=No+Image'}"
-                             class="card-img-top" alt="${request.targetProduct?.name}" style="height: 200px; object-fit: cover;">
-                        <div class="card-body">
-                            <h6 class="card-title">${request.targetProduct?.name || 'N/A'}</h6>
-                            <p class="card-text">${request.targetProduct?.description || 'No description available'}</p>
-                            <div class="d-flex justify-content-between">
-                                <span class="badge bg-secondary">${request.targetProduct?.category || 'N/A'}</span>
-                                <span class="text-primary fw-bold">₹${request.targetProduct?.price || '0'}</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row mt-3">
-                <div class="col-12">
-                    <h5>Request Information</h5>
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <p><strong>Request Date:</strong> ${request.createdAt ? new Date(request.createdAt).toLocaleString() : 'N/A'}</p>
-                                    <p><strong>Status:</strong> <span class="badge ${getExchangeStatusBadgeClass(request.status)}">${request.status}</span></p>
-                                </div>
-                                <div class="col-md-6">
-                                    <p><strong>Target Product Owner:</strong> ${request.targetProduct?.user?.firstName || 'User'} ${request.targetProduct?.user?.lastName || ''}</p>
-                                    <p><strong>Category:</strong> ${request.exchangeItemCategory}</p>
-                                </div>
-                            </div>
-                            ${request.additionalMessage ? `
-                                <div class="mt-3">
-                                    <strong>Additional Message:</strong>
-                                    <p class="mt-1">${request.additionalMessage}</p>
-                                </div>
-                            ` : ''}
-                            ${request.rejectionReason ? `
-                                <div class="mt-3">
-                                    <strong>Rejection Reason:</strong>
-                                    <p class="mt-1 text-danger">${request.rejectionReason}</p>
-                                </div>
-                            ` : ''}
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `;
-
-        const modal = new bootstrap.Modal(document.getElementById('exchangeDetailModal'));
-        modal.show();
-    }
-    // --- END ADD ---
-
-
-    // --- FROM CODE 1: "NEW" Functions (Kept for compatibility) ---
-    // After purchase is successful
-    function handlePurchaseSuccess(response) {
-        // Show immediate success popup (FAST)
-        showSuccessPopup("Purchase completed! Product removed.");
-
-        // Remove the purchased product from UI immediately
-        removeProductFromUI(response.productId);
-
-        // Or refresh the entire product list to show only available items
-        loadAvailableProducts();
-    }
-
-    function removeProductFromUI(productId) {
-        // Remove product card from DOM
-        const productCard = document.querySelector(`[data-product-id="${productId}"]`);
-        if (productCard) {
-            productCard.remove();
-        }
-    }
-
-    function loadAvailableProducts() {
-        // Fetch only available (APPROVED) products
-        fetch('/api/products?status=APPROVED')
-            .then(response => response.json())
-            .then(products => {
-                renderProducts(products); // Note: renderProducts is not defined in the provided code, assuming it exists.
-            });
-    }
-    // --- END "NEW" Functions ---
-
 
     // Initialize product form
     document.addEventListener('DOMContentLoaded', function() {
@@ -2856,31 +2746,22 @@
             productForm.addEventListener('submit', submitProductForm);
         }
 
-        // Load products when items section is shown
         const originalShowSection = window.showSection;
         window.showSection = function(section) {
             originalShowSection(section);
             if (section === 'items') {
                 loadMyProducts();
             }
-            // --- ADDED ---
-            else if (section === 'exchangeRequests') {
-                loadMyExchangeRequests();
-            }
-            // --- END ADD ---
         };
 
-        // Initialize purchase form (From Code 1)
         initializePurchaseForm();
 
-        // Close purchase form when clicking outside (From Code 1)
         document.getElementById('purchaseOverlay').addEventListener('click', function(e) {
             if (e.target === this) {
                 closePurchaseForm();
             }
         });
 
-        // Close purchase form with Escape key (From Code 1)
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape' && document.getElementById('purchaseOverlay').classList.contains('active')) {
                 closePurchaseForm();
@@ -2908,16 +2789,8 @@
             case 'available':
                 navLinks[3].classList.add('active');
                 break;
-
-            // --- ADDED ---
-            case 'exchangeRequests':
-                navLinks[4].classList.add('active');
-                break;
-            // --- END ADD ---
-
             case 'activity':
-                // --- MODIFIED INDEX ---
-                navLinks[5].classList.add('active');
+                navLinks[4].classList.add('active');
                 break;
             case 'profile':
                 break;
@@ -2988,7 +2861,6 @@
 
     // Initialize dashboard stats
     function initializeStats() {
-        // You can add actual API calls here to get real stats
         document.getElementById('donationsCount').textContent = '0';
         document.getElementById('exchangesCount').textContent = '0';
         document.getElementById('salesCount').textContent = '0';
@@ -3003,11 +2875,8 @@
             return;
         }
 
-        // Initialize the page
         initializeStats();
         updateProfileData();
-
-        // Show dashboard home by default
         showDashboardHome();
     });
 
