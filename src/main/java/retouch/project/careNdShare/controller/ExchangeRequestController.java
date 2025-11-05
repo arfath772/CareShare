@@ -4,6 +4,7 @@ import retouch.project.careNdShare.entity.ExchangeRequest;
 import retouch.project.careNdShare.entity.User;
 import retouch.project.careNdShare.service.ExchangeRequestService;
 import retouch.project.careNdShare.service.UserService;
+import retouch.project.careNdShare.service.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -23,6 +24,9 @@ public class ExchangeRequestController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private EmailService emailService;
 
     @PostMapping("/submit")
     public ResponseEntity<?> submitExchangeRequest(
@@ -59,6 +63,13 @@ public class ExchangeRequestController {
                     targetProductId, itemName, category, description,
                     additionalMessage, image, user);
 
+            // Get emails for notification
+            String ownerEmail = exchangeRequest.getRequestedProduct().getUser().getEmail();
+            String requesterEmail = exchangeRequest.getRequester().getEmail();
+
+            // Send exchange request notifications
+            emailService.sendExchangeRequestNotifications(exchangeRequest, ownerEmail, requesterEmail);
+
             Map<String, Object> response = new HashMap<>();
             response.put("message", "Exchange request submitted successfully");
             response.put("exchangeRequest", exchangeRequest);
@@ -84,6 +95,90 @@ public class ExchangeRequestController {
 
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(createErrorResponse("Error fetching exchange requests: " + e.getMessage()));
+        }
+    }
+
+    // Owner accept exchange request
+    @PutMapping("/{id}/accept")
+    public ResponseEntity<?> acceptExchangeRequest(@PathVariable Long id, Authentication authentication) {
+        try {
+            // Verify the current user is the owner of the requested product
+            String username = authentication.getName();
+            User currentUser = userService.findByEmail(username)
+                    .orElseThrow(() -> new RuntimeException("User not found"));
+
+            ExchangeRequest exchangeRequest = exchangeRequestService.findById(id)
+                    .orElseThrow(() -> new RuntimeException("Exchange request not found"));
+
+            // Check if current user is the owner of the requested product
+            if (!exchangeRequest.getRequestedProduct().getUser().getId().equals(currentUser.getId())) {
+                return ResponseEntity.badRequest().body(createErrorResponse("You are not authorized to accept this exchange request"));
+            }
+
+            // Update status
+            exchangeRequest.setStatus("APPROVED");
+            ExchangeRequest updatedRequest = exchangeRequestService.save(exchangeRequest);
+
+            // Get emails for notification
+            String ownerEmail = exchangeRequest.getRequestedProduct().getUser().getEmail();
+            String requesterEmail = exchangeRequest.getRequester().getEmail();
+
+            // Send status update notifications
+            emailService.sendExchangeStatusUpdate(updatedRequest, ownerEmail, requesterEmail);
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("message", "Exchange request accepted successfully");
+            response.put("exchangeRequest", updatedRequest);
+            return ResponseEntity.ok(response);
+
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(createErrorResponse("Error accepting exchange request: " + e.getMessage()));
+        }
+    }
+
+    // Owner decline exchange request
+    @PutMapping("/{id}/decline")
+    public ResponseEntity<?> declineExchangeRequest(@PathVariable Long id,
+                                                    @RequestBody(required = false) Map<String, String> request,
+                                                    Authentication authentication) {
+        try {
+            // Verify the current user is the owner of the requested product
+            String username = authentication.getName();
+            User currentUser = userService.findByEmail(username)
+                    .orElseThrow(() -> new RuntimeException("User not found"));
+
+            ExchangeRequest exchangeRequest = exchangeRequestService.findById(id)
+                    .orElseThrow(() -> new RuntimeException("Exchange request not found"));
+
+            // Check if current user is the owner of the requested product
+            if (!exchangeRequest.getRequestedProduct().getUser().getId().equals(currentUser.getId())) {
+                return ResponseEntity.badRequest().body(createErrorResponse("You are not authorized to decline this exchange request"));
+            }
+
+            String rejectionReason = request != null ? request.get("rejectionReason") : "No reason provided";
+
+            // Update status
+            exchangeRequest.setStatus("REJECTED");
+            if (rejectionReason != null) {
+                // You might want to add a rejectionReason field to your ExchangeRequest entity
+                // exchangeRequest.setRejectionReason(rejectionReason);
+            }
+            ExchangeRequest updatedRequest = exchangeRequestService.save(exchangeRequest);
+
+            // Get emails for notification
+            String ownerEmail = exchangeRequest.getRequestedProduct().getUser().getEmail();
+            String requesterEmail = exchangeRequest.getRequester().getEmail();
+
+            // Send status update notifications
+            emailService.sendExchangeStatusUpdate(updatedRequest, ownerEmail, requesterEmail);
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("message", "Exchange request declined successfully");
+            response.put("exchangeRequest", updatedRequest);
+            return ResponseEntity.ok(response);
+
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(createErrorResponse("Error declining exchange request: " + e.getMessage()));
         }
     }
 

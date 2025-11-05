@@ -153,6 +153,16 @@ public class ExchangeRequest {
         this.createdAt = createdAt;
     }
 
+    // Add this method to fix the error in AdminController
+    public Product getRequestedProduct() {
+        return this.targetProduct;
+    }
+
+    // Optional: Add setter for consistency
+    public void setRequestedProduct(Product requestedProduct) {
+        this.targetProduct = requestedProduct;
+    }
+
     // toString method for debugging
     @Override
     public String toString() {

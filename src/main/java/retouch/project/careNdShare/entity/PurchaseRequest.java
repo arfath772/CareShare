@@ -1,7 +1,5 @@
 package retouch.project.careNdShare.entity;
 
-// PurchaseRequest.java
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
@@ -107,4 +105,25 @@ public class PurchaseRequest {
 
     public LocalDateTime getUpdatedAt() { return updatedAt; }
     public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
+
+    // New method to get first name from full name
+    public String getFirstName() {
+        if (this.fullName != null && !this.fullName.trim().isEmpty()) {
+            // Split by space and return the first part
+            return this.fullName.split(" ")[0];
+        }
+        return this.fullName;
+    }
+
+    // Optional: Add method to get last name if needed
+    public String getLastName() {
+        if (this.fullName != null && !this.fullName.trim().isEmpty()) {
+            String[] names = this.fullName.split(" ");
+            if (names.length > 1) {
+                // Return the last part as last name
+                return names[names.length - 1];
+            }
+        }
+        return "";
+    }
 }
