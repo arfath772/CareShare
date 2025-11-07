@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Donate Now - DonateHub</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+    <style>
+        body {
+          font-family: 'Inter', sans-serif;
+          background-color: #f5f7fa;
+          background:url('https://media.istockphoto.com/id/1465760198/vector/abstract-blue-background-with-space-for-text.jpg?s=612x612&w=0&k=20&c=fXbSkVB3MdZjkaYUIX-Q7liCtmG5cr6kqAAzX-cM3L8=')center/cover no-repeat;
+        }
+
+        /* Navbar */
+        .custom-navbar {
+          background: linear-gradient(135deg, #0d6efd, #38BA86);
+          padding: 15px 0;
+          box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
+        .custom-navbar .navbar-brand {
+          color: #fff;
+          font-size: 1.6rem;
+          font-weight: 700;
+        }
+        .custom-navbar .nav-link {
+          color: #fff;
+          font-weight: 600;
+          margin: 0 10px;
+          position: relative;
+        }
+        .custom-navbar .nav-link:hover { color: #ffffffcc; }
+        .custom-navbar .nav-link::after {
+          content: "";
+          display: block;
+          width: 0%;
+          height: 2px;
+          background: #fff;
+          transition: width 0.3s;
+          margin-top: 5px;
+        }
+        .custom-navbar .nav-link:hover::after { width: 100%; }
+
+        /* Hero */
+        .hero {
+          background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)),
+                      url('https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=1500&q=80') center/cover no-repeat;
+          height: 45vh;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          text-align: center;
+          color: #fff;
+        }
+        .hero h1 {
+          font-size: 2.8rem;
+          font-weight: 700;
+        }
+
+
+        /* Donation Section */
+        .donate-info-section {
+          padding: 60px 0;
+        }
+
+        .donate-box {
+  background: rgba(255, 255, 255, 0.95);
+    border-radius: 15px;
+    box-shadow: 0 10px 35px rgba(0, 0, 0, 0.2);
+    padding: 35px 25px;
+    margin-bottom: 40px;
+    transition: all 0.4s ease;
+}
+.donate-box:hover {
+  transform: translateY(-8px);
+    border-image: linear-gradient(135deg, #0d6efd, #38BA86) 1;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+}
+
+.donate-now-box {
+  border: 2px solid #e0e0e0;
+  background: #f9fafb;
+  transition: all 0.4s ease;
+  border-radius: 0; /* sharp corners */
+}
+.donate-now-box:hover {
+  border-color: transparent;
+  box-shadow: 0 0 15px 3px rgba(56, 186, 134, 0.3);
+  transform: translateY(-5px);
+}
+
+.donate-box {
+  padding: 25px; /* increase inner padding */
+  margin-bottom: 40px; /* more spacing between sections */
+}
+
+.donate-now-box {
+  padding: 35px 25px; /* a little more space */
+}
+.donate-now-box .donate-icon {
+  font-size: 3.5rem; /* slightly bigger */
+}
+.donate-now-box .donate-title {
+  font-size: 1.3rem;
+  margin-bottom: 18px;
+}
+.donate-now-box .donate-btn {
+  padding: 10px 28px;
+  font-size: 1.05rem;
+}
+.donate-info-content p {
+  font-size: 1.05rem;
+}
+
+.donate-icon {
+  font-size: 3rem;
+  margin-bottom: 10px;
+  color: #38BA86;
+}
+
+.donate-title {
+  font-weight: 700;
+  color: #0d6efd;
+  margin-bottom: 15px;
+}
+
+.donate-btn {
+  background: linear-gradient(135deg, #0d6efd, #38BA86);
+  border: none;
+  color: #fff;
+  font-weight: 600;
+  padding: 8px 22px;
+  border-radius: 0;
+  transition: 0.3s;
+}
+.donate-btn:hover {
+  background: linear-gradient(135deg, #0b5ed7, #2ca973);
+  transform: scale(1.05);
+}
+
+.donate-info-content h5 {
+  font-weight: 700;
+  margin-bottom: 10px;
+  color: #333;
+}
+.donate-info-content p {
+  color: #555;
+  line-height: 1.8;
+  font-size: 1rem;
+  font-family: 'Segoe UI', Tahoma, sans-serif;
+}
+
+        /* Info Section */
+        .info-section {
+          padding: 80px 0;
+          background: rgb(176,224,230);
+background: linear-gradient(159deg, rgba(176,224,230,1) 0%, rgba(70,130,180,1) 100%);
+        }
+        .info-section {
+    padding-top: 40px;
+    padding-bottom: 40px;
+    margin-top: 10px !important;
+    margin-bottom: 10px !important;
+}
+
+        .info-section img {
+          border-radius: 15px;
+          box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        .info-section h2 {
+          color: #0d6efd;
+          font-weight: 700;
+          margin-bottom: 20px;
+        }
+        .info-section p {
+          color: #555;
+          line-height: 1.8;
+        }
+ .info-section img {
+    max-width: 80%;       /* Reduce the width */
+    height: auto;
+    display: block;
+    margin: 0 auto;       /* Center the image */
+}
+
+.volunteer-img {
+    max-width: 80% !important;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+}
+
+        /* Helps Section */
+        .helps-section {
+          padding: 70px 0;
+          background-color: #f0f3f6;
+          text-align: center;
+        }
+        .helps-section h2 {
+          color: #0d6efd;
+          font-weight: 700;
+          margin-bottom: 40px;
+        }
+        .help-card i {
+          font-size: 3rem;
+          color: #38BA86;
+          margin-bottom: 15px;
+        }
+        .help-card h5 {
+          font-weight: 700;
+          color: #0d6efd;
+          margin-bottom: 10px;
+        }
+        .help-card p {
+          color: #555;
+        }
+
+        /* Impact Banner */
+        .impact-banner {
+        margin-bottom: 30px;
+          background: rgb(176,224,230);
+background: linear-gradient(159deg, rgba(176,224,230,1) 0%, rgba(70,130,180,1) 100%);
+                      url('https://demo.divi-pixel.com/charity/wp-content/uploads/sites/46/2024/08/charity-blog-fi-07.jpg') center/cover no-repeat;
+          padding: 80px 20px;
+          text-align: center;
+          color: #fff;
+        }
+        .impact-banner h2 {
+          font-size: 2rem;
+          font-weight: 700;
+        }
+        .impact-banner p {
+          font-size: 1.1rem;
+          max-width: 700px;
+          margin: 15px auto 0;
+        }
+
+        /* CTA */
+        .cta-section {
+          background: linear-gradient(135deg, #0d6efd, #38BA86);
+          padding: 60px 20px;
+          text-align: center;
+          color: #fff;
+        }
+        .cta-section h3 {
+          font-size: 2rem;
+          font-weight: 700;
+        }
+        .cta-section .cta-btn {
+          background: #fff;
+          color: #0d6efd;
+          padding: 10px 30px;
+          font-weight: 600;
+          font-size: 1.1rem;
+          border-radius: 30px;
+          margin-top: 20px;
+          transition: transform 0.3s;
+        }
+        .cta-section .cta-btn:hover {
+          transform: scale(1.05);
+        }
+
+       /* Footer */
+        .footer-section { background: linear-gradient(135deg, #0d6efd, #38BA86); color: #fff; border-radius: 2rem 2rem 0 0; padding-top: 40px; padding-bottom: 30px; }
+        .footer-section h5 { font-weight: 700; font-size: 1.25rem; margin-bottom: 12px; }
+        .footer-section p, .footer-section li a { color: #e0f7f1; text-decoration: none; font-weight: 500; font-size: 0.95rem; }
+        .footer-section li a:hover { color: #fff; text-decoration: underline; }
+        .btn-social { background: rgba(255,255,255,0.15); border: none; color: #fff; width: 45px; height: 45px; display: inline-flex; align-items: center; justify-content: center; font-size: 1.25rem; border-radius: 50%; transition: all 0.3s ease; }
+        .btn-social:hover { background: #fff; color: #0d6efd; transform: scale(1.2); box-shadow: 0 6px 15px rgba(0,0,0,0.25); }
+    </style>
+</head>
+<body>
+
+<!-- ✅ Navbar -->
+<nav class="navbar navbar-expand-lg custom-navbar">
+    <div class="container">
+        <a class="navbar-brand" href="index.html">DonateHub</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item"><a class="nav-link" href="why-donation.html">Why Donation</a></li>
+                <li class="nav-item"><a class="nav-link" href="donor-list.html">Donor List</a></li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">View Causes</a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="index.html#causes">Better Environment</a></li>
+                        <li><a class="dropdown-item" href="index.html#causes">Saving Education</a></li>
+                        <li><a class="dropdown-item" href="index.html#causes">Helping Families</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item"><a class="nav-link" href="stories.html">Our Stories</a></li>
+                <li class="nav-item"><a class="nav-link" href="about.html">About Us</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+    <div>
+        <h1>Donate Now</h1>
+        <p class="lead">Choose how you want to make a difference</p>
+    </div>
+</section>
+
+<!-- ✅ Donate Sections -->
+<!-- Donate + Info Section -->
+<section class="donate-info-section container">
+
+    <!-- Clothes -->
+    <div class="donate-box mb-5 p-3">
+        <div class="row align-items-center g-4">
+
+            <!-- Donate Now Box -->
+            <div class="col-md-4">
+                <div class="donate-now-box text-center p-4">
+                    <i class="bi bi-bag-heart-fill donate-icon"></i>
+                    <h4 class="donate-title">Clothes</h4>
+                    <a th:href="@{/donate-items}" class="donate-btn">Donate Now</a>
+                </div>
+            </div>
+
+            <!-- Info Text -->
+            <div class="col-md-8">
+                <div class="donate-info-content">
+                    <h5><i class="bi bi-people-fill me-2 text-success"></i>Why it matters</h5>
+                    <p>
+                        Donating clothes helps us support <strong>orphanages, NGOs, and underserved communities</strong>. Your contribution brings <strong>warmth, dignity, and hope</strong> to families struggling to meet basic needs. Each clothing donation is a step toward <strong>a kinder and more sustainable world</strong>.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Books -->
+    <div class="donate-box mb-5 p-3">
+        <div class="row align-items-center g-4 flex-row-reverse">
+
+            <!-- Donate Now Box -->
+            <div class="col-md-4">
+                <div class="donate-now-box text-center p-4">
+                    <i class="bi bi-book-half donate-icon"></i>
+                    <h4 class="donate-title">Books</h4>
+                    <a th:href="@{/donate-items}" class="donate-btn">Donate Now</a>
+                </div>
+            </div>
+
+            <!-- Info Text -->
+            <div class="col-md-8">
+                <div class="donate-info-content">
+                    <h5><i class="bi bi-lightbulb-fill me-2 text-warning"></i>Why it matters</h5>
+                    <p>
+                        We provide books to <strong>government schools, orphanages, and children from low-income families</strong>. By donating books, you empower young minds with knowledge, encourage lifelong learning, and help break the cycle of poverty through education.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Toys -->
+    <div class="donate-box mb-5 p-3">
+        <div class="row align-items-center g-4">
+
+            <!-- Donate Now Box -->
+            <div class="col-md-4">
+                <div class="donate-now-box text-center p-4">
+                    <i class="bi bi-gift-fill donate-icon"></i>
+                    <h4 class="donate-title">children Toys</h4>
+                    <a th:href="@{/donate-items}" class="donate-btn">Donate Now</a>
+                </div>
+            </div>
+
+            <!-- Info Text -->
+            <div class="col-md-8">
+                <div class="donate-info-content">
+                    <h5><i class="bi bi-emoji-smile-fill me-2 text-danger"></i>Why it matters</h5>
+                    <p>
+                        Toy donations <strong>spread joy and spark imagination</strong>. We deliver toys to orphanages and children’s shelters, bringing <strong>moments of happiness</strong> to kids who deserve a childhood full of smiles and wonder.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Other Items -->
+    <div class="donate-box mb-5 p-3">
+        <div class="row align-items-center g-4 flex-row-reverse">
+
+            <!-- Donate Now Box -->
+            <div class="col-md-4">
+                <div class="donate-now-box text-center p-4">
+                    <i class="bi bi-laptop donate-icon"></i>
+                    <h4 class="donate-title">Other Items</h4>
+                    <a th:href="@{/donate-items}" class="donate-btn">Donate Now</a>
+                </div>
+            </div>
+
+            <!-- Info Text -->
+            <div class="col-md-8">
+                <div class="donate-info-content">
+                    <h5><i class="bi bi-recycle me-2 text-primary"></i>Why it matters</h5>
+                    <p>
+                        Donating electronics, household goods, and other essentials <strong>gives unused items new life</strong>. Your donation helps NGOs and families in need while promoting <strong>environmental responsibility</strong> through reuse.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</section>
+
+
+<!-- Info Section -->
+<section class="info-section">
+    <div class="container">
+        <div class="row align-items-center g-4">
+            <div class="col-lg-6">
+                <img src="https://thumbs.dreamstime.com/b/senior-volunteer-man-holding-your-donation-matters-smiling-happy-pointing-hand-finger-260199592.jpg" class="img-fluid" alt="Donation Info">
+            </div>
+            <div class="col-lg-6">
+                <h2>Why Your Donation Matters</h2>
+                <p>Every item you donate reaches someone who needs it most — from children who deserve education to families struggling to meet daily needs. Your contribution helps reduce waste, foster kindness, and build sustainable communities. Together, we can create a ripple effect of change.</p>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Need Volunteers Section -->
+<section class="info-section">
+    <div class="container">
+        <div class="row align-items-center g-4 flex-row-reverse">
+
+            <!-- Image -->
+            <div class="col-lg-6 text-center">
+                <img src="https://img.freepik.com/premium-photo/woman-holding-sheet-paper-with-text-we-need-volunteers-color-background-closeup_392895-152332.jpg?semt=ais_hybrid&w=740&q=80" max
+                     class="img-fluid volunteer-img"
+                     alt="Need Volunteers">
+            </div>
+
+            <!-- Text -->
+            <div class="col-lg-6">
+                <h2>We Need Volunteers</h2>
+                <p>
+                    Our mission is powered by passionate individuals like you.
+                    By volunteering, you help us collect, sort, and distribute donated items
+                    to <strong>schools, orphanages, NGOs, and families in need</strong>.
+                    Your time and effort create real impact —
+                    <strong>every helping hand brings hope and happiness to someone’s life.</strong>
+                </p>
+
+            </div>
+
+        </div>
+    </div>
+</section>
+
+
+<!-- How Your Donation Helps -->
+<section class="helps-section">
+    <div class="container">
+        <h2>How Your Donation Helps</h2>
+        <div class="row g-4">
+            <div class="col-md-4 help-card">
+                <i class="bi bi-heart-fill"></i>
+                <h5>Supports Communities</h5>
+                <p>Your donations uplift families and neighborhoods.</p>
+            </div>
+            <div class="col-md-4 help-card">
+                <i class="bi bi-globe2"></i>
+                <h5>Protects Environment</h5>
+                <p>Reusing items reduces waste and environmental damage.</p>
+            </div>
+            <div class="col-md-4 help-card">
+                <i class="bi bi-people-fill"></i>
+                <h5>Builds Togetherness</h5>
+                <p>Donation creates bonds and inspires collective growth.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Impact Banner -->
+<section class="impact-banner">
+    <h2>“One Small Act of Kindness Can Change a Life Forever.”</h2>
+    <p>Your donations are the foundation for brighter futures.</p>
+</section>
+
+<!-- CTA -->
+<footer class="footer-section py-4" id="footer">
+    <div class="container-fluid px-5">
+        <div class="row g-4 text-white justify-content-between">
+
+            <div class="col-md-4">
+                <h5>About Us</h5>
+                <p>Care & Share helps recycle, resell, and donate books & clothes. Building a sustainable community through responsible actions.</p>
+            </div>
+
+            <div class="col-md-3">
+                <h5>Quick Links</h5>
+                <ul class="list-unstyled">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="#features">Features</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </div>
+
+            <div class="col-md-3">
+                <h5>Contact</h5>
+                <p>Email: info@careandshare.com</p>
+                <p>Phone: +91 9876543210</p>
+                <div class="d-flex gap-2 mt-3">
+                    <a href="#" class="btn btn-social"><i class="bi bi-facebook"></i></a>
+                    <a href="#" class="btn btn-social"><i class="bi bi-twitter"></i></a>
+                    <a href="#" class="btn btn-social"><i class="bi bi-instagram"></i></a>
+                </div>
+            </div>
+
+        </div>
+
+        <hr class="my-3 border-light opacity-50">
+        <p class="text-center mb-0">&copy; 2025 Care & Share | All Rights Reserved</p>
+    </div>
+</footer>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    <script>
+    async function uploadImage(file) {
+        const formData = new FormData();
+        formData.append("image", file);
+
+        const res = await fetch("http://localhost:8080/api/books/upload", {
+            method: "POST",
+            body: formData
+        });
+
+        return await res.text();
+    }
+
+    async function saveDonation() {
+        const fileInput = document.getElementById("fileInput").files[0];
+        const imageUrl = await uploadImage(fileInput);
+
+        const data = {
+            itemName: "Books",
+            quantity: 10,
+            itemCondition: "Good",
+            pickupAddress: "Hyderabad",
+            userId: 10,
+            imageUrl: imageUrl
+        };
+
+        fetch("http://localhost:8080/api/books", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify(data)
+        })
+        .then(res => res.json())
+        .then(data => alert("Books Donated Successfully!"));
+    }
+
+
+</script>
+</body>
+</html>
