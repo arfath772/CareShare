@@ -1,6 +1,6 @@
 package retouch.project.careNdShare.controller;
 
-
+// ... all your imports ...
 import org.springframework.web.bind.annotation.RequestParam;
 import retouch.project.careNdShare.entity.User;
 import retouch.project.careNdShare.service.AuthService;
@@ -24,7 +24,6 @@ public class WebController {
 
     @GetMapping("/login")
     public String login() {
-        // If user is already authenticated, redirect to dashboard
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.isAuthenticated() &&
                 !authentication.getPrincipal().equals("anonymousUser")) {
@@ -38,6 +37,7 @@ public class WebController {
         return "register";
     }
 
+    // THIS IS THE CORRECT METHOD FOR /dashboard
     @GetMapping("/dashboard")
     public String dashboard(Model model) {
         User user = authService.getCurrentUser();
@@ -51,7 +51,6 @@ public class WebController {
 
     @GetMapping("/forgot-password")
     public String forgotPassword() {
-        // If user is already authenticated, redirect to dashboard
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.isAuthenticated() &&
                 !authentication.getPrincipal().equals("anonymousUser")) {
