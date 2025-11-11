@@ -510,7 +510,6 @@
              transform: translateY(-2px);
         }
 
-        /* ADDED FROM CODE 2 */
         .btn-outline-warning {
             border: 2px solid #ffc107;
             color: #ffc107;
@@ -521,7 +520,6 @@
             color: #000;
             transform: translateY(-2px);
         }
-        /* END ADD */
 
         .btn-success {
              background: #28a745;
@@ -673,7 +671,7 @@
              margin-top: 20px;
         }
 
-        /* --- ADDED FROM CODE 2: EXCHANGE MODAL STYLES --- */
+        /* Exchange Modal Styles */
         .exchange-request-modal .modal-content {
             border-radius: 0;
             border: none;
@@ -701,10 +699,8 @@
             transform: translateY(-3px);
             box-shadow: 0 8px 20px rgba(0,0,0,0.12);
         }
-        /* --- END ADD --- */
 
-
-        /* --- FROM CODE 1: PURCHASE FORM STYLES --- */
+        /* Purchase Form Styles */
         .purchase-container {
              max-width: 800px;
              margin: 0 auto;
@@ -1025,7 +1021,39 @@
              font-size: 0.85rem;
              color: #666;
         }
-        /* --- END PURCHASE FORM STYLES --- */
+
+        /* NEW: Fixed buyer information styles */
+        .purchase-buyer-info {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .purchase-buyer-info-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .purchase-buyer-info-item:last-child {
+            border-bottom: none;
+        }
+
+        .purchase-buyer-info-label {
+            font-weight: 600;
+            color: #555;
+            min-width: 120px;
+        }
+
+        .purchase-buyer-info-value {
+            color: var(--text-dark);
+            font-weight: 500;
+            text-align: right;
+            flex: 1;
+        }
 
         /* Notification System */
         .notification-container {
@@ -1148,7 +1176,6 @@
 </head>
 <body>
 
-<!-- Notification Container -->
 <div class="notification-container" id="notificationContainer"></div>
 
 <nav class="navbar navbar-expand-lg navbar-light navbar-custom fixed-top shadow-sm">
@@ -1211,23 +1238,14 @@
 <div class="dashboard-header">
     <div class="container text-center">
         <h1 id="dashboardTitle" style="color: white; text-transform: uppercase; letter-spacing: 2px;">Welcome to Your Dashboard</h1>
-        <p class="lead" id="dashboardSubtitle" style="color: rgba(255,255,255,0.9);">Manage your donations, exchanges, and resell activities in one place</p>
+        <p class="lead" id="dashboardSubtitle" style="color: rgba(255,255,255,0.9);">Manage your exchanges and resell activities in one place</p>
     </div>
 </div>
 
 <div class="container">
     <div id="dashboardHome" class="dashboard-section active">
         <div class="row">
-            <div class="col-md-3">
-                <div class="stats-card">
-                    <div class="stats-icon">
-                        <i class="fa-solid fa-hand-holding-heart"></i>
-                    </div>
-                    <div class="stats-number" id="donationsCount">0</div>
-                    <div class="stats-label">Items Donated</div>
-                </div>
-            </div>
-            <div class="col-md-3">
+            <div class="col-md-4">
                 <div class="stats-card">
                     <div class="stats-icon">
                         <i class="fa-solid fa-right-left"></i>
@@ -1236,7 +1254,7 @@
                     <div class="stats-label">Items Exchanged</div>
                 </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-4">
                 <div class="stats-card">
                     <div class="stats-icon">
                         <i class="fa-solid fa-tag"></i>
@@ -1245,7 +1263,7 @@
                     <div class="stats-label">Items Sold</div>
                 </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-4">
                 <div class="stats-card">
                     <div class="stats-icon">
                         <i class="fa-solid fa-star"></i>
@@ -1263,7 +1281,7 @@
                     <p class="text-muted">You haven't performed any activities yet.</p>
                     <div class="alert alert-info">
                         <i class="fa-solid fa-info-circle me-2"></i>
-                        Start by donating, exchanging, or reselling items to see your activities here.
+                        Start by exchanging or reselling items to see your activities here.
                     </div>
                 </div>
             </div>
@@ -1346,7 +1364,7 @@
                     <div class="info-item">
                         <span class="info-label">Account Type:</span>
                         <span class="info-value">
-                            <span id="accountTypeBadge" class="badge bg-success">Verified Member</span>
+                            <span id="accountTypeBadge2" class="badge bg-success">Verified Member</span>
                         </span>
                     </div>
                     <div class="info-item">
@@ -1385,7 +1403,7 @@
     <div id="actionsSection" class="dashboard-section">
         <div class="profile-section">
             <h2>My Actions</h2>
-            <p class="text-muted">Manage your donations, exchanges, and sales</p>
+            <p class="text-muted">Manage your exchanges, and sales</p>
 
             <div class="alert alert-info">
                 <i class="fa-solid fa-info-circle me-2"></i>
@@ -1397,7 +1415,7 @@
     <div id="itemsSection" class="dashboard-section">
         <div class="profile-section">
             <h2>My Items</h2>
-            <p class="text-muted">Manage items you've listed for donation, exchange, or resale</p>
+            <p class="text-muted">Manage items you've listed for exchange or resale</p>
 
             <div class="card mb-4">
                 <div class="card-header">
@@ -1429,7 +1447,6 @@
                                     <label for="productType" class="form-label">Listing Type *</label>
                                     <select class="form-select" id="productType" required onchange="handleListingTypeChange()">
                                         <option value="">Select Type</option>
-                                        <option value="Donate">Donate</option>
                                         <option value="Exchange">Exchange</option>
                                         <option value="Resell">Resell</option>
                                     </select>
@@ -1485,6 +1502,7 @@
     </div>
 </div>
 
+<!-- UPDATED PURCHASE OVERLAY WITH AUTO-FILL -->
 <div class="purchase-overlay" id="purchaseOverlay">
     <div class="purchase-overlay-content">
         <div class="purchase-overlay-header">
@@ -1495,6 +1513,8 @@
         </div>
         <div class="purchase-container">
             <input type="hidden" id="purchaseProductId" value="">
+            <input type="hidden" id="purchaseUserEmail" value="">
+            <input type="hidden" id="purchaseUserFullName" value="">
 
             <div class="purchase-product-card">
                 <div class="purchase-product-title" id="purchaseProductName">Product Name</div>
@@ -1504,16 +1524,20 @@
 
             <div class="purchase-form-section">
                 <h3 class="purchase-form-section-title">Your Information</h3>
-                <div class="purchase-form-group">
-                    <label for="fullName" class="purchase-label">Your Full Name *</label>
-                    <input type="text" id="fullName" name="fullName" class="purchase-input" required>
+
+                <!-- Buyer Information Section -->
+                <div class="purchase-buyer-info">
+                    <div class="purchase-buyer-info-item">
+                        <span class="purchase-buyer-info-label">Full Name:</span>
+                        <span class="purchase-buyer-info-value" id="buyerFullName">Loading...</span>
+                    </div>
+                    <div class="purchase-buyer-info-item">
+                        <span class="purchase-buyer-info-label">Email:</span>
+                        <span class="purchase-buyer-info-value" id="buyerEmail">Loading...</span>
+                    </div>
                 </div>
 
-                <div class="purchase-form-group">
-                    <label for="email" class="purchase-label">Your Email *</label>
-                    <input type="email" id="email" name="email" class="purchase-input" required>
-                </div>
-
+                <!-- Editable fields for phone and address -->
                 <div class="purchase-form-group">
                     <label for="phone" class="purchase-label">Phone Number *</label>
                     <input type="tel" id="phone" name="phone" class="purchase-input" required>
@@ -1602,7 +1626,6 @@
                         <label for="fullscreenItemTypeFilter" class="form-label">Item Type</label>
                         <select class="form-select" id="fullscreenItemTypeFilter" onchange="filterFullscreenAvailableItems()">
                             <option value="all">All Types</option>
-                            <option value="Donate">Donate</option>
                             <option value="Exchange">Exchange</option>
                             <option value="Resell">Resell</option>
                         </select>
@@ -1781,7 +1804,6 @@
             <div class="col-md-3 mb-3">
                 <h5>Make a Difference</h5>
                 <ul>
-                    <li><a onclick="showSection('actions')">Start Donating</a></li>
                     <li><a onclick="showAvailableItemsFullscreen('exchange')">Exchange Items</a></li>
                     <li><a onclick="showAvailableItemsFullscreen('resell')">Resell Items</a></li>
                     <li><a onclick="showAvailableItemsFullscreen()">Browse All Items</a></li>
@@ -1820,6 +1842,7 @@
     let currentExchangeProductId = null;
     let currentExchangeRequests = [];
     let currentFilterType = 'all';
+    let currentUserData = null;
 
     // Notification System
     function showNotification(message, type = 'info', duration = 5000) {
@@ -1886,7 +1909,7 @@
         hideAllSections();
         document.getElementById('dashboardHome').classList.add('active');
         updateNavActiveState('dashboardHome');
-        updateDashboardHeader('Welcome to Your Dashboard', 'Manage your donations, exchanges, and resell activities in one place');
+        updateDashboardHeader('Welcome to Your Dashboard', 'Manage your exchanges and resell activities in one place');
     }
 
     // Function to show profile section
@@ -1916,12 +1939,12 @@
             case 'actions':
                 document.getElementById('actionsSection').classList.add('active');
                 updateNavActiveState('actions');
-                updateDashboardHeader('My Actions', 'Manage your donations, exchanges, and sales');
+                updateDashboardHeader('My Actions', 'Manage your exchanges and sales');
                 break;
             case 'items':
                 document.getElementById('itemsSection').classList.add('active');
                 updateNavActiveState('items');
-                updateDashboardHeader('My Items', 'Manage items you\'ve listed for donation, exchange, or resale');
+                updateDashboardHeader('My Items', 'Manage items you\'ve listed for exchange or resale');
                 loadMyProducts();
                 break;
             case 'activity':
@@ -1932,12 +1955,15 @@
         }
     }
 
-    // Purchase Form Functions
+    // UPDATED: Purchase Form Functions with Auto-fill
     function showPurchaseForm(productId, productName = 'Product Name', seller = 'Seller Name', price = '₹0.00') {
         document.getElementById('purchaseProductId').value = productId;
         document.getElementById('purchaseProductName').textContent = productName;
         document.getElementById('purchaseSeller').textContent = `Seller: ${seller}`;
         document.getElementById('purchasePrice').textContent = price;
+
+        // Auto-fill user information immediately
+        autoFillUserInformation();
 
         document.getElementById('purchaseOverlay').classList.add('active');
         document.body.style.overflow = 'hidden';
@@ -1946,6 +1972,129 @@
     function closePurchaseForm() {
         document.getElementById('purchaseOverlay').classList.remove('active');
         document.body.style.overflow = '';
+    }
+
+    // NEW FUNCTION: Auto-fill user information from database
+    function autoFillUserInformation() {
+        // In a real application, this would fetch from your backend
+        // For demo, we'll use the profile data
+        currentUserData = {
+            firstName: document.getElementById('profileFirstName').textContent,
+            lastName: document.getElementById('profileLastName').textContent,
+            email: document.getElementById('profileEmail').textContent,
+        };
+
+        // Auto-fill buyer information - fixed fields
+        const fullName = `${currentUserData.firstName || ''} ${currentUserData.lastName || ''}`.trim();
+        document.getElementById('buyerFullName').textContent = fullName;
+        document.getElementById('buyerEmail').textContent = currentUserData.email || '';
+        document.getElementById('purchaseUserEmail').value = currentUserData.email || '';
+        document.getElementById('purchaseUserFullName').value = fullName;
+
+        // Auto-fill editable fields
+        document.getElementById('phone').value = currentUserData.phone || '';
+        document.getElementById('address').value = currentUserData.address || '';
+    }
+
+    // Function to submit purchase with status logic
+    function submitPurchase(phone, address, paymentMethod) {
+        const token = localStorage.getItem('jwtToken');
+        const productId = document.getElementById('purchaseProductId').value;
+
+        if (!productId) {
+            showNotification('Product information is missing', 'error');
+            return;
+        }
+
+        // Get user information
+        const userEmail = document.getElementById('purchaseUserEmail').value;
+        const userFullName = document.getElementById('purchaseUserFullName').value;
+
+        if (!userEmail || userEmail === 'Loading...') {
+            showNotification('User email is required. Please ensure you are logged in properly.', 'error');
+            return;
+        }
+
+        if (!userFullName || userFullName === 'Loading...') {
+            showNotification('Full name is required. Please ensure you are logged in properly.', 'error');
+            return;
+        }
+
+        // Get product price from the displayed price
+        const priceText = document.getElementById('purchasePrice').textContent;
+        const amount = parseFloat(priceText.replace('₹', '').replace(',', '')) || 0;
+
+        // Determine purchase status based on payment method
+        let purchaseStatus = 'PENDING';
+
+        // UPI, Card, Net Banking purchases get COMPLETED status immediately
+        if (paymentMethod === 'UPI' || paymentMethod === 'CARD' || paymentMethod === 'NETBANKING') {
+            purchaseStatus = 'COMPLETED';
+        }
+        // COD purchases remain PENDING until payment is received upon delivery
+        else if (paymentMethod === 'COD') {
+            purchaseStatus = 'PENDING';
+        }
+
+        const purchaseData = {
+            productId: parseInt(productId),
+            phone: phone,
+            shippingAddress: address,
+            paymentMethod: paymentMethod,
+            email: userEmail,
+            fullName: userFullName,
+            amount: amount,
+            status: purchaseStatus // Include status in purchase data
+        };
+
+        console.log('Submitting purchase data:', purchaseData);
+
+        fetch('/api/purchases/create', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token
+            },
+            body: JSON.stringify(purchaseData)
+        })
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(errorData => {
+                    throw new Error(errorData.message || 'Failed to create purchase');
+                });
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                let successMessage = data.message;
+
+                // Customize success message based on payment method
+                if (paymentMethod === 'COD') {
+                    successMessage = 'Your order has been placed successfully! Payment will be collected upon delivery. Status: PENDING';
+                } else {
+                    successMessage = 'Your purchase has been completed successfully! Payment has been processed. Status: COMPLETED';
+                }
+
+                showNotification(successMessage, 'success');
+                closePurchaseForm();
+                // Optionally refresh the available items
+                if (document.body.classList.contains('fullscreen-available')) {
+                    loadFullscreenAvailableItems();
+                }
+
+                // Increment the sales count visually for immediate feedback
+                const salesCountEl = document.getElementById('salesCount');
+                const currentSales = parseInt(salesCountEl.textContent) || 0;
+                salesCountEl.textContent = currentSales + 1;
+            } else {
+                showNotification('Error: ' + data.message, 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showNotification('Failed to complete purchase: ' + error.message, 'error');
+        });
     }
 
     // Function to show fullscreen available items with filtering
@@ -2091,7 +2240,7 @@
                         <p class="card-text">${product.description || 'No description available'}</p>
                         <div class="d-flex justify-content-between align-items-center mb-2">
                             <span class="badge bg-secondary">${product.category}</span>
-                            <span class="badge bg-info">${product.type}</span>
+                            <span class="badge ${getTypeBadgeClass(product.type)}">${product.type}</span>
                         </div>
                         <p class="card-text"><strong>${product.type === 'Resell' ? 'Price: ₹' + product.price : 'Not for sale'}</strong></p>
                         <div class="d-flex justify-content-between align-items-center">
@@ -2142,6 +2291,7 @@
         } else if (currentFilterType === 'resell') {
             type = 'Resell';
         }
+        // "donate" is not handled here
 
         const params = new URLSearchParams();
         if (type !== 'all') params.append('type', type);
@@ -2228,20 +2378,14 @@
                     <i class="fa-solid fa-cart-shopping me-1"></i> Buy Now
                 </button>
             `;
-        } else if (product.type === 'Donate') {
-            buttons += `
-                <button class="btn btn-info btn-sm" onclick="requestDonation(${product.id})">
-                    <i class="fa-solid fa-hand-holding-heart me-1"></i> Request Donation
-                </button>
-            `;
         }
-
+        // "Donate" button is not handled here
         return buttons;
     }
 
     // Function to update product card display based on type
     function updateProductCardDisplay(product) {
-        const priceDisplay = (product.type === 'Exchange' || product.type === 'Donate') ?
+        const priceDisplay = (product.type === 'Exchange' || product.type === 'Donate') ? // Kept "Donate" check here for price logic
             '' : `<span class="text-primary fw-bold">₹${product.price}</span>`;
 
         const buttons = getProductActionButtons(product);
@@ -2481,7 +2625,7 @@
         }
     }
 
-    // Buy Now Functions
+    // UPDATED: Buy Now Functions with auto-fill
     function buyNow(productId, productName = 'Product Name', seller = 'Seller Name', price = '₹0.00') {
         if (productId) {
             const token = localStorage.getItem('jwtToken');
@@ -2525,6 +2669,13 @@
 
     function buyNowFromModal() {
         if (currentProductDetails) {
+            // Close the product detail modal first
+            const productModal = bootstrap.Modal.getInstance(document.getElementById('productDetailModal'));
+            if (productModal) {
+                productModal.hide();
+            }
+
+            // Then open the purchase form with current product details
             buyNow(
                 currentProductDetails.id,
                 currentProductDetails.name,
@@ -2548,53 +2699,9 @@
         }
     }
 
+    // requestDonation function is still here if needed, but no button calls it
     function requestDonation(productId) {
         showNotification(`Requesting donation for product ID: ${productId}`, 'info');
-    }
-
-    // Function to submit purchase
-    function submitPurchase(fullName, email, phone, address, paymentMethod) {
-        const token = localStorage.getItem('jwtToken');
-        const productId = document.getElementById('purchaseProductId').value;
-
-        if (!productId) {
-            showNotification('Product information is missing', 'error');
-            return;
-        }
-
-        const purchaseData = {
-            productId: productId,
-            fullName: fullName,
-            email: email,
-            phone: phone,
-            shippingAddress: address,
-            paymentMethod: paymentMethod
-        };
-
-        fetch('/api/purchases/create', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + token
-            },
-            body: JSON.stringify(purchaseData)
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                showNotification(data.message, 'success');
-                closePurchaseForm();
-                if (document.body.classList.contains('fullscreen-available')) {
-                    loadFullscreenAvailableItems();
-                }
-            } else {
-                showNotification('Error: ' + data.message, 'error');
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            showNotification('Failed to complete purchase. Please try again.', 'error');
-        });
     }
 
     // Initialize purchase form functionality
@@ -2633,20 +2740,18 @@
             const completeButton = document.getElementById('purchaseComplete');
             if (completeButton) {
                 completeButton.addEventListener('click', function() {
-                    const fullName = document.getElementById('fullName').value;
-                    const email = document.getElementById('email').value;
                     const phone = document.getElementById('phone').value;
                     const address = document.getElementById('address').value;
 
-                    if (!fullName || !email || !phone || !address) {
+                    if (!phone || !address) {
                         showNotification('Please fill in all required fields', 'warning');
                         return;
                     }
 
                     let paymentMethod = '';
                     if (upiOption.classList.contains('active')) paymentMethod = 'UPI';
-                    else if (cardOption.classList.contains('active')) paymentMethod = 'Card';
-                    else if (netbankingOption.classList.contains('active')) paymentMethod = 'Net Banking';
+                    else if (cardOption.classList.contains('active')) paymentMethod = 'CARD';
+                    else if (netbankingOption.classList.contains('active')) paymentMethod = 'NETBANKING';
                     else if (codOption.classList.contains('active')) paymentMethod = 'COD';
 
                     if (!paymentMethod) {
@@ -2654,7 +2759,7 @@
                         return;
                     }
 
-                    submitPurchase(fullName, email, phone, address, paymentMethod);
+                    submitPurchase(phone, address, paymentMethod);
                 });
             }
 
@@ -2828,11 +2933,19 @@
                 document.getElementById('profileId').textContent = user.id || 'N/A';
                 document.getElementById('userName').textContent = user.firstName || 'User';
 
+                // Fix for duplicate IDs
+                document.getElementById('accountTypeBadge').textContent = 'Verified Member';
+                document.getElementById('accountTypeBadge').className = 'badge bg-success';
+                document.getElementById('accountTypeBadge2').textContent = 'Verified Member';
+                document.getElementById('accountTypeBadge2').className = 'badge bg-success';
+
                 if (user.admin) {
                     document.getElementById('adminBadge').style.display = 'inline';
                     document.getElementById('adminLink').style.display = 'block';
                     document.getElementById('accountTypeBadge').className = 'badge bg-danger';
                     document.getElementById('accountTypeBadge').textContent = 'Administrator';
+                    document.getElementById('accountTypeBadge2').className = 'badge bg-danger';
+                    document.getElementById('accountTypeBadge2').textContent = 'Administrator';
                 }
             })
             .catch(error => {
@@ -2860,12 +2973,77 @@
         }
     }
 
-    // Initialize dashboard stats
-    function initializeStats() {
-        document.getElementById('donationsCount').textContent = '0';
+    // New function to load real stats from the backend
+    function loadDashboardStats() {
+        const token = localStorage.getItem('jwtToken');
+        if (!token) {
+            // Set defaults if no token
+            document.getElementById('exchangesCount').textContent = '0';
+            document.getElementById('salesCount').textContent = '0';
+            document.getElementById('rating').textContent = 'N/A';
+            return;
+        }
+
+        // This API endpoint /api/user/stats needs to be created on your backend.
+        // It should return JSON like: { "exchangesCount": 5, "salesCount": 3, "rating": 4.8 }
+        // Note: "donationsCount" is not fetched here.
+        fetch('/api/user/stats', {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + token,
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                // If the API fails, fall back to counting available items
+                console.warn('Failed to fetch /api/user/stats. Falling back to counting available items.');
+                loadAvailableItemCounts(); // Fallback function
+                throw new Error('Failed to fetch stats');
+            }
+            return response.json();
+        })
+        .then(stats => {
+            // Update the dashboard with real data from the backend
+            document.getElementById('exchangesCount').textContent = stats.exchangesCount || 0;
+            document.getElementById('salesCount').textContent = stats.salesCount || 0;
+            document.getElementById('rating').textContent = stats.rating || '4.8'; // Use fetched or default
+        })
+        .catch(error => {
+            console.error('Error fetching dashboard stats:', error.message);
+            // Set defaults on error only if fallback didn't run or also failed
+            if (document.getElementById('exchangesCount').textContent === '0') {
+                 document.getElementById('exchangesCount').textContent = '0';
+                 document.getElementById('salesCount').textContent = '0';
+                 document.getElementById('rating').textContent = '4.8'; // Default on error
+            }
+        });
+    }
+
+    // Fallback function to count AVAILABLE items
+    async function loadAvailableItemCounts() {
+      const token = localStorage.getItem('jwtToken');
+      try {
+        // Fetch Exchange items
+        const exchangeResponse = await fetch('/api/products/available?type=Exchange', {
+          headers: { 'Authorization': 'Bearer ' + token }
+        });
+        if (!exchangeResponse.ok) throw new Error('Exchange fetch failed');
+        const exchangeItems = await exchangeResponse.json();
+        document.getElementById('exchangesCount').textContent = exchangeItems.length;
+
+        // Fetch Resell items
+        const resellResponse = await fetch('/api/products/available?type=Resell', {
+          headers: { 'Authorization': 'Bearer ' + token }
+        });
+        if (!resellResponse.ok) throw new Error('Resell fetch failed');
+        const resellItems = await resellResponse.json();
+        document.getElementById('salesCount').textContent = resellItems.length; // This counts AVAILABLE, not SOLD
+      } catch (error) {
+        console.error('Error fetching available item counts:', error);
         document.getElementById('exchangesCount').textContent = '0';
         document.getElementById('salesCount').textContent = '0';
-        document.getElementById('rating').textContent = '4.8';
+      }
     }
 
     // Check authentication on page load
@@ -2876,7 +3054,7 @@
             return;
         }
 
-        initializeStats();
+        loadDashboardStats(); // <-- This will call the primary function
         updateProfileData();
         showDashboardHome();
     });
