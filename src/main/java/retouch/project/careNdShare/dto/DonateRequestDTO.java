@@ -1,54 +1,12 @@
 package retouch.project.careNdShare.dto;
 
-import java.time.LocalDateTime;
+import jakarta.validation.constraints.NotNull;
+import lombok.Data;
 
+@Data
 public class DonateRequestDTO {
-
-    private String donationType;
+    @NotNull(message = "Donation Item ID is required")
     private Long donationId;
-    private Long receiverUserId;
-    private String status;
-    private LocalDateTime requestedDate;
 
-
-    public String getDonationType() {
-        return donationType;
-    }
-
-    public void setDonationType(String donationType) {
-        this.donationType = donationType;
-    }
-
-    public Long getDonationId() {
-        return donationId;
-    }
-
-    public void setDonationId(Long donationId) {
-        this.donationId = donationId;
-    }
-
-    public Long getReceiverUserId() {
-        return receiverUserId;
-    }
-
-    public void setReceiverUserId(Long receiverUserId) {
-        this.receiverUserId = receiverUserId;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public LocalDateTime getRequestedDate() {
-        return requestedDate;
-    }
-
-    public void setRequestedDate(LocalDateTime requestedDate) {
-        this.requestedDate = requestedDate;
-    }
+    // receiverUserId will be taken from the authenticated user
 }
-

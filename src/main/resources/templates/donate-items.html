@@ -1,15 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DonateHub - Make a Difference</title>
-
-    <!-- Bootstrap -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Donate Items - DonateHub</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Bootstrap Icons -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
 
     <style>
         :root {
@@ -22,315 +18,74 @@
             --transition: all 0.3s ease;
             --gradient-primary: linear-gradient(135deg, #0d6efd, #38BA86);
         }
-
         body {
-            background: linear-gradient(135deg, #f0f4f8 0%, #e2e8f0 100%);
+            background-color: #f5f7fa;
             font-family: 'Inter', sans-serif;
             min-height: 100vh;
-            padding-bottom: 40px;
         }
-
-        /* Navbar Styles */
         .navbar {
             background: var(--gradient-primary);
-            padding: 15px 0;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
-
         .navbar-brand {
             font-weight: 800;
             font-size: 1.8rem;
             color: white !important;
         }
-
         .nav-link {
             color: rgba(255, 255, 255, 0.9) !important;
             font-weight: 500;
-            margin: 0 10px;
-            transition: var(--transition);
         }
-
-        .nav-link:hover {
-            color: white !important;
-            transform: translateY(-2px);
-        }
-
         .hero-section {
             background: var(--gradient-primary);
             color: white;
-            padding: 80px 0;
+            padding: 60px 0;
             text-align: center;
-            margin-bottom: 40px;
             border-radius: 0 0 30px 30px;
         }
-
-        .hero-title {
-            font-size: 3rem;
-            font-weight: 800;
-            margin-bottom: 20px;
-        }
-
-        .hero-subtitle {
-            font-size: 1.3rem;
-            margin-bottom: 30px;
-            opacity: 0.9;
-        }
-
-        .section-title {
-            font-weight: 700;
-            margin-bottom: 30px;
-            text-align: center;
-            position: relative;
-            padding-bottom: 15px;
-        }
-
-        .section-title:after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80px;
-            height: 4px;
-            background: var(--gradient-primary);
-            border-radius: 2px;
-        }
-
         .donation-card {
             background: #fff;
             padding: 30px;
             border-radius: 20px;
             box-shadow: var(--card-shadow);
-            margin-top: 40px;
+            margin-top: -30px;
             border: none;
-            transition: var(--transition);
         }
-
-        .donation-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
-        }
-
         h2 {
             color: var(--primary);
             font-weight: 700;
             margin-bottom: 30px;
             text-align: center;
-            position: relative;
-            padding-bottom: 15px;
         }
-
-        h2:after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80px;
-            height: 4px;
-            background: var(--gradient-primary);
-            border-radius: 2px;
-        }
-
-        .btn-donate {
-            background: var(--gradient-primary);
-            padding: 10px 25px;
-            font-size: 16px;
-            font-weight: 600;
-            border-radius: 12px;
-            border: none;
-            transition: var(--transition);
-            box-shadow: 0 4px 15px rgba(13, 110, 253, 0.3);
-            color: white;
-        }
-
-        .btn-donate:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(13, 110, 253, 0.4);
-            color: white;
-        }
-
         .btn-submit {
             background: var(--gradient-primary);
-            padding: 10px 30px;
-            font-size: 16px;
+            padding: 12px 30px;
+            font-size: 1rem;
             font-weight: 600;
             border-radius: 12px;
             border: none;
             transition: var(--transition);
             box-shadow: 0 4px 15px rgba(13, 110, 253, 0.3);
             color: white;
-            width: auto;
-            display: inline-block;
         }
-
         .btn-submit:hover {
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(13, 110, 253, 0.4);
             color: white;
         }
-
-        th {
-            background: var(--gradient-primary);
-            color: white;
-            font-weight: 600;
-            padding: 15px;
-        }
-
-        img.item-img {
-            width: 60px;
-            height: 60px;
-            border-radius: 10px;
-            object-fit: cover;
-            border: 2px solid #e9ecef;
-        }
-
         .form-label {
             font-weight: 600;
-            margin-bottom: 10px;
             color: var(--dark);
-            display: flex;
-            align-items: center;
-            gap: 8px;
         }
-
-        .form-control {
+        .form-control, .form-select {
             padding: 12px 15px;
             border-radius: 10px;
             border: 2px solid #e9ecef;
-            transition: var(--transition);
         }
-
-        .form-control:focus {
+        .form-control:focus, .form-select:focus {
             border-color: var(--primary);
             box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.15);
         }
-
-        .form-section {
-            margin-bottom: 25px;
-            padding: 20px;
-            border-radius: 15px;
-            background: var(--light);
-            border-left: 4px solid var(--primary);
-        }
-
-        .form-section-title {
-            color: var(--primary);
-            margin-bottom: 20px;
-            font-size: 1.2rem;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .icon-wrapper {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 40px;
-            height: 40px;
-            background: rgba(13, 110, 253, 0.1);
-            border-radius: 10px;
-            color: var(--primary);
-        }
-
-        .table-container {
-            margin-top: 50px;
-            background: white;
-            border-radius: 20px;
-            padding: 25px;
-            box-shadow: var(--card-shadow);
-        }
-
-        .table {
-            border-radius: 15px;
-            overflow: hidden;
-            margin-bottom: 0;
-        }
-
-        .table-hover tbody tr:hover {
-            background-color: rgba(13, 110, 253, 0.05);
-        }
-
-        .table-bordered th, .table-bordered td {
-            border: 1px solid #dee2e6;
-        }
-
-        .header-logo {
-            text-align: center;
-            margin-bottom: 10px;
-        }
-
-        .header-logo i {
-            font-size: 2.5rem;
-            color: white;
-            background: rgba(255, 255, 255, 0.2);
-            padding: 15px;
-            border-radius: 50%;
-        }
-
-        .page-title {
-            font-size: 2.5rem;
-            font-weight: 800;
-            color: white;
-            text-align: center;
-            margin-bottom: 10px;
-        }
-
-        .page-subtitle {
-            text-align: center;
-            color: rgba(255, 255, 255, 0.9);
-            margin-bottom: 30px;
-            font-size: 1.1rem;
-        }
-
-        .form-row {
-            display: flex;
-            flex-wrap: wrap;
-            margin-right: -10px;
-            margin-left: -10px;
-        }
-
-        .form-col {
-            padding-right: 10px;
-            padding-left: 10px;
-            flex: 1 0 0%;
-        }
-
-        .info-section {
-            padding: 60px 0;
-        }
-
-        .info-card {
-            background: white;
-            border-radius: 15px;
-            padding: 30px;
-            box-shadow: var(--card-shadow);
-            height: 100%;
-            transition: var(--transition);
-            text-align: center;
-        }
-
-        .info-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
-        }
-
-        .info-icon {
-            font-size: 3rem;
-            margin-bottom: 20px;
-            background: var(--gradient-primary);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .info-title {
-            font-weight: 700;
-            margin-bottom: 15px;
-            color: var(--dark);
-        }
-
         .footer {
             background: var(--dark);
             color: white;
@@ -338,359 +93,179 @@
             margin-top: 60px;
             text-align: center;
         }
-
-        @media (max-width: 768px) {
-            .form-col {
-                flex: 0 0 100%;
-                margin-bottom: 15px;
-            }
-
-            .donation-card {
-                padding: 20px;
-            }
-
-            .hero-title {
-                font-size: 2.2rem;
-            }
+        #notification {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            z-index: 1050;
+            display: none;
+            min-width: 300px;
         }
     </style>
 </head>
-
 <body>
 
-<!-- Navigation Bar -->
 <nav class="navbar navbar-expand-lg navbar-dark">
     <div class="container">
-        <a class="navbar-brand" href="#">
+        <a class="navbar-brand" href="/">
             <i class="bi bi-heart-fill me-2"></i>DonateHub
         </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Why Donation</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Donor List</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">View Causes</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Our Stories</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">About Us</a>
-                </li>
-            </ul>
+        <div class="navbar-nav ms-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="/dashboard">Dashboard</a>
+            </li>
         </div>
     </div>
 </nav>
 
-<!-- Hero Section -->
 <section class="hero-section">
     <div class="container">
-        <h1 class="hero-title">Donate Now</h1>
-        <p class="hero-subtitle">Choose how you want to make a difference</p>
-        <button class="btn btn-donate">Start Donating</button>
+        <h1>Donate Your Items</h1>
+        <p class="lead">Fill out the form below to start your donation.</p>
     </div>
 </section>
 
-<!-- Donation Form -->
+<div id="notification" class="alert alert-dismissible fade show" role="alert">
+    <span id="notificationMessage"></span>
+    <button type="button" class="btn-close" onclick="hideNotification()"></button>
+</div>
+
 <div class="container">
-    <div class="donation-card">
-        <h2><i class="bi bi-gift-fill me-2"></i> Donate Your Items</h2>
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="donation-card">
+                <h2><i class="bi bi-gift-fill me-2"></i> New Donation Form</h2>
 
-        <form id="donationForm">
-
-            <!-- Item Information Section -->
-            <div class="form-section">
-                <div class="form-section-title">
-                    <div class="icon-wrapper">
-                        <i class="bi bi-tags"></i>
-                    </div>
-                    Item Details
-                </div>
-
-                <div class="form-row">
-                    <div class="form-col">
-                        <div class="mb-3">
-                            <label class="form-label">
-                                <i class="bi bi-list-ul"></i> Category
-                            </label>
-                            <select class="form-control" id="category" required>
+                <form id="donationForm">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="itemType" class="form-label">Category *</label>
+                            <select class="form-select" id="itemType" required>
                                 <option value="">-- Select Category --</option>
-                                <option value="clothes">Clothes</option>
-                                <option value="books">Books</option>
-                                <option value="toys">Toys</option>
-                                <option value="others">Other Items</option>
+                                <option value="Clothes">Clothes</option>
+                                <option value="Books">Books</option>
+                                <option value="Toys">Toys</option>
+                                <option value="Electronics">Electronics</option>
+                                <option value="Furniture">Furniture</option>
+                                <option value="Other">Other</option>
                             </select>
                         </div>
-                    </div>
-
-                    <div class="form-col">
-                        <div class="mb-3">
-                            <label class="form-label">
-                                <i class="bi bi-box"></i> Item Name
-                            </label>
-                            <input type="text" class="form-control" id="itemName" required>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-col">
-                        <div class="mb-3">
-                            <label class="form-label">
-                                <i class="bi bi-123"></i> Quantity
-                            </label>
-                            <input type="number" class="form-control" id="quantity" min="1" required>
+                        <div class="col-md-6 mb-3">
+                            <label for="itemName" class="form-label">Item Name *</label>
+                            <input type="text" class="form-control" id="itemName" placeholder="e.g., 'Winter Jacket' or 'Sci-Fi Novels'" required>
                         </div>
                     </div>
 
-                    <div class="form-col">
-                        <div class="mb-3">
-                            <label class="form-label">
-                                <i class="bi bi-clipboard-check"></i> Condition
-                            </label>
-                            <select class="form-control" id="itemCondition" required>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="quantity" class="form-label">Quantity *</label>
+                            <input type="number" class="form-control" id="quantity" value="1" min="1" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="itemCondition" class="form-label">Condition *</label>
+                            <select class="form-select" id="itemCondition" required>
                                 <option value="">-- Select Condition --</option>
-                                <option value="new">New</option>
-                                <option value="like-new">Like New</option>
-                                <option value="used-good">Used - Good</option>
-                                <option value="used-fair">Used - Fair</option>
+                                <option value="New">New</option>
+                                <option value="Like New">Like New</option>
+                                <option value="Good">Good (Used, functional)</option>
+                                <option value="Fair">Fair (Used, visible wear)</option>
                             </select>
                         </div>
                     </div>
-                </div>
-            </div>
 
-            <!-- Pickup Information Section -->
-            <div class="form-section">
-                <div class="form-section-title">
-                    <div class="icon-wrapper">
-                        <i class="bi bi-geo-alt"></i>
+                    <div class="mb-3">
+                        <label for="pickupAddress" class="form-label">Pickup Address *</label>
+                        <input type="text" class="form-control" id="pickupAddress" placeholder="123 Main St, City, State" required>
                     </div>
-                    Pickup Information
-                </div>
 
-                <div class="mb-3">
-                    <label class="form-label">
-                        <i class="bi bi-house-door"></i> Pickup Address
-                    </label>
-                    <input type="text" class="form-control" id="pickupAddress" required>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label">
-                        <i class="bi bi-person-badge"></i> User ID
-                    </label>
-                    <input type="number" class="form-control" id="userId" required>
-                </div>
-            </div>
-
-            <!-- Image Upload Section -->
-            <div class="form-section">
-                <div class="form-section-title">
-                    <div class="icon-wrapper">
-                        <i class="bi bi-image"></i>
+                    <div class="mb-3">
+                        <label for="imageFile" class="form-label">Item Image *</label>
+                        <input type="file" class="form-control" id="imageFile" accept="image/*" required>
                     </div>
-                    Item Image
-                </div>
 
-                <div class="mb-3">
-                    <label class="form-label">
-                        <i class="bi bi-upload"></i> Upload Image
-                    </label>
-                    <input type="file" class="form-control" id="imageFile" accept="image/*" required>
-                </div>
-            </div>
-
-            <div class="text-center mt-4">
-                <button type="submit" class="btn-submit">
-                    <i class="bi bi-send-check me-2"></i> Submit Donation
-                </button>
-            </div>
-
-        </form>
-    </div>
-
-    <!-- Why It Matters Section -->
-    <section class="info-section">
-        <div class="container">
-            <h2 class="section-title">Why It Matters</h2>
-            <div class="row">
-                <div class="col-md-4 mb-4">
-                    <div class="info-card">
-                        <i class="bi bi-people-fill info-icon"></i>
-                        <h3 class="info-title">Community Impact</h3>
-                        <p>Your donations directly help those in need within our community, creating a positive ripple effect that benefits everyone.</p>
+                    <div class="text-center mt-4">
+                        <button type="submit" class="btn-submit" id="submitButton">
+                            <i class="bi bi-send-check me-2"></i> Submit Donation
+                        </button>
                     </div>
-                </div>
-                <div class="col-md-4 mb-4">
-                    <div class="info-card">
-                        <i class="bi bi-recycle info-icon"></i>
-                        <h3 class="info-title">Reduce Waste</h3>
-                        <p>Donating items reduces landfill waste and promotes sustainability by giving items a second life with someone who needs them.</p>
-                    </div>
-                </div>
-                <div class="col-md-4 mb-4">
-                    <div class="info-card">
-                        <i class="bi bi-heart info-icon"></i>
-                        <h3 class="info-title">Spread Kindness</h3>
-                        <p>Every donation spreads kindness and hope to individuals and families facing difficult circumstances in our community.</p>
-                    </div>
-                </div>
+                </form>
             </div>
         </div>
-    </section>
-
-    <!-- Recent Donations Table -->
-    <div class="table-container">
-        <h3 class="text-center mb-4">
-            <i class="bi bi-clock-history me-2"></i> Recent Donations
-        </h3>
-
-        <table class="table table-bordered table-hover text-center" id="donationTable">
-            <thead>
-            <tr>
-                <th><i class="bi bi-image me-1"></i> Image</th>
-                <th><i class="bi bi-tag me-1"></i> Category</th>
-                <th><i class="bi bi-box me-1"></i> Item</th>
-                <th><i class="bi bi-123 me-1"></i> Qty</th>
-                <th><i class="bi bi-clipboard-check me-1"></i> Condition</th>
-                <th><i class="bi bi-geo-alt me-1"></i> Address</th>
-                <th><i class="bi bi-person me-1"></i> User</th>
-            </tr>
-            </thead>
-            <tbody>
-            <!-- Data will be populated by JavaScript -->
-            <tr>
-                <td><img src="https://via.placeholder.com/60" class="item-img" alt="Sample Item"></td>
-                <td>CLOTHES</td>
-                <td>Winter Jacket</td>
-                <td>2</td>
-                <td>Like New</td>
-                <td>123 Main St</td>
-                <td>101</td>
-            </tr>
-            <tr>
-                <td><img src="https://via.placeholder.com/60" class="item-img" alt="Sample Item"></td>
-                <td>BOOKS</td>
-                <td>Children's Books</td>
-                <td>5</td>
-                <td>Used - Good</td>
-                <td>456 Oak Ave</td>
-                <td>102</td>
-            </tr>
-            </tbody>
-        </table>
     </div>
 </div>
 
-<!-- Footer -->
 <footer class="footer">
     <div class="container">
-        <p>&copy; 2023 DonateHub. All rights reserved.</p>
-        <p>Making the world a better place, one donation at a time.</p>
+        <p>&copy; 2025 Care & Share. All rights reserved.</p>
     </div>
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
-    // ✅ Correct API Endpoints for Submit
-    const API_MAP = {
-        clothes: "http://localhost:8080/api/donate/clothes",
-        books: "http://localhost:8080/api/books",
-        toys: "http://localhost:8080/api/toys",
-        others: "http://localhost:8080/api/donate/other"
-    };
+    const form = document.getElementById("donationForm");
+    const submitButton = document.getElementById("submitButton");
+    const notification = document.getElementById("notification");
+    const notificationMessage = document.getElementById("notificationMessage");
 
-    // ✅ Convert image to Base64
-    function convertToBase64(file) {
-        return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = () => resolve(reader.result);
-            reader.onerror = error => reject(error);
-        });
+    function showNotification(message, type = 'success') {
+        notification.className = `alert alert-${type} alert-dismissible fade show`;
+        notificationMessage.textContent = message;
+        notification.style.display = 'block';
     }
 
-    // ✅ Submit Donation Form
-    document.getElementById("donationForm").addEventListener("submit", async (e) => {
+    function hideNotification() {
+        notification.style.display = 'none';
+    }
+
+    form.addEventListener("submit", async (e) => {
         e.preventDefault();
 
-        const category = document.getElementById("category").value;
-        if (!category) return alert("Please select a category.");
+        const token = localStorage.getItem('jwtToken');
+        if (!token) {
+            showNotification('You must be logged in to donate.', 'danger');
+            setTimeout(() => window.location.href = '/login', 2000);
+            return;
+        }
 
-        const file = document.getElementById("imageFile").files[0];
-        const base64Image = await convertToBase64(file);
+        submitButton.disabled = true;
+        submitButton.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Submitting...';
 
-        const data = {
-            itemName: document.getElementById("itemName").value,
-            quantity: parseInt(document.getElementById("quantity").value),
-            itemCondition: document.getElementById("itemCondition").value,
-            pickupAddress: document.getElementById("pickupAddress").value,
-            userId: parseInt(document.getElementById("userId").value),
-            imageUrl: base64Image
-        };
+        const formData = new FormData();
+        formData.append("itemType", document.getElementById("itemType").value);
+        formData.append("itemName", document.getElementById("itemName").value);
+        formData.append("quantity", document.getElementById("quantity").value);
+        formData.append("itemCondition", document.getElementById("itemCondition").value);
+        formData.append("pickupAddress", document.getElementById("pickupAddress").value);
+        formData.append("imageFile", document.getElementById("imageFile").files[0]);
 
-        const response = await fetch(API_MAP[category], {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(data)
-        });
+        try {
+            const response = await fetch("http://localhost:8080/api/donate/add", {
+                method: "POST",
+                headers: {
+                    'Authorization': 'Bearer ' + token
+                },
+                body: formData
+            });
 
-        if (response.ok) {
-            alert("✅ Donation Submitted Successfully!");
-            document.getElementById("donationForm").reset();
-            loadAllDonations();
-        } else {
-            alert("❌ Failed to Submit Donation (Check Backend Console).");
+            if (response.ok) {
+                const result = await response.json();
+                showNotification("✅ Donation Submitted Successfully! It is now pending admin approval.", 'success');
+                form.reset();
+                setTimeout(() => window.location.href = '/dashboard', 2000);
+            } else {
+                const errorText = await response.text();
+                showNotification(`❌ Error: ${errorText}`, 'danger');
+            }
+        } catch (error) {
+            console.error("Submission error:", error);
+            showNotification("❌ Network error. Please try again.", 'danger');
+        } finally {
+            submitButton.disabled = false;
+            submitButton.innerHTML = '<i class="bi bi-send-check me-2"></i> Submit Donation';
         }
     });
-
-    // ✅ Load All Donations into Table
-    async function loadAllDonations() {
-        const tableBody = document.querySelector("#donationTable tbody");
-        tableBody.innerHTML = "";
-
-        const ENDPOINTS = {
-            clothes: "http://localhost:8080/api/donate/clothes/all",
-            books: "http://localhost:8080/api/books/all",
-            toys: "http://localhost:8080/api/toys/all",
-            others: "http://localhost:8080/api/donate/other/all"
-        };
-
-        for (const category in ENDPOINTS) {
-            const res = await fetch(ENDPOINTS[category]).catch(() => null);
-            if (!res || !res.ok) continue;
-
-            const list = await res.json();
-
-            list.forEach(item => {
-                tableBody.innerHTML += `
-                    <tr>
-                        <td><img src="${item.imageUrl}" class="item-img"></td>
-                        <td>${category.toUpperCase()}</td>
-                        <td>${item.itemName}</td>
-                        <td>${item.quantity}</td>
-                        <td>${item.itemCondition}</td>
-                        <td>${item.pickupAddress}</td>
-                        <td>${item.userId}</td>
-                    </tr>
-                `;
-            });
-        }
-    }
-
-    // ✅ Load data on page ready
-    loadAllDonations();
 </script>
-
 
 </body>
 </html>

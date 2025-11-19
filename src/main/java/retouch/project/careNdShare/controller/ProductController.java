@@ -32,11 +32,12 @@ public class ProductController {
     @Autowired
     private ProductRepository productRepository;
 
+    // ✅ MODIFIED: Accepts 'category' instead of 'condition' to match your HTML form
     @PostMapping("/add")
     public ResponseEntity<?> addProduct(
             @RequestParam String name,
             @RequestParam Double price,
-            @RequestParam String category,
+            @RequestParam String category, // ✅ Matches form field name
             @RequestParam String type,
             @RequestParam String description,
             @RequestParam MultipartFile image) {
@@ -50,9 +51,17 @@ public class ProductController {
             Product product = new Product();
             product.setName(name);
             product.setPrice(price);
-            product.setCategory(category);
+            product.setCategory(category); // Set the category from the form
             product.setType(type);
             product.setDescription(description);
+
+            // ✅ Set a default condition since the old form doesn't have this field
+            // We can infer it from category if you want, or just set "Good"
+            if ("new".equalsIgnoreCase(category)) {
+                product.setCondition("New");
+            } else {
+                product.setCondition("Good");
+            }
 
             Product savedProduct = productService.addProduct(product, image, currentUser);
 
@@ -62,6 +71,7 @@ public class ProductController {
             return ResponseEntity.ok(response);
 
         } catch (Exception e) {
+            e.printStackTrace(); // Log error to console for debugging
             Map<String, String> response = new HashMap<>();
             response.put("message", "Error adding product: " + e.getMessage());
             return ResponseEntity.badRequest().body(response);
@@ -114,7 +124,6 @@ public class ProductController {
         }
     }
 
-    // Single endpoint for available products with optional filtering parameters
     @GetMapping("/available")
     public ResponseEntity<?> getAvailableProducts(
             @RequestParam(required = false) String type,
@@ -122,7 +131,8 @@ public class ProductController {
             @RequestParam(required = false) String sort) {
 
         try {
-            List<Product> products = productRepository.findByStatus(ProductStatus.APPROVED);
+            // Use the correct repository method
+            List<Product> products = productRepository.findByStatusWithUser(ProductStatus.APPROVED);
 
             // Apply filters
             if (type != null && !type.equals("all")) {
@@ -133,23 +143,26 @@ public class ProductController {
 
             if (category != null && !category.equals("all")) {
                 products = products.stream()
-                        .filter(p -> p.getCategory().equals(category))
+                        .filter(p -> p.getCategory().equalsIgnoreCase(category)) // Filter by category
                         .collect(Collectors.toList());
             }
 
-            // Apply sorting
             if (sort != null) {
                 products = sortProducts(products, sort);
             }
 
-            return ResponseEntity.ok(products);
+            List<ProductResponseDTO> productDTOs = products.stream()
+                    .map(ProductResponseDTO::new)
+                    .collect(Collectors.toList());
+
+            return ResponseEntity.ok(productDTOs);
+
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Map.of("error", "Failed to load products"));
+                    .body(Map.of("error", "Failed to load products: " + e.getMessage()));
         }
     }
 
-    // Endpoint to get available products by type only (for backward compatibility)
     @GetMapping("/available/{type}")
     public ResponseEntity<List<Product>> getAvailableProductsByType(@PathVariable String type) {
         try {
@@ -160,14 +173,13 @@ public class ProductController {
         }
     }
 
-    // Product details endpoint
     @GetMapping("/{id}")
     public ResponseEntity<?> getProductById(@PathVariable Long id) {
         try {
             Optional<Product> product = productRepository.findByIdWithUser(id);
 
             if (product.isPresent()) {
-                return ResponseEntity.ok(product.get());
+                return ResponseEntity.ok(new ProductResponseDTO(product.get()));
             } else {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
                         .body(Map.of("error", "Product not found or not approved"));

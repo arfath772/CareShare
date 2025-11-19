@@ -5,240 +5,332 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Donate Hub - Make a Difference</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-
     <style>
         body {
             font-family: 'Inter', sans-serif;
             background-color: #f5f7fa;
-            background:url('https://media.istockphoto.com/id/1465760198/vector/abstract-blue-background-with-space-for-text.jpg?s=612x612&w=0&k=20&c=fXbSkVB3MdZjkaYUIX-Q7liCtmG5cr6kqAAzX-cM3L8=')center/cover no-repeat;
+            /* Fallback background if image fails */
+            background: url('https://media.istockphoto.com/id/1465760198/vector/abstract-blue-background-with-space-for-text.jpg?s=612x612&w=0&k=20&c=fXbSkVB3MdZjkaYUIX-Q7liCtmG5cr6kqAAzX-cM3L8=') center/cover no-repeat fixed;
+            color: #333;
             scroll-behavior: smooth;
-            position: relative;
-            background-size: cover;
-            color: #000;
-            z-index: 0;
         }
+        /* Overlay for readability over background image */
         body::before {
             content: "";
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(2px);
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(3px);
             z-index: -1;
         }
+
         .custom-navbar {
             background: linear-gradient(135deg, #0d6efd, #38BA86);
             padding: 15px 0;
             box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-            transition: all 0.3s ease;
         }
-        .custom-navbar .navbar-brand {
-            font-size: 1.8rem;
-            color: #fff;
-            letter-spacing: 1px;
-        }
-        .custom-navbar .nav-link {
-            color: #fff;
-            font-weight: 600;
-            font-size: 1rem;
-            margin: 0 10px;
-            position: relative;
-            transition: color 0.3s ease;
-        }
-        .custom-navbar .nav-link:hover { color: #ffffffcc; }
-        .custom-navbar .nav-link::after {
-            content: "";
-            display: block;
-            width: 0%;
-            height: 2px;
-            background: #ffffff;
-            transition: width 0.3s;
-            margin-top: 5px;
-        }
-        .custom-navbar .nav-link:hover::after { width: 100%; }
-        .navbar-toggler { border: none; outline: none; }
-        .navbar-toggler-icon {
-            background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba%28%255, %255, %255, 1%29' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/ %3E%3C/svg%3E");
-        }
-        .causes-dropdown {
-            min-width: 300px;
-            border: none;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            border-radius: 8px;
-            padding: 10px 0;
-        }
-        .causes-dropdown .dropdown-item {
-            padding: 10px 20px;
-            border-bottom: 1px solid #f0f0f0;
-            transition: background-color 0.2s;
-        }
-        .causes-dropdown .dropdown-item:last-child {
-            border-bottom: none;
-        }
-        .causes-dropdown .dropdown-item i {
-            margin-right: 10px;
-            width: 20px;
-            text-align: center;
-            color: #2c5530;
-        }
-        .causes-dropdown .dropdown-item:hover {
-            background-color: #f8f9fa;
-            color: #2c5530;
-        }
-        @media (max-width: 991px) {
-            .custom-navbar .nav-link { margin: 10px 0; }
-        }
+        .custom-navbar .navbar-brand { font-size: 1.8rem; color: #fff; font-weight: 800; }
+        .custom-navbar .nav-link { color: #fff; font-weight: 600; margin: 0 10px; }
+
         .hero {
-            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)),
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)),
                         url('https://images.unsplash.com/photo-1509099836639-18ba1795216d') center/cover no-repeat;
             color: #fff;
             text-align: center;
-            padding: 120px 20px;
+            padding: 100px 20px;
+            margin-bottom: 40px;
+            border-radius: 0 0 30px 30px;
         }
-        .hero h1 { font-size: 3rem; font-weight: 700; }
-        .hero p { font-size: 1.25rem; margin-top: 15px; }
-        .hero .btn { margin-top: 25px; font-size: 1.1rem; }
+
+        /* Action Cards */
+        #actions .action-card {
+            border: none;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            transition: all 0.4s ease;
+            background: #ffffff;
+            padding: 20px;
+            height: 100%;
+        }
+        #actions .action-card:hover {
+            transform: translateY(-5px);
+        }
+        #actions .action-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        /* Activity Section Styles */
+        .activity-section {
+            padding: 40px 0;
+            display: none; /* Hidden by default, shown by JS if logged in */
+        }
+        .activity-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            border: none;
+            height: 100%;
+        }
+        .activity-header {
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+            font-weight: 700;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+        }
+        .activity-list {
+            max-height: 400px;
+            overflow-y: auto;
+            padding: 0;
+        }
+        .activity-item {
+            padding: 15px 20px;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .activity-item:last-child { border-bottom: none; }
+        .item-thumb {
+            width: 50px; height: 50px;
+            border-radius: 8px;
+            object-fit: cover;
+            margin-right: 15px;
+            border: 1px solid #ddd;
+        }
+
+        /* Badges */
+        .badge-pending { background-color: #ffc107; color: #000; }
+        .badge-approved { background-color: #198754; color: #fff; }
+        .badge-rejected { background-color: #dc3545; color: #fff; }
+        .badge-claimed { background-color: #0d6efd; color: #fff; }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #0d6efd, #38BA86);
+            border: none;
+        }
     </style>
 </head>
 <body>
 
-<!-- Navbar -->
 <nav class="navbar navbar-expand-lg custom-navbar sticky-top">
     <div class="container">
-        <a class="navbar-brand fw-bold" href="index.html">DonateHub</a>
+        <a class="navbar-brand" href="/">DonateHub</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-            <ul class="navbar-nav align-items-center">
-                <li class="nav-item">
-                    <a class="nav-link" th:href="@{/why-donation}">Why Donation</a>
-                </li>
-                <li class="nav-item"><a class="nav-link" href="donorlist.html#list">Donor List</a></li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="viewCausesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        OUR MISSIONS
-                    </a>
-                    <ul class="dropdown-menu causes-dropdown" aria-labelledby="viewCausesDropdown">
-                        <li><a class="dropdown-item" href="#"><i class="fas fa-heartbeat"></i> BUILDING LASTING COMMUNITIES</a></li>
-                        <li><a class="dropdown-item" href="#"><i class="fas fa-palette"></i> STRENGTHENING FAMILIES</a></li>
-                        <li><a class="dropdown-item" href="#"><i class="fas fa-leaf"></i> EMPOWERING LEARNING</a></li>
-                        <li><a class="dropdown-item" href="#"><i class="fas fa-users"></i> COMMUNITY DEVELOPMENT</a></li>
-                        <li><a class="dropdown-item" href="#"><i class="fas fa-gavel"></i> HUMAN RIGHTS & SOCIAL WELFARE</a></li>
-                        <li><a class="dropdown-item" href="#"><i class="fas fa-graduation-cap"></i> EDUCATION</a></li>
-                    </ul>
-                </li>
-                <li class="nav-item"><a class="nav-link" href="index.html#stories">Our Stories</a></li>
-                <li class="nav-item"><a class="nav-link" href="#aboutus">About Us</a></li>
+            <ul class="navbar-nav">
+                <li class="nav-item"><a class="nav-link" href="/dashboard">Dashboard</a></li>
+                <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
             </ul>
         </div>
     </div>
 </nav>
 
-<!-- Hero -->
-<section class="hero" id="home">
+<section class="hero">
     <div class="container">
-        <h1>Together, We Can Make a Difference</h1>
-        <p>Your small act of kindness can bring a big change in someone's life.</p>
-        <a href="#actions" class="btn btn-light btn-lg">Get Started</a>
+        <h1>Share Your Blessings</h1>
+        <p class="lead">"We make a living by what we get, but we make a life by what we give."</p>
     </div>
 </section>
 
-<!-- About -->
-<section id="about" class="py-5">
-    <div class="container">
-        <h2 class="text-center mb-4">Why Donation Matters</h2>
-        <p class="about-text text-center mx-auto">
-            Donation connects communities, uplifts lives, and creates a sustainable future.
-            Every item you donate – whether books, clothes, or essentials – helps someone in need while reducing waste.
-            Your contribution empowers individuals, supports education, and fosters a culture of giving that strengthens society as a whole.
-        </p>
+<section id="actions" class="container mb-5">
+    <div class="row g-4 justify-content-center">
+        <div class="col-md-6">
+            <div class="action-card text-center">
+                <h4 class="mb-3 text-primary fw-bold">Donate Items</h4>
+                <img src="https://media.istockphoto.com/id/1353332258/photo/donation-concept-the-volunteer-giving-a-donate-box-to-the-recipient-standing-against-the-wall.jpg?s=612x612&w=0&k=20&c=9AL8Uj9TTtrbHpM78kMp9fqjT_8EqpEekjdixeKUzDw=" alt="Donate">
+                <p class="text-muted">Have items you don't use? Give them a second life.</p>
+                <a th:href="@{/donate-now}" class="btn btn-primary w-100">Donate Now</a>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="action-card text-center">
+                <h4 class="mb-3 text-primary fw-bold">Browse Donations</h4>
+                <img src="https://images.unsplash.com/photo-1593113598332-cd288d649433?auto=format&fit=crop&w=1000&q=80" alt="Browse">
+                <p class="text-muted">Looking for something? Check what others have shared.</p>
+                <a th:href="@{/browse-donations}" class="btn btn-primary w-100">Browse Now</a>
+            </div>
+        </div>
     </div>
 </section>
-<section id="aboutus" class="py-5">
-    <div class="container">
-        <h2 class="text-center mb-4" style="color:#0d6efd; font-weight:700;">About Us</h2>
-        <div class="row justify-content-center">
-            <div class="col-lg-8">
-                <p class="text-center" style="font-size:1.1rem; color:#444;">
-                    <strong>DonateHub</strong> is a digital platform built with compassion and a commitment to creating positive change in society.
-                    We believe that kindness can transform lives — and even the smallest act of giving can bring hope to those in need. 🌍
-                </p>
 
-                <p class="text-center" style="font-size:1.1rem; color:#444;">
-                    Our mission is to connect generous donors with individuals and communities who require essential support.
-                    Through DonateHub, users can easily donate clothes, food, books, and other necessities to help the underprivileged.
-                    Every contribution counts, and together we can make a meaningful difference. 💖
-                </p>
+<section id="userActivitySection" class="activity-section container">
+    <h3 class="text-center mb-4 fw-bold text-dark"><i class="bi bi-clock-history me-2"></i>Your Donation Activity</h3>
 
-                <p class="text-center" style="font-size:1.1rem; color:#444;">
-                    We aim to build a culture of compassion, responsibility, and unity by simplifying the donation process.
-                    Our platform ensures safe, transparent, and impactful giving — bridging the gap between those who have and those who need.
-                    By encouraging reuse and sharing, DonateHub also promotes sustainability and social welfare. 🤝
-                </p>
+    <div class="row g-4">
+        <div class="col-md-6">
+            <div class="activity-card">
+                <div class="activity-header text-success">
+                    <i class="bi bi-box-seam me-2"></i> Items You Donated
+                </div>
+                <div class="activity-list" id="myDonationsList">
+                    <div class="text-center p-4">
+                        <div class="spinner-border text-success spinner-sm"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-                <p class="text-center" style="font-size:1.1rem; color:#444;">
-                    At DonateHub, we envision a world where no one is left behind — where resources are shared, not wasted.
-                    Join us in our journey to spread kindness, uplift communities, and create a brighter, more caring future for all.
-                </p>
-
-                <div class="text-center mt-4">
-                    <a href="#actions" class="btn btn-primary px-4 py-2" style="background:linear-gradient(135deg,#0d6efd,#38BA86); border:none;">
-                        Start Donating Now
-                    </a>
+        <div class="col-md-6">
+            <div class="activity-card">
+                <div class="activity-header text-primary">
+                    <i class="bi bi-bag-check me-2"></i> Items You Requested
+                </div>
+                <div class="activity-list" id="myRequestsList">
+                    <div class="text-center p-4">
+                        <div class="spinner-border text-primary spinner-sm"></div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </section>
 
+<section class="container py-5 text-center">
+    <div class="row g-4">
+        <div class="col-md-4">
+            <i class="bi bi-people-fill fs-1 text-success"></i>
+            <h5 class="mt-3">Community Driven</h5>
+            <p class="text-muted">Directly helping people around you.</p>
+        </div>
+        <div class="col-md-4">
+            <i class="bi bi-recycle fs-1 text-primary"></i>
+            <h5 class="mt-3">Sustainable</h5>
+            <p class="text-muted">Reducing waste by reusing goods.</p>
+        </div>
+        <div class="col-md-4">
+            <i class="bi bi-shield-check fs-1 text-warning"></i>
+            <h5 class="mt-3">Verified</h5>
+            <p class="text-muted">Admin approved listings for safety.</p>
+        </div>
+    </div>
+</section>
 
-<!--&lt;!&ndash; ✅ New About Us Section &ndash;&gt;-->
-<!--<section id="aboutus" class="py-5">-->
-<!--    <div class="container">-->
-<!--        <h2 class="text-center mb-4" style="color:#0d6efd; font-weight:700;">About Us</h2>-->
-<!--        <div class="row justify-content-center">-->
-<!--            <div class="col-lg-8">-->
-<!--                <p class="text-center" style="font-size:1.1rem; color:#444;">-->
-<!--                    Welcome to <strong>DonateHub</strong> — a platform created with compassion and purpose.-->
-<!--                    Our mission is to bring people together to share what they can and help those who need it most.-->
-<!--                    We believe that every small act of kindness can make a huge difference in someone’s life. 🌍-->
-<!--                </p>-->
-
-<!--                <p class="text-center" style="font-size:1.1rem; color:#444;">-->
-<!--                    At DonateHub, we focus on collecting and donating essential items such as clothes, books, food, and daily necessities-->
-<!--                    to the needy. Through our digital platform, donors and recipients can connect easily and securely.-->
-<!--                    Together, we can reduce waste, spread joy, and build a caring community. 💖-->
-<!--                </p>-->
-
-<!--                <p class="text-center" style="font-size:1.1rem; color:#444;">-->
-<!--                    Our goal is to ensure that no one goes without basic needs.-->
-<!--                    We aim to inspire generosity and make giving simple, transparent, and impactful.-->
-<!--                    Be a part of our journey — because giving is not just about making a donation, it’s about making a difference. 🤝-->
-<!--                </p>-->
-
-<!--                <div class="text-center mt-4">-->
-<!--                    <a href="#actions" class="btn btn-primary px-4 py-2" style="background:linear-gradient(135deg,#0d6efd,#38BA86); border:none;">-->
-<!--                        Start Donating Now-->
-<!--                    </a>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--    </div>-->
-<!--</section>-->
-
-<!-- Rest of your site continues as before... -->
-<!-- Actions, Features, Stories, Impact, Footer, etc. -->
-<!-- (Your original code remains unchanged below) -->
+<footer class="bg-dark text-white py-4 text-center mt-5">
+    <div class="container">
+        <p class="mb-0">&copy; 2025 Care & Share. Making the world kinder.</p>
+    </div>
+</footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
 <script>
-    const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]');
-    [...popoverTriggerList].forEach(el => new bootstrap.Popover(el));
+    const token = localStorage.getItem('jwtToken');
+
+    document.addEventListener('DOMContentLoaded', () => {
+        if (token) {
+            // User is logged in, show the activity section
+            document.getElementById('userActivitySection').style.display = 'block';
+            fetchMyDonations();
+            fetchMyRequests();
+        } else {
+            // User is not logged in, hide section (optional: could show a "Login to see activity" message)
+            document.getElementById('userActivitySection').style.display = 'none';
+        }
+    });
+
+    // Helper: Get Badge Class
+    function getStatusBadge(status) {
+        status = status.toUpperCase();
+        if (status === 'PENDING') return '<span class="badge badge-pending">Pending Approval</span>';
+        if (status === 'APPROVED') return '<span class="badge badge-approved">Approved</span>';
+        if (status === 'REJECTED') return '<span class="badge badge-rejected">Rejected</span>';
+        if (status === 'CLAIMED') return '<span class="badge badge-claimed">Claimed</span>';
+        return `<span class="badge bg-secondary">${status}</span>`;
+    }
+
+    // 1. Fetch Donations made by User
+    async function fetchMyDonations() {
+        const container = document.getElementById('myDonationsList');
+        try {
+            const res = await fetch('/api/donate/my-donations', {
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+
+            if (!res.ok) throw new Error('Failed to load');
+            const items = await res.json();
+
+            if (items.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center p-4 text-muted">
+                        <i class="bi bi-inbox fs-3"></i>
+                        <p class="mb-0 mt-2">You haven't donated anything yet.</p>
+                    </div>`;
+                return;
+            }
+
+            container.innerHTML = items.map(item => `
+                <div class="activity-item">
+                    <div class="d-flex align-items-center">
+                        <img src="${item.imageUrl || 'https://via.placeholder.com/50'}" class="item-thumb" alt="Item">
+                        <div>
+                            <div class="fw-bold">${item.itemName}</div>
+                            <small class="text-muted">${new Date(item.createdAt).toLocaleDateString()}</small>
+                        </div>
+                    </div>
+                    <div>
+                        ${getStatusBadge(item.status)}
+                    </div>
+                </div>
+            `).join('');
+
+        } catch (err) {
+            console.error(err);
+            container.innerHTML = '<div class="text-center p-3 text-danger">Error loading donations.</div>';
+        }
+    }
+
+    // 2. Fetch Requests made by User
+    async function fetchMyRequests() {
+        const container = document.getElementById('myRequestsList');
+        try {
+            const res = await fetch('/api/donate/my-requests', {
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+
+            if (!res.ok) throw new Error('Failed to load');
+            const requests = await res.json();
+
+            if (requests.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center p-4 text-muted">
+                        <i class="bi bi-bag fs-3"></i>
+                        <p class="mb-0 mt-2">You haven't requested any items yet.</p>
+                    </div>`;
+                return;
+            }
+
+            container.innerHTML = requests.map(req => `
+                <div class="activity-item">
+                    <div class="d-flex align-items-center">
+                        <img src="${req.donateItem.imageUrl || 'https://via.placeholder.com/50'}" class="item-thumb" alt="Item">
+                        <div>
+                            <div class="fw-bold">${req.donateItem.itemName}</div>
+                            <small class="text-muted">Requested on ${new Date(req.requestedDate).toLocaleDateString()}</small>
+                        </div>
+                    </div>
+                    <div>
+                        ${getStatusBadge(req.status)}
+                    </div>
+                </div>
+            `).join('');
+
+        } catch (err) {
+            console.error(err);
+            container.innerHTML = '<div class="text-center p-3 text-danger">Error loading requests.</div>';
+        }
+    }
 </script>
+
 </body>
 </html>
