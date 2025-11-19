@@ -360,6 +360,21 @@
             position: relative;
             z-index: 1;
         }
+        /* My Actions Section Styles */
+.action-item-card {
+    transition: all 0.3s ease;
+    border-left: 4px solid var(--primary-color);
+}
+
+.action-item-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.action-badge {
+    font-size: 0.8rem;
+    padding: 4px 8px;
+}
 
         /* Active nav link */
         .nav-link.active {
@@ -1055,6 +1070,125 @@
             flex: 1;
         }
 
+        /* Activity Timeline Styles */
+        .activity-timeline {
+            position: relative;
+            padding: 20px 0;
+        }
+
+        .activity-timeline::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 20px;
+            width: 2px;
+            background: #e9ecef;
+        }
+
+        .activity-item {
+            position: relative;
+            margin-bottom: 30px;
+            padding-left: 50px;
+        }
+
+        .activity-item::before {
+            content: '';
+            position: absolute;
+            left: 16px;
+            top: 5px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            border: 2px solid white;
+            box-shadow: 0 0 0 2px var(--primary-color);
+        }
+
+        .activity-item.exchange::before {
+            background: #ffc107;
+            box-shadow: 0 0 0 2px #ffc107;
+        }
+
+        .activity-item.purchase::before {
+            background: #28a745;
+            box-shadow: 0 0 0 2px #28a745;
+        }
+
+        .activity-item.product::before {
+            background: #17a2b8;
+            box-shadow: 0 0 0 2px #17a2b8;
+        }
+
+        .activity-card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            border-left: 4px solid var(--primary-color);
+            transition: all 0.3s ease;
+        }
+
+        .activity-card.exchange {
+            border-left-color: #ffc107;
+        }
+
+        .activity-card.purchase {
+            border-left-color: #28a745;
+        }
+
+        .activity-card.product {
+            border-left-color: #17a2b8;
+        }
+
+        .activity-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.12);
+        }
+
+        .activity-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 10px;
+        }
+
+        .activity-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+            flex: 1;
+        }
+
+        .activity-time {
+            color: #6c757d;
+            font-size: 0.85rem;
+        }
+
+        .activity-status {
+            margin-left: 10px;
+        }
+
+        .activity-details {
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .activity-actions {
+            margin-top: 15px;
+        }
+
+        .no-activities {
+            text-align: center;
+            padding: 40px 20px;
+            color: #6c757d;
+        }
+
+        .no-activities i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+
         /* Notification System */
         .notification-container {
             position: fixed;
@@ -1171,6 +1305,15 @@
                  left: 10px;
                  max-width: none;
              }
+             .activity-timeline::before {
+                 left: 15px;
+             }
+             .activity-item {
+                 padding-left: 40px;
+             }
+             .activity-item::before {
+                 left: 11px;
+             }
         }
     </style>
 </head>
@@ -1260,7 +1403,7 @@
                         <i class="fa-solid fa-tag"></i>
                     </div>
                     <div class="stats-number" id="salesCount">0</div>
-                    <div class="stats-label">Items Sold</div>
+                    <div class="stats-label">Items Resell</div>
                 </div>
             </div>
             <div class="col-md-4">
@@ -1278,10 +1421,19 @@
             <div class="col-md-8">
                 <div class="profile-section">
                     <h3>Recent Activities</h3>
-                    <p class="text-muted">You haven't performed any activities yet.</p>
-                    <div class="alert alert-info">
-                        <i class="fa-solid fa-info-circle me-2"></i>
-                        Start by exchanging or reselling items to see your activities here.
+                    <!--                    <p class="text-muted">You haven't performed any activities yet.</p>-->
+                    <!--                    <div class="alert alert-info">-->
+                    <!--                        <i class="fa-solid fa-info-circle me-2"></i>-->
+                    <!--                        Start by exchanging or reselling items to see your activities here.-->
+                    <!--                    </div>-->
+                    <div id="recentActivitiesContainer">
+                        <!-- Loading state -->
+                        <div class="text-center py-4">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Loading activities...</span>
+                            </div>
+                            <p class="text-muted mt-3">Loading your recent activities...</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1400,14 +1552,80 @@
         </div>
     </div>
 
+    <!--    <div id="actionsSection" class="dashboard-section">-->
+    <!--        <div class="profile-section">-->
+    <!--            <h2>My Actions</h2>-->
+    <!--            <p class="text-muted">Manage your exchanges, and sales</p>-->
+
+    <!--            <div class="alert alert-info">-->
+    <!--                <i class="fa-solid fa-info-circle me-2"></i>-->
+    <!--                This section will show your ongoing and completed actions.-->
+    <!--            </div>-->
+    <!--        </div>-->
+    <!--    </div>-->
+    <!-- My Actions Section - UPDATED -->
     <div id="actionsSection" class="dashboard-section">
         <div class="profile-section">
             <h2>My Actions</h2>
-            <p class="text-muted">Manage your exchanges, and sales</p>
+            <p class="text-muted">Manage your donations, exchanges, and sales</p>
 
-            <div class="alert alert-info">
-                <i class="fa-solid fa-info-circle me-2"></i>
-                This section will show your ongoing and completed actions.
+            <!-- Action Type Filters -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <!--                    <h5 class="mb-0"><i class="fa-solid fa-filter me-2"></i>Filter Actions</h5>-->
+                </div>
+                <div class="card-body">
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-outline-primary active" onclick="filterActions('all')">All Actions</button>
+                        <button type="button" class="btn btn-outline-success" onclick="filterActions('Donate')">Donation</button>
+                        <button type="button" class="btn btn-outline-warning" onclick="filterActions('Exchange')">Exchange</button>
+                        <button type="button" class="btn btn-outline-info" onclick="filterActions('Resell')">Resell</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- My Actions List -->
+            <div class="card"></h3>
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fa-solid fa-list me-2"></i>My Actions History</h5>
+                </div>
+                <div class="card-body">
+                    <div id="actionsList" class="row">
+                        <!-- Actions will be loaded here -->
+                        <div class="col-12 text-center py-5">
+                            <i class="fa-solid fa-clock-rotate-left fa-3x text-muted mb-3"></i>
+                            <p class="text-muted">No actions found</p>
+                            <p class="text-muted small">Your actions will appear here when you add items or make purchases</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="activitySection" class="dashboard-section">
+        <div class="profile-section">
+            <h2>Activity History</h2>
+            <p class="text-muted">View your complete activity timeline</p>
+
+            <!-- Activity Filter Buttons -->
+            <div class="mb-3">
+                <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-outline-primary active" onclick="filterActivities('all')">All Activities</button>
+                    <button type="button" class="btn btn-outline-warning" onclick="filterActivities('exchange')">Exchanges</button>
+                    <button type="button" class="btn btn-outline-success" onclick="filterActivities('purchase')">Purchases</button>
+                    <button type="button" class="btn btn-outline-info" onclick="filterActivities('product')">Products</button>
+                </div>
+            </div>
+
+            <!-- Activity Timeline -->
+            <div class="activity-timeline" id="activityTimeline1">
+                <div class="text-center py-5">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading activities...</span>
+                    </div>
+                    <p class="text-muted mt-3">Loading your activities...</p>
+                </div>
             </div>
         </div>
     </div>
@@ -1489,14 +1707,29 @@
         </div>
     </div>
 
-    <div id="activitySection" class="dashboard-section">
+    <div id="activitySection1" class="dashboard-section">
         <div class="profile-section">
             <h2>Activity History</h2>
             <p class="text-muted">View your complete activity timeline</p>
 
-            <div class="alert alert-info">
-                <i class="fa-solid fa-info-circle me-2"></i>
-                This section will show your complete activity timeline.
+            <!-- Activity Filter Buttons -->
+            <div class="mb-3">
+                <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-outline-primary active" onclick="filterActivities('all')">All Activities</button>
+                    <button type="button" class="btn btn-outline-warning" onclick="filterActivities('exchange')">Exchanges</button>
+                    <button type="button" class="btn btn-outline-success" onclick="filterActivities('purchase')">Purchases</button>
+                    <button type="button" class="btn btn-outline-info" onclick="filterActivities('product')">Products</button>
+                </div>
+            </div>
+
+            <!-- Activity Timeline -->
+            <div class="activity-timeline" id="activityTimeline">
+                <div class="text-center py-5">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading activities...</span>
+                    </div>
+                    <p class="text-muted mt-3">Loading your activities...</p>
+                </div>
             </div>
         </div>
     </div>
@@ -1951,6 +2184,7 @@
                 document.getElementById('activitySection').classList.add('active');
                 updateNavActiveState('activity');
                 updateDashboardHeader('Activity History', 'View your complete activity timeline');
+                loadActivities(); // Load activities when section is shown
                 break;
         }
     }
@@ -2845,6 +3079,351 @@
         });
     }
 
+    // Activity Management Functions
+    function loadActivities(filter = 'all') {
+        const token = localStorage.getItem('jwtToken');
+
+        // Show loading state
+        document.getElementById('activityTimeline').innerHTML = `
+            <div class="text-center py-5">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading activities...</span>
+                </div>
+                <p class="text-muted mt-3">Loading your activities...</p>
+            </div>
+        `;
+
+        // Fetch exchange requests
+        fetch('/api/exchange-requests/my-requests', {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + token,
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to fetch exchange requests');
+            }
+            return response.json();
+        })
+        .then(exchangeRequests => {
+            // Fetch purchase history (you'll need to implement this endpoint)
+            return fetch('/api/purchases/my-purchases', {
+                method: 'GET',
+                headers: {
+                    'Authorization': 'Bearer ' + token,
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return []; // Return empty array if purchases endpoint doesn't exist
+                }
+                return response.json();
+            })
+            .then(purchases => {
+                // Fetch product activities (you'll need to implement this endpoint)
+                return fetch('/api/products/my-activities', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': 'Bearer ' + token,
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        return []; // Return empty array if activities endpoint doesn't exist
+                    }
+                    return response.json();
+                })
+                .then(productActivities => {
+                    // Combine and display all activities
+                    displayActivities(exchangeRequests, purchases, productActivities, filter);
+                });
+            });
+        })
+        .catch(error => {
+            console.error('Error loading activities:', error);
+            document.getElementById('activityTimeline').innerHTML = `
+                <div class="alert alert-danger">
+                    <i class="fa-solid fa-exclamation-triangle me-2"></i>
+                    Failed to load activities. Please try again.
+                    <button class="btn btn-sm btn-outline-primary ms-3" onclick="loadActivities('${filter}')">
+                        <i class="fa-solid fa-refresh me-1"></i>Retry
+                    </button>
+                </div>
+            `;
+        });
+    }
+
+    function displayActivities(exchangeRequests, purchases = [], productActivities = [], filter = 'all') {
+        const container = document.getElementById('activityTimeline');
+
+        // Convert all activities to a common format and combine
+        let allActivities = [];
+
+        // Process exchange requests
+        if (exchangeRequests && exchangeRequests.length > 0) {
+            exchangeRequests.forEach(request => {
+                allActivities.push({
+                    type: 'exchange',
+                    id: request.id,
+                    title: `Exchange Request: ${request.exchangeItemName}`,
+                    description: `You requested to exchange "${request.exchangeItemName}" for "${request.targetProduct?.name || 'Unknown Product'}"`,
+                    status: request.status,
+                    time: request.createdAt,
+                    data: request,
+                    icon: 'fa-right-left',
+                    statusClass: getExchangeStatusClass(request.status)
+                });
+            });
+        }
+
+        // Process purchases
+        if (purchases && purchases.length > 0) {
+            purchases.forEach(purchase => {
+                allActivities.push({
+                    type: 'purchase',
+                    id: purchase.id,
+                    title: `Purchase: ${purchase.product?.name || 'Unknown Product'}`,
+                    description: `You purchased "${purchase.product?.name || 'Unknown Product'}" for ₹${purchase.amount || '0'}`,
+                    status: purchase.status,
+                    time: purchase.createdAt,
+                    data: purchase,
+                    icon: 'fa-cart-shopping',
+                    statusClass: getPurchaseStatusClass(purchase.status)
+                });
+            });
+        }
+
+        // Process product activities
+        if (productActivities && productActivities.length > 0) {
+            productActivities.forEach(activity => {
+                allActivities.push({
+                    type: 'product',
+                    id: activity.id,
+                    title: `Product ${activity.action}: ${activity.productName}`,
+                    description: activity.description,
+                    status: activity.status,
+                    time: activity.createdAt,
+                    data: activity,
+                    icon: 'fa-box',
+                    statusClass: 'bg-info'
+                });
+            });
+        }
+
+        // Filter activities
+        if (filter !== 'all') {
+            allActivities = allActivities.filter(activity => activity.type === filter);
+        }
+
+        // Sort by time (newest first)
+        allActivities.sort((a, b) => new Date(b.time) - new Date(a.time));
+
+        if (allActivities.length === 0) {
+            container.innerHTML = `
+                <div class="no-activities">
+                    <i class="fa-solid fa-inbox"></i>
+                    <h5>No activities found</h5>
+                    <p>Your ${filter === 'all' ? '' : filter + ' '}activities will appear here.</p>
+                    ${filter !== 'all' ?
+                        `<button class="btn btn-primary mt-2" onclick="filterActivities('all')">
+                            View All Activities
+                        </button>` : ''
+                    }
+                </div>
+            `;
+            return;
+        }
+
+        // Display activities
+        container.innerHTML = allActivities.map(activity => `
+            <div class="activity-item ${activity.type}">
+                <div class="activity-card ${activity.type}">
+                    <div class="activity-header">
+                        <div class="activity-title">
+                            <i class="fa-solid ${activity.icon} me-2 text-${activity.type === 'exchange' ? 'warning' : activity.type === 'purchase' ? 'success' : 'info'}"></i>
+                            ${activity.title}
+                        </div>
+                        <div class="activity-time">
+                            ${formatActivityTime(activity.time)}
+                        </div>
+                    </div>
+                    <div class="activity-details">
+                        ${activity.description}
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="badge ${activity.statusClass}">${activity.status}</span>
+                        <div class="activity-actions">
+                            ${getActivityActions(activity)}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function formatActivityTime(timeString) {
+        const time = new Date(timeString);
+        const now = new Date();
+        const diffMs = now - time;
+        const diffMins = Math.floor(diffMs / 60000);
+        const diffHours = Math.floor(diffMs / 3600000);
+        const diffDays = Math.floor(diffMs / 86400000);
+
+        if (diffMins < 1) return 'Just now';
+        if (diffMins < 60) return `${diffMins} minutes ago`;
+        if (diffHours < 24) return `${diffHours} hours ago`;
+        if (diffDays < 7) return `${diffDays} days ago`;
+
+        return time.toLocaleDateString();
+    }
+
+    function getExchangeStatusClass(status) {
+        switch(status?.toUpperCase()) {
+            case 'PENDING': return 'bg-warning';
+            case 'APPROVED': return 'bg-success';
+            case 'REJECTED': return 'bg-danger';
+            default: return 'bg-secondary';
+        }
+    }
+
+    function getPurchaseStatusClass(status) {
+        switch(status?.toUpperCase()) {
+            case 'PENDING': return 'bg-warning';
+            case 'COMPLETED': return 'bg-success';
+            case 'CANCELLED': return 'bg-danger';
+            default: return 'bg-secondary';
+        }
+    }
+
+    function getActivityActions(activity) {
+        switch(activity.type) {
+            case 'exchange':
+                return `
+                    <button class="btn btn-sm btn-outline-primary" onclick="viewExchangeDetails(${activity.id})">
+                        <i class="fa-solid fa-eye me-1"></i>Details
+                    </button>
+                `;
+            case 'purchase':
+                return `
+                    <button class="btn btn-sm btn-outline-success" onclick="viewPurchaseDetails(${activity.id})">
+                        <i class="fa-solid fa-receipt me-1"></i>Receipt
+                    </button>
+                `;
+            case 'product':
+                return `
+                    <button class="btn btn-sm btn-outline-info" onclick="viewProductDetails(${activity.data.productId})">
+                        <i class="fa-solid fa-box me-1"></i>View
+                    </button>
+                `;
+            default:
+                return '';
+        }
+    }
+
+    function filterActivities(type) {
+        // Update active button
+        document.querySelectorAll('#activitySection .btn-group .btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        event.target.classList.add('active');
+
+        loadActivities(type);
+    }
+
+    function viewExchangeDetails(exchangeId) {
+        const token = localStorage.getItem('jwtToken');
+
+        fetch(`/api/exchange-requests/${exchangeId}`, {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + token,
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Exchange request not found');
+            }
+            return response.json();
+        })
+        .then(exchangeRequest => {
+            displayExchangeDetails(exchangeRequest);
+        })
+        .catch(error => {
+            console.error('Error loading exchange details:', error);
+            showNotification('Failed to load exchange details', 'error');
+        });
+    }
+
+    function displayExchangeDetails(exchangeRequest) {
+        const modalContent = document.getElementById('exchangeDetailContent');
+
+        modalContent.innerHTML = `
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Your Offered Item</h5>
+                    <div class="card">
+                        <div class="card-body">
+                            <h6>${exchangeRequest.exchangeItemName}</h6>
+                            <p><strong>Category:</strong> ${exchangeRequest.exchangeItemCategory}</p>
+                            <p><strong>Description:</strong> ${exchangeRequest.exchangeItemDescription}</p>
+                            ${exchangeRequest.exchangeItemImage ? `
+                                <img src="${exchangeRequest.exchangeItemImage}"
+                                     class="img-fluid rounded"
+                                     alt="${exchangeRequest.exchangeItemName}"
+                                     style="max-height: 200px;">
+                            ` : ''}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <h5>Requested Item</h5>
+                    <div class="card">
+                        <div class="card-body">
+                            <h6>${exchangeRequest.targetProduct?.name || 'Unknown Product'}</h6>
+                            <p><strong>Owner:</strong> ${exchangeRequest.targetProduct?.user?.firstName || 'Unknown'} ${exchangeRequest.targetProduct?.user?.lastName || ''}</p>
+                            <p><strong>Category:</strong> ${exchangeRequest.targetProduct?.category || 'Unknown'}</p>
+                            <p><strong>Description:</strong> ${exchangeRequest.targetProduct?.description || 'No description'}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-3">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <h6>Exchange Details</h6>
+                            <p><strong>Status:</strong> <span class="badge ${getExchangeStatusClass(exchangeRequest.status)}">${exchangeRequest.status}</span></p>
+                            <p><strong>Request Date:</strong> ${new Date(exchangeRequest.createdAt).toLocaleString()}</p>
+                            ${exchangeRequest.additionalMessage ? `
+                                <p><strong>Additional Message:</strong> ${exchangeRequest.additionalMessage}</p>
+                            ` : ''}
+                            ${exchangeRequest.rejectionReason ? `
+                                <p><strong>Rejection Reason:</strong> <span class="text-danger">${exchangeRequest.rejectionReason}</span></p>
+                            ` : ''}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        const modal = new bootstrap.Modal(document.getElementById('exchangeDetailModal'));
+        modal.show();
+    }
+
+    function viewPurchaseDetails(purchaseId) {
+        showNotification('Purchase details feature coming soon!', 'info');
+    }
+
+    function viewProductDetails(productId) {
+        viewItemDetails(productId);
+    }
+
     // Initialize product form
     document.addEventListener('DOMContentLoaded', function() {
         const productForm = document.getElementById('addProductForm');
@@ -3072,6 +3651,321 @@
             closeFullscreenAvailableItems();
         }
     });
+    // Function to load user's actions
+function loadMyActions(actionType = 'all') {
+    const token = localStorage.getItem('jwtToken');
+
+    // For demo purposes, we'll use the products API to get user's items as actions
+    // In a real application, you would have a separate actions API
+    fetch('/api/products/my-products', {
+        method: 'GET',
+        headers: {
+            'Authorization': 'Bearer ' + token,
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Failed to fetch actions');
+        }
+        return response.json();
+    })
+    .then(products => {
+        // Filter products based on actionType
+        let filteredProducts = products;
+        if (actionType !== 'all') {
+            filteredProducts = products.filter(product => product.type === actionType);
+        }
+
+        // Convert products to actions format
+        const actions = filteredProducts.map(product => ({
+            id: product.id,
+            type: product.type,
+            productName: product.name,
+            description: product.description,
+            price: product.price,
+            status: product.status,
+            createdAt: product.createdAt,
+            image: product.imagePath
+        }));
+        displayActions(actions);
+    })
+    .catch(error => {
+        console.error('Error loading actions:', error);
+        const container = document.getElementById('actionsList');
+        container.innerHTML = `
+            <div class="col-12 text-center py-5">
+                <i class="fa-solid fa-exclamation-triangle fa-3x text-muted mb-3"></i>
+                <p class="text-muted">Failed to load actions</p>
+                <button class="btn btn-primary mt-3" onclick="loadMyActions()">
+                    <i class="fa-solid fa-refresh me-2"></i>Try Again
+                </button>
+            </div>
+        `;
+    });
+}
+
+// Function to display actions in the My Actions section
+function displayActions(actions) {
+    const container = document.getElementById('actionsList');
+
+    if (!actions || actions.length === 0) {
+        container.innerHTML = `
+            <div class="col-12 text-center py-5">
+                <i class="fa-solid fa-clock-rotate-left fa-3x text-muted mb-3"></i>
+                <p class="text-muted">No actions found</p>
+                <p class="text-muted small">Your actions will appear here when you add items or make purchases</p>
+                <button class="btn btn-primary mt-3" onclick="showSection('items')">
+                    <i class="fa-solid fa-plus me-2"></i>Add Your First Item
+                </button>
+            </div>
+        `;
+        return;
+    }
+
+    container.innerHTML = actions.map(action => `
+        <div class="col-12 mb-3">
+            <div class="card action-item-card">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-md-1 text-center">
+                            <div class="action-icon">
+                                ${getActionIcon(action.type)}
+                            </div>
+                        </div>
+                        <div class="col-md-7">
+                            <h6 class="card-title mb-1">${action.productName || 'Item'}</h6>
+                            <p class="card-text text-muted small mb-1">
+                                ${action.description || 'No description available'}
+                            </p>
+                            <p class="card-text small mb-0">
+                                <strong>Price:</strong> ₹${action.price || '0'}
+                            </p>
+                        </div>
+                        <div class="col-md-2 text-center">
+                            <span class="badge ${getActionBadgeClass(action.type)} action-badge">
+                                ${action.type}
+                            </span>
+                            <br>
+                            <span class="badge ${getStatusBadgeClass(action.status)} mt-1">
+                                ${action.status}
+                            </span>
+                        </div>
+                        <div class="col-md-2 text-end">
+                            <small class="text-muted">
+                                ${action.createdAt ? new Date(action.createdAt).toLocaleDateString() : 'Unknown date'}
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
+
+// Helper function to get action icon
+function getActionIcon(actionType) {
+    switch(actionType) {
+        case 'Donate':
+            return '<i class="fa-solid fa-hand-holding-heart fa-2x text-success"></i>';
+        case 'Exchange':
+            return '<i class="fa-solid fa-right-left fa-2x text-warning"></i>';
+        case 'Resell':
+            return '<i class="fa-solid fa-tag fa-2x text-info"></i>';
+        default:
+            return '<i class="fa-solid fa-cube fa-2x text-secondary"></i>';
+    }
+}
+
+// Helper function to get action badge class
+function getActionBadgeClass(actionType) {
+    switch(actionType) {
+        case 'Donate': return 'bg-success';
+        case 'Exchange': return 'bg-warning';
+        case 'Resell': return 'bg-info';
+        default: return 'bg-secondary';
+    }
+}
+
+// Function to filter actions
+function filterActions(actionType) {
+    document.querySelectorAll('#actionsSection .btn-group .btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    event.target.classList.add('active');
+
+    loadMyActions(actionType);
+}
+
+    // Function to load recent activities
+function loadRecentActivities() {
+    const token = localStorage.getItem('jwtToken');
+    const container = document.getElementById('recentActivitiesContainer');
+
+    // Show loading state
+    container.innerHTML = `
+        <div class="text-center py-4">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading activities...</span>
+            </div>
+            <p class="text-muted mt-3">Loading your recent activities...</p>
+        </div>
+    `;
+
+    // Fetch user's products (items they've added)
+    fetch('/api/products/my-products', {
+        method: 'GET',
+        headers: {
+            'Authorization': 'Bearer ' + token,
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Failed to fetch user products');
+        }
+        return response.json();
+    })
+    .then(products => {
+        // Fetch user's exchange requests
+        return fetch('/api/exchange-requests/my-requests', {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + token,
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                return []; // Return empty array if exchange requests endpoint doesn't exist
+            }
+            return response.json();
+        })
+        .then(exchangeRequests => {
+            // Combine and sort activities
+            const allActivities = combineActivities(products, exchangeRequests);
+            displayRecentActivities(allActivities, container);
+        });
+    })
+    .catch(error => {
+        console.error('Error loading recent activities:', error);
+        container.innerHTML = `
+            <div class="alert alert-warning">
+                <i class="fa-solid fa-exclamation-triangle me-2"></i>
+                Unable to load recent activities at this time.
+                <button class="btn btn-sm btn-outline-primary ms-2" onclick="loadRecentActivities()">
+                    <i class="fa-solid fa-refresh me-1"></i>Retry
+                </button>
+            </div>
+        `;
+    });
+}
+
+// Function to combine and sort activities
+function combineActivities(products, exchangeRequests) {
+    let allActivities = [];
+
+    // Add products as activities
+    if (products && products.length > 0) {
+        products.forEach(product => {
+            allActivities.push({
+                type: 'product_added',
+                id: product.id,
+                title: `Added "${product.name}"`,
+                description: `You listed "${product.name}" for ${product.type}`,
+                status: product.status,
+                time: product.createdAt,
+                data: product,
+                icon: 'fa-box',
+                statusClass: getStatusBadgeClass(product.status)
+            });
+        });
+    }
+
+    // Add exchange requests as activities
+    if (exchangeRequests && exchangeRequests.length > 0) {
+        exchangeRequests.forEach(request => {
+            allActivities.push({
+                type: 'exchange_requested',
+                id: request.id,
+                title: `Requested Exchange`,
+                description: `You requested to exchange "${request.exchangeItemName}" for "${request.targetProduct?.name || 'Unknown Product'}"`,
+                status: request.status,
+                time: request.createdAt,
+                data: request,
+                icon: 'fa-right-left',
+                statusClass: getExchangeStatusClass(request.status)
+            });
+        });
+    }
+
+    // Sort by time (newest first)
+    allActivities.sort((a, b) => new Date(b.time) - new Date(a.time));
+
+    // Return only the last 3 activities
+    return allActivities.slice(0, 3);
+}
+
+// Function to display recent activities
+function displayRecentActivities(activities, container) {
+    if (!activities || activities.length === 0) {
+        container.innerHTML = `
+            <p class="text-muted">You haven't performed any activities yet.</p>
+            <div class="alert alert-info">
+                <i class="fa-solid fa-info-circle me-2"></i>
+                Start by exchanging or reselling items to see your activities here.
+            </div>
+        `;
+        return;
+    }
+
+    container.innerHTML = activities.map(activity => `
+        <div class="activity-item mb-3">
+            <div class="card activity-card ${activity.type}">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="activity-icon me-3">
+                            <i class="fa-solid ${activity.icon} ${activity.type === 'product_added' ? 'text-primary' : 'text-warning'}"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <h6 class="card-title mb-1">${activity.title}</h6>
+                            <p class="card-text small mb-1">${activity.description}</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="badge ${activity.statusClass}">${activity.status}</span>
+                                <small class="text-muted">
+                                    ${formatActivityTime(activity.time)}
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `).join('');
+
+    // Add a link to view all activities
+    container.innerHTML += `
+        <div class="text-center mt-3">
+            <button class="btn btn-outline-primary btn-sm" onclick="showSection('activity')">
+                <i class="fa-solid fa-clock-rotate-left me-1"></i>View All Activities
+            </button>
+        </div>
+    `;
+}
+
+// Update the DOMContentLoaded event to load recent activities
+window.addEventListener('DOMContentLoaded', () => {
+    const token = localStorage.getItem('jwtToken');
+    if (!token) {
+        window.location.href = '/login';
+        return;
+    }
+
+    loadDashboardStats();
+    updateProfileData();
+    showDashboardHome();
+    loadRecentActivities(); // Add this line
+});
 </script>
 </body>
 </html>

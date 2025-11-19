@@ -32,6 +32,14 @@ public class PageController {
         return "request-now";
     }
 
+
+    // In PageController.java
+
+    @GetMapping("/browse-donations")
+    public String browseDonationsPage() {
+        return "browse-donations"; // This will load browse-donations.html
+    }
+
     @GetMapping("/donate-items")
     public String donateItemsPage() {
         return "donate-items"; // matches donate-items.html

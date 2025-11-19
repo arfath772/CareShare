@@ -1,112 +1,113 @@
 package retouch.project.careNdShare.controller;
 
+import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import retouch.project.careNdShare.dto.DonateItemDTO;
 import retouch.project.careNdShare.dto.DonateRequestDTO;
-import retouch.project.careNdShare.entity.*;
-import retouch.project.careNdShare.service.DonateService;
-
-import java.util.List;
+import retouch.project.careNdShare.service.DonateItemService;
+import retouch.project.careNdShare.service.DonateRequestService;
 
 @RestController
 @RequestMapping("/api/donate")
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "*") // Keep your CORS config
 public class DonateController {
 
-    private final DonateService donateService;
+    @Autowired
+    private DonateItemService donateItemService;
 
-    public DonateController(DonateService donateService) {
-        this.donateService = donateService;
-    }
+    @Autowired
+    private DonateRequestService donateRequestService;
 
-    @PostMapping("/requests/add")
-    public ResponseEntity<?> addDonateRequest(@RequestBody DonateRequestDTO dto) {
+    // === DONATION ITEM ENDPOINTS ===
+
+    /**
+     * ✅ User submits a new donation item.
+     * Uses multipart/form-data
+     */
+    @PostMapping(value = "/add", consumes = "multipart/form-data")
+    public ResponseEntity<?> addDonation(@Valid @ModelAttribute DonateItemDTO dto) {
         try {
-            DonateRequest saved = donateService.createDonateRequest(dto);
-            return ResponseEntity.ok(saved);
+            return ResponseEntity.ok(donateItemService.addDonation(dto));
         } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.internalServerError()
-                    .body("Failed to add request: " + e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
-    // Get all donation requests
-    @GetMapping("/requests")
-    public ResponseEntity<List<DonateRequest>> getAllRequests() {
-        return ResponseEntity.ok(donateService.getAllRequests());
-    }
-    // =========================
-    // Generic Donations
-    // =========================
-    @PostMapping("/item")
-    public ResponseEntity<DonateItem> donateItem(@RequestBody DonateItemDTO dto) {
-        return ResponseEntity.ok(donateService.createDonation(dto));
-    }
-
-    @GetMapping("/items")
-    public ResponseEntity<List<DonateItem>> getAllDonations() {
-        return ResponseEntity.ok(donateService.getAllDonations());
+    /**
+     * ✅ Public endpoint to see all APPROVED donation items.
+     * Can be filtered by type (e.g., /api/donate/available?type=book)
+     */
+    @GetMapping("/available")
+    public ResponseEntity<?> getAvailableDonations(@RequestParam(required = false) String type) {
+        try {
+            return ResponseEntity.ok(donateItemService.getAvailableDonations(type));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
-    // =========================
-    // Donation Requests (NEW)
-    // =========================
+    /**
+     * ✅ User gets their own submitted donations (all statuses)
+     */
+    @GetMapping("/my-donations")
+    public ResponseEntity<?> getMyDonations() {
+        try {
+            return ResponseEntity.ok(donateItemService.getMyDonations());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    /**
+     * ✅ Get details for a single donation item
+     */
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getDonationById(@PathVariable Long id) {
+        try {
+            return ResponseEntity.ok(donateItemService.getDonationById(id));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    /**
+     * ✅ User deletes one of their own donations
+     */
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteDonation(@PathVariable Long id) {
+        try {
+            donateItemService.deleteDonation(id);
+            return ResponseEntity.ok("Donation deleted successfully");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    // === DONATION REQUEST ENDPOINTS ===
+
+    /**
+     * ✅ User requests an available donation item
+     */
     @PostMapping("/request")
-    public ResponseEntity<DonateRequest> createRequest(@RequestBody DonateRequest request) {
-        return ResponseEntity.ok(donateService.createDonateRequest(request));
+    public ResponseEntity<?> createRequest(@Valid @RequestBody DonateRequestDTO dto) {
+        try {
+            return ResponseEntity.ok(donateRequestService.createRequest(dto));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
-
-
-    // =========================
-    // Category Donations
-    // =========================
-
-    // Clothes
-    @PostMapping("/clothes")
-    public ResponseEntity<DonateClothes> donateClothes(@RequestBody DonateClothes item) {
-        return ResponseEntity.ok(donateService.donateClothes(item));
-    }
-
-    @GetMapping("/clothes")
-    public ResponseEntity<List<DonateClothes>> getAllClothes() {
-        return ResponseEntity.ok(donateService.getAllClothes());
-    }
-
-    // Books
-    @PostMapping("/books")
-    public ResponseEntity<DonateBooks> donateBooks(@RequestBody DonateBooks item) {
-        return ResponseEntity.ok(donateService.donateBooks(item));
-    }
-
-    @GetMapping("/books")
-    public ResponseEntity<List<DonateBooks>> getAllBooks() {
-        return ResponseEntity.ok(donateService.getAllBooks());
-    }
-
-    // Toys
-    @PostMapping("/toys")
-    public ResponseEntity<DonateToys> donateToys(@RequestBody DonateToys item) {
-        return ResponseEntity.ok(donateService.donateToys(item));
-    }
-
-    @GetMapping("/toys")
-    public ResponseEntity<List<DonateToys>> getAllToys() {
-        return ResponseEntity.ok(donateService.getAllToys());
-    }
-
-    // Other Items
-    @PostMapping("/other")
-    public ResponseEntity<DonateOtherItems> donateOtherItems(@RequestBody DonateOtherItems item) {
-        return ResponseEntity.ok(donateService.donateOtherItems(item));
-    }
-
-    @GetMapping("/other")
-    public ResponseEntity<List<DonateOtherItems>> getAllOtherItems() {
-        return ResponseEntity.ok(donateService.getAllOtherItems());
+    /**
+     * ✅ User sees all requests they have made
+     */
+    @GetMapping("/my-requests")
+    public ResponseEntity<?> getMyRequests() {
+        try {
+            return ResponseEntity.ok(donateRequestService.getMyRequests());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 }
-
-
