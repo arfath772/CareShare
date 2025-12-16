@@ -192,7 +192,7 @@
             text-align: center;
             margin-bottom: 30px;
             position: relative;
-            z-index: 1;
+            z-index: 2;
         }
         .profile-avatar {
             width: 120px;
@@ -211,7 +211,7 @@
         .profile-info {
             margin-bottom: 25px;
             position: relative;
-            z-index: 1;
+            z-index: 2;
         }
         .info-item {
             display: flex;
@@ -230,6 +230,20 @@
         .info-value {
             color: var(--text-dark);
             font-weight: 500;
+        }
+
+        /* FIX FOR RECENT ACTIVITIES SECTION */
+        .profile-section h3,
+        .profile-section p,
+        .profile-section .alert {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Make sure text is always visible */
+        .profile-section > * {
+            position: relative;
+            z-index: 2;
         }
 
         /* Product image styles */
@@ -1419,21 +1433,13 @@
 
         <div class="row">
             <div class="col-md-8">
+                <!-- FIXED: Recent Activities Section -->
                 <div class="profile-section">
                     <h3>Recent Activities</h3>
-                    <!--                    <p class="text-muted">You haven't performed any activities yet.</p>-->
-                    <!--                    <div class="alert alert-info">-->
-                    <!--                        <i class="fa-solid fa-info-circle me-2"></i>-->
-                    <!--                        Start by exchanging or reselling items to see your activities here.-->
-                    <!--                    </div>-->
-                    <div id="recentActivitiesContainer">
-                        <!-- Loading state -->
-                        <div class="text-center py-4">
-                            <div class="spinner-border text-primary" role="status">
-                                <span class="visually-hidden">Loading activities...</span>
-                            </div>
-                            <p class="text-muted mt-3">Loading your recent activities...</p>
-                        </div>
+                    <p class="text-muted">You haven't performed any activities yet.</p>
+                    <div class="alert alert-info">
+                        <i class="fa-solid fa-info-circle me-2"></i>
+                        Start by exchanging or reselling items to see your activities here.
                     </div>
                 </div>
             </div>
@@ -1552,17 +1558,6 @@
         </div>
     </div>
 
-    <!--    <div id="actionsSection" class="dashboard-section">-->
-    <!--        <div class="profile-section">-->
-    <!--            <h2>My Actions</h2>-->
-    <!--            <p class="text-muted">Manage your exchanges, and sales</p>-->
-
-    <!--            <div class="alert alert-info">-->
-    <!--                <i class="fa-solid fa-info-circle me-2"></i>-->
-    <!--                This section will show your ongoing and completed actions.-->
-    <!--            </div>-->
-    <!--        </div>-->
-    <!--    </div>-->
     <!-- My Actions Section - UPDATED -->
     <div id="actionsSection" class="dashboard-section">
         <div class="profile-section">
@@ -1585,7 +1580,7 @@
             </div>
 
             <!-- My Actions List -->
-            <div class="card"></h3>
+            <div class="card">
                 <div class="card-header">
                     <h5 class="mb-0"><i class="fa-solid fa-list me-2"></i>My Actions History</h5>
                 </div>
@@ -1612,14 +1607,14 @@
             <div class="mb-3">
                 <div class="btn-group" role="group">
                     <button type="button" class="btn btn-outline-primary active" onclick="filterActivities('all')">All Activities</button>
-                    <button type="button" class="btn btn-outline-warning" onclick="filterActivities('exchange')">Exchanges</button>
-                    <button type="button" class="btn btn-outline-success" onclick="filterActivities('purchase')">Purchases</button>
-                    <button type="button" class="btn btn-outline-info" onclick="filterActivities('product')">Products</button>
+                    <!--                    <button type="button" class="btn btn-outline-warning" onclick="filterActivities('exchange')">Exchange</button>-->
+                    <!--                    <button type="button" class="btn btn-outline-success" onclick="filterActivities('resell')">Resell</button>-->
+                    <!--                    <button type="button" class="btn btn-outline-info" onclick="filterActivities('product')">Products</button>-->
                 </div>
             </div>
 
             <!-- Activity Timeline -->
-            <div class="activity-timeline" id="activityTimeline1">
+            <div class="activity-timeline" id="activityTimeline">
                 <div class="text-center py-5">
                     <div class="spinner-border text-primary" role="status">
                         <span class="visually-hidden">Loading activities...</span>
@@ -1702,33 +1697,6 @@
                     </div>
                     <div id="productsList" class="row">
                     </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="activitySection1" class="dashboard-section">
-        <div class="profile-section">
-            <h2>Activity History</h2>
-            <p class="text-muted">View your complete activity timeline</p>
-
-            <!-- Activity Filter Buttons -->
-            <div class="mb-3">
-                <div class="btn-group" role="group">
-                    <button type="button" class="btn btn-outline-primary active" onclick="filterActivities('all')">All Activities</button>
-                    <button type="button" class="btn btn-outline-warning" onclick="filterActivities('exchange')">Exchanges</button>
-                    <button type="button" class="btn btn-outline-success" onclick="filterActivities('purchase')">Purchases</button>
-                    <button type="button" class="btn btn-outline-info" onclick="filterActivities('product')">Products</button>
-                </div>
-            </div>
-
-            <!-- Activity Timeline -->
-            <div class="activity-timeline" id="activityTimeline">
-                <div class="text-center py-5">
-                    <div class="spinner-border text-primary" role="status">
-                        <span class="visually-hidden">Loading activities...</span>
-                    </div>
-                    <p class="text-muted mt-3">Loading your activities...</p>
                 </div>
             </div>
         </div>
@@ -2173,6 +2141,7 @@
                 document.getElementById('actionsSection').classList.add('active');
                 updateNavActiveState('actions');
                 updateDashboardHeader('My Actions', 'Manage your exchanges and sales');
+                loadMyActions();
                 break;
             case 'items':
                 document.getElementById('itemsSection').classList.add('active');
@@ -2230,7 +2199,7 @@
         document.getElementById('address').value = currentUserData.address || '';
     }
 
-    // Function to submit purchase with status logic
+    // Function to submit purchase with status logic - UPDATED TO REFRESH ACTIVITIES
     function submitPurchase(phone, address, paymentMethod) {
         const token = localStorage.getItem('jwtToken');
         const productId = document.getElementById('purchaseProductId').value;
@@ -2312,6 +2281,10 @@
 
                 showNotification(successMessage, 'success');
                 closePurchaseForm();
+
+                // Refresh activities to show the new purchase
+                loadActivities();
+
                 // Optionally refresh the available items
                 if (document.body.classList.contains('fullscreen-available')) {
                     loadFullscreenAvailableItems();
@@ -2331,32 +2304,34 @@
         });
     }
 
-    // Function to show fullscreen available items with filtering
+    // Function to show fullscreen available items with filtering - FIXED
     function showAvailableItemsFullscreen(type = 'all') {
-        currentFilterType = type;
-        document.body.classList.add('fullscreen-available');
-        document.getElementById('fullscreenAvailableItems').classList.add('active');
+    currentFilterType = type;
+    document.body.classList.add('fullscreen-available');
+    document.getElementById('fullscreenAvailableItems').classList.add('active');
 
         // Set title based on type
-        const title = document.getElementById('fullscreenTitle');
-        if (type === 'exchange') {
-            title.textContent = 'Available Exchange Items';
-        } else if (type === 'resell') {
-            title.textContent = 'Available Resell Items';
-        } else {
-            title.textContent = 'Available Items Marketplace';
-        }
-
-        // Set type filter based on selection
-        const typeFilter = document.getElementById('fullscreenItemTypeFilter');
-        if (type === 'exchange' || type === 'resell') {
-            typeFilter.value = type.charAt(0).toUpperCase() + type.slice(1);
-        } else {
-            typeFilter.value = 'all';
-        }
-
-        loadFullscreenAvailableItems();
+         const title = document.getElementById('fullscreenTitle');
+    if (type === 'exchange') {
+        title.textContent = 'Available Exchange Items';
+    } else if (type === 'resell') {
+        title.textContent = 'Available Resell Items';
+    } else {
+        title.textContent = 'Available Items Marketplace';
     }
+
+        // Set type filter based on selection - FIXED: Don't override the filter when showing specific type
+        const typeFilter = document.getElementById('fullscreenItemTypeFilter');
+    if (type === 'exchange') {
+        typeFilter.value = 'Exchange';
+    } else if (type === 'resell') {
+        typeFilter.value = 'Resell';
+    } else {
+        typeFilter.value = 'all';
+    }
+
+    loadFullscreenAvailableItems();
+}
 
     function closeFullscreenAvailableItems() {
         document.body.classList.remove('fullscreen-available');
@@ -2400,6 +2375,8 @@
                 showNotification(data.message, 'success');
                 document.getElementById('addProductForm').reset();
                 loadMyProducts();
+                // Refresh activities to show the new product
+                loadActivities();
             } else {
                 showNotification('Error: ' + (data.message || 'Unknown error'), 'error');
             }
@@ -2514,58 +2491,60 @@
         loadMyProducts(status);
     }
 
-    // Fullscreen Available Items Functions
+    // Fullscreen Available Items Functions - FIXED
     function loadFullscreenAvailableItems(type = 'all', category = 'all', sort = 'newest') {
-        const token = localStorage.getItem('jwtToken');
-        let url = '/api/products/available';
+    const token = localStorage.getItem('jwtToken');
+    let url = '/api/products/available';
 
-        // Apply the current filter type if specified
-        if (currentFilterType === 'exchange') {
-            type = 'Exchange';
-        } else if (currentFilterType === 'resell') {
-            type = 'Resell';
-        }
-        // "donate" is not handled here
-
-        const params = new URLSearchParams();
-        if (type !== 'all') params.append('type', type);
-        if (category !== 'all') params.append('category', category);
-        if (sort !== 'newest') params.append('sort', sort);
-
-        if (params.toString()) {
-            url += '?' + params.toString();
-        }
-
-        fetch(url, {
-            method: 'GET',
-            headers: {
-                'Authorization': 'Bearer ' + token,
-                'Content-Type': 'application/json'
-            }
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Failed to fetch available products');
-            }
-            return response.json();
-        })
-        .then(products => {
-            const sortedProducts = sortProducts(products, sort);
-            displayFullscreenAvailableItems(sortedProducts);
-        })
-        .catch(error => {
-            console.error('Error loading available items:', error);
-            document.getElementById('fullscreenAvailableItemsList').innerHTML = `
-                <div class="col-12 text-center py-5">
-                    <i class="fa-solid fa-exclamation-triangle fa-2x text-muted mb-3"></i>
-                    <p class="text-muted">Failed to load items. Please try again.</p>
-                    <button class="btn btn-primary mt-3" onclick="loadFullscreenAvailableItems()">
-                        <i class="fa-solid fa-refresh me-2"></i>Retry
-                    </button>
-                </div>
-            `;
-        });
+        // FIXED: Use the currentFilterType to determine what to show
+        let filterType = currentFilterType;
+    if (filterType === 'exchange') {
+        filterType = 'Exchange';
+    } else if (filterType === 'resell') {
+        filterType = 'Resell';
+    } else {
+        filterType = type; // Use the passed type parameter only when no specific filter
     }
+
+    const params = new URLSearchParams();
+    if (filterType !== 'all') params.append('type', filterType);
+    if (category !== 'all') params.append('category', category);
+    if (sort !== 'newest') params.append('sort', sort);
+
+    if (params.toString()) {
+        url += '?' + params.toString();
+    }
+
+    fetch(url, {
+        method: 'GET',
+        headers: {
+            'Authorization': 'Bearer ' + token,
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Failed to fetch available products');
+        }
+        return response.json();
+    })
+    .then(products => {
+        const sortedProducts = sortProducts(products, sort);
+        displayFullscreenAvailableItems(sortedProducts);
+    })
+    .catch(error => {
+        console.error('Error loading available items:', error);
+        document.getElementById('fullscreenAvailableItemsList').innerHTML = `
+            <div class="col-12 text-center py-5">
+                <i class="fa-solid fa-exclamation-triangle fa-2x text-muted mb-3"></i>
+                <p class="text-muted">Failed to load items. Please try again.</p>
+                <button class="btn btn-primary mt-3" onclick="loadFullscreenAvailableItems()">
+                    <i class="fa-solid fa-refresh me-2"></i>Retry
+                </button>
+            </div>
+        `;
+    });
+}
 
     // Client-side sorting function
     function sortProducts(products, sortType) {
@@ -3008,7 +2987,7 @@
         }
     }
 
-    // Exchange Request Functions
+    // Exchange Request Functions - UPDATED TO REFRESH ACTIVITIES
     function openExchangeRequest(productId) {
         currentExchangeProductId = productId;
         document.getElementById('targetProductId').value = productId;
@@ -3065,6 +3044,9 @@
                 const modal = bootstrap.Modal.getInstance(document.getElementById('exchangeRequestModal'));
                 modal.hide();
                 document.getElementById('exchangeRequestForm').reset();
+
+                // Refresh activities to show the new exchange request
+                loadActivities();
             } else {
                 throw new Error(data.message || 'Unknown error occurred');
             }
@@ -3079,7 +3061,7 @@
         });
     }
 
-    // Activity Management Functions
+    // Activity Management Functions - UPDATED TO PROPERLY FETCH ACTIVITIES
     function loadActivities(filter = 'all') {
         const token = localStorage.getItem('jwtToken');
 
@@ -3093,6 +3075,9 @@
             </div>
         `;
 
+        // Create an array to store all activities
+        let allActivities = [];
+
         // Fetch exchange requests
         fetch('/api/exchange-requests/my-requests', {
             method: 'GET',
@@ -3103,12 +3088,13 @@
         })
         .then(response => {
             if (!response.ok) {
-                throw new Error('Failed to fetch exchange requests');
+                console.warn('Failed to fetch exchange requests, continuing without them');
+                return []; // Return empty array if endpoint fails
             }
             return response.json();
         })
         .then(exchangeRequests => {
-            // Fetch purchase history (you'll need to implement this endpoint)
+            // Fetch purchase history
             return fetch('/api/purchases/my-purchases', {
                 method: 'GET',
                 headers: {
@@ -3118,13 +3104,14 @@
             })
             .then(response => {
                 if (!response.ok) {
-                    return []; // Return empty array if purchases endpoint doesn't exist
+                    console.warn('Failed to fetch purchases, continuing without them');
+                    return []; // Return empty array if endpoint fails
                 }
                 return response.json();
             })
             .then(purchases => {
-                // Fetch product activities (you'll need to implement this endpoint)
-                return fetch('/api/products/my-activities', {
+                // Fetch user's products (listed items)
+                return fetch('/api/products/my-products', {
                     method: 'GET',
                     headers: {
                         'Authorization': 'Bearer ' + token,
@@ -3133,13 +3120,14 @@
                 })
                 .then(response => {
                     if (!response.ok) {
-                        return []; // Return empty array if activities endpoint doesn't exist
+                        console.warn('Failed to fetch user products, continuing without them');
+                        return []; // Return empty array if endpoint fails
                     }
                     return response.json();
                 })
-                .then(productActivities => {
+                .then(userProducts => {
                     // Combine and display all activities
-                    displayActivities(exchangeRequests, purchases, productActivities, filter);
+                    displayActivities(exchangeRequests, purchases, userProducts, filter);
                 });
             });
         })
@@ -3157,7 +3145,7 @@
         });
     }
 
-    function displayActivities(exchangeRequests, purchases = [], productActivities = [], filter = 'all') {
+    function displayActivities(exchangeRequests = [], purchases = [], userProducts = [], filter = 'all') {
         const container = document.getElementById('activityTimeline');
 
         // Convert all activities to a common format and combine
@@ -3197,19 +3185,19 @@
             });
         }
 
-        // Process product activities
-        if (productActivities && productActivities.length > 0) {
-            productActivities.forEach(activity => {
+        // Process user's products (listed items)
+        if (userProducts && userProducts.length > 0) {
+            userProducts.forEach(product => {
                 allActivities.push({
                     type: 'product',
-                    id: activity.id,
-                    title: `Product ${activity.action}: ${activity.productName}`,
-                    description: activity.description,
-                    status: activity.status,
-                    time: activity.createdAt,
-                    data: activity,
+                    id: product.id,
+                    title: `Product Listed: ${product.name}`,
+                    description: `You listed "${product.name}" for ${product.type.toLowerCase()}`,
+                    status: product.status,
+                    time: product.createdAt,
+                    data: product,
                     icon: 'fa-box',
-                    statusClass: 'bg-info'
+                    statusClass: getStatusBadgeClass(product.status)
                 });
             });
         }
@@ -3226,8 +3214,8 @@
             container.innerHTML = `
                 <div class="no-activities">
                     <i class="fa-solid fa-inbox"></i>
-                    <h5>No activities found</h5>
-                    <p>Your ${filter === 'all' ? '' : filter + ' '}activities will appear here.</p>
+<!--                    <h5>No activities found</h5>-->
+                    <p>Your ${filter === 'all' ? '' : filter === 'purchase' ? 'resell' : filter + ' '}activities will appear here.</p>
                     ${filter !== 'all' ?
                         `<button class="btn btn-primary mt-2" onclick="filterActivities('all')">
                             View All Activities
@@ -3314,11 +3302,8 @@
                     </button>
                 `;
             case 'product':
-                return `
-                    <button class="btn btn-sm btn-outline-info" onclick="viewProductDetails(${activity.data.productId})">
-                        <i class="fa-solid fa-box me-1"></i>View
-                    </button>
-                `;
+                // View button removed as requested
+                return '';
             default:
                 return '';
         }
@@ -3436,6 +3421,8 @@
             originalShowSection(section);
             if (section === 'items') {
                 loadMyProducts();
+            } else if (section === 'actions') {
+                loadMyActions();
             }
         };
 
@@ -3651,184 +3638,14 @@
             closeFullscreenAvailableItems();
         }
     });
+
     // Function to load user's actions
-function loadMyActions(actionType = 'all') {
-    const token = localStorage.getItem('jwtToken');
+    function loadMyActions(actionType = 'all') {
+        const token = localStorage.getItem('jwtToken');
 
-    // For demo purposes, we'll use the products API to get user's items as actions
-    // In a real application, you would have a separate actions API
-    fetch('/api/products/my-products', {
-        method: 'GET',
-        headers: {
-            'Authorization': 'Bearer ' + token,
-            'Content-Type': 'application/json'
-        }
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Failed to fetch actions');
-        }
-        return response.json();
-    })
-    .then(products => {
-        // Filter products based on actionType
-        let filteredProducts = products;
-        if (actionType !== 'all') {
-            filteredProducts = products.filter(product => product.type === actionType);
-        }
-
-        // Convert products to actions format
-        const actions = filteredProducts.map(product => ({
-            id: product.id,
-            type: product.type,
-            productName: product.name,
-            description: product.description,
-            price: product.price,
-            status: product.status,
-            createdAt: product.createdAt,
-            image: product.imagePath
-        }));
-        displayActions(actions);
-    })
-    .catch(error => {
-        console.error('Error loading actions:', error);
-        const container = document.getElementById('actionsList');
-        container.innerHTML = `
-            <div class="col-12 text-center py-5">
-                <i class="fa-solid fa-exclamation-triangle fa-3x text-muted mb-3"></i>
-                <p class="text-muted">Failed to load actions</p>
-                <button class="btn btn-primary mt-3" onclick="loadMyActions()">
-                    <i class="fa-solid fa-refresh me-2"></i>Try Again
-                </button>
-            </div>
-        `;
-    });
-}
-
-// Function to display actions in the My Actions section
-function displayActions(actions) {
-    const container = document.getElementById('actionsList');
-
-    if (!actions || actions.length === 0) {
-        container.innerHTML = `
-            <div class="col-12 text-center py-5">
-                <i class="fa-solid fa-clock-rotate-left fa-3x text-muted mb-3"></i>
-                <p class="text-muted">No actions found</p>
-                <p class="text-muted small">Your actions will appear here when you add items or make purchases</p>
-                <button class="btn btn-primary mt-3" onclick="showSection('items')">
-                    <i class="fa-solid fa-plus me-2"></i>Add Your First Item
-                </button>
-            </div>
-        `;
-        return;
-    }
-
-    container.innerHTML = actions.map(action => `
-        <div class="col-12 mb-3">
-            <div class="card action-item-card">
-                <div class="card-body">
-                    <div class="row align-items-center">
-                        <div class="col-md-1 text-center">
-                            <div class="action-icon">
-                                ${getActionIcon(action.type)}
-                            </div>
-                        </div>
-                        <div class="col-md-7">
-                            <h6 class="card-title mb-1">${action.productName || 'Item'}</h6>
-                            <p class="card-text text-muted small mb-1">
-                                ${action.description || 'No description available'}
-                            </p>
-                            <p class="card-text small mb-0">
-                                <strong>Price:</strong> ₹${action.price || '0'}
-                            </p>
-                        </div>
-                        <div class="col-md-2 text-center">
-                            <span class="badge ${getActionBadgeClass(action.type)} action-badge">
-                                ${action.type}
-                            </span>
-                            <br>
-                            <span class="badge ${getStatusBadgeClass(action.status)} mt-1">
-                                ${action.status}
-                            </span>
-                        </div>
-                        <div class="col-md-2 text-end">
-                            <small class="text-muted">
-                                ${action.createdAt ? new Date(action.createdAt).toLocaleDateString() : 'Unknown date'}
-                            </small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    `).join('');
-}
-
-// Helper function to get action icon
-function getActionIcon(actionType) {
-    switch(actionType) {
-        case 'Donate':
-            return '<i class="fa-solid fa-hand-holding-heart fa-2x text-success"></i>';
-        case 'Exchange':
-            return '<i class="fa-solid fa-right-left fa-2x text-warning"></i>';
-        case 'Resell':
-            return '<i class="fa-solid fa-tag fa-2x text-info"></i>';
-        default:
-            return '<i class="fa-solid fa-cube fa-2x text-secondary"></i>';
-    }
-}
-
-// Helper function to get action badge class
-function getActionBadgeClass(actionType) {
-    switch(actionType) {
-        case 'Donate': return 'bg-success';
-        case 'Exchange': return 'bg-warning';
-        case 'Resell': return 'bg-info';
-        default: return 'bg-secondary';
-    }
-}
-
-// Function to filter actions
-function filterActions(actionType) {
-    document.querySelectorAll('#actionsSection .btn-group .btn').forEach(btn => {
-        btn.classList.remove('active');
-    });
-    event.target.classList.add('active');
-
-    loadMyActions(actionType);
-}
-
-    // Function to load recent activities
-function loadRecentActivities() {
-    const token = localStorage.getItem('jwtToken');
-    const container = document.getElementById('recentActivitiesContainer');
-
-    // Show loading state
-    container.innerHTML = `
-        <div class="text-center py-4">
-            <div class="spinner-border text-primary" role="status">
-                <span class="visually-hidden">Loading activities...</span>
-            </div>
-            <p class="text-muted mt-3">Loading your recent activities...</p>
-        </div>
-    `;
-
-    // Fetch user's products (items they've added)
-    fetch('/api/products/my-products', {
-        method: 'GET',
-        headers: {
-            'Authorization': 'Bearer ' + token,
-            'Content-Type': 'application/json'
-        }
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Failed to fetch user products');
-        }
-        return response.json();
-    })
-    .then(products => {
-        // Fetch user's exchange requests
-        return fetch('/api/exchange-requests/my-requests', {
+        // For demo purposes, we'll use the products API to get user's items as actions
+        // In a real application, you would have a separate actions API
+        fetch('/api/products/my-products', {
             method: 'GET',
             headers: {
                 'Authorization': 'Bearer ' + token,
@@ -3837,135 +3654,136 @@ function loadRecentActivities() {
         })
         .then(response => {
             if (!response.ok) {
-                return []; // Return empty array if exchange requests endpoint doesn't exist
+                throw new Error('Failed to fetch actions');
             }
             return response.json();
         })
-        .then(exchangeRequests => {
-            // Combine and sort activities
-            const allActivities = combineActivities(products, exchangeRequests);
-            displayRecentActivities(allActivities, container);
-        });
-    })
-    .catch(error => {
-        console.error('Error loading recent activities:', error);
-        container.innerHTML = `
-            <div class="alert alert-warning">
-                <i class="fa-solid fa-exclamation-triangle me-2"></i>
-                Unable to load recent activities at this time.
-                <button class="btn btn-sm btn-outline-primary ms-2" onclick="loadRecentActivities()">
-                    <i class="fa-solid fa-refresh me-1"></i>Retry
-                </button>
-            </div>
-        `;
-    });
-}
+        .then(products => {
+            // Filter products based on actionType
+            let filteredProducts = products;
+            if (actionType !== 'all') {
+                filteredProducts = products.filter(product => product.type === actionType);
+            }
 
-// Function to combine and sort activities
-function combineActivities(products, exchangeRequests) {
-    let allActivities = [];
-
-    // Add products as activities
-    if (products && products.length > 0) {
-        products.forEach(product => {
-            allActivities.push({
-                type: 'product_added',
+            // Convert products to actions format
+            const actions = filteredProducts.map(product => ({
                 id: product.id,
-                title: `Added "${product.name}"`,
-                description: `You listed "${product.name}" for ${product.type}`,
+                type: product.type,
+                productName: product.name,
+                description: product.description,
+                price: product.price,
                 status: product.status,
-                time: product.createdAt,
-                data: product,
-                icon: 'fa-box',
-                statusClass: getStatusBadgeClass(product.status)
-            });
+                createdAt: product.createdAt,
+                image: product.imagePath
+            }));
+            displayActions(actions);
+        })
+        .catch(error => {
+            console.error('Error loading actions:', error);
+            const container = document.getElementById('actionsList');
+            container.innerHTML = `
+                <div class="col-12 text-center py-5">
+                    <i class="fa-solid fa-exclamation-triangle fa-3x text-muted mb-3"></i>
+                    <p class="text-muted">Failed to load actions</p>
+                    <button class="btn btn-primary mt-3" onclick="loadMyActions()">
+                        <i class="fa-solid fa-refresh me-2"></i>Try Again
+                    </button>
+                </div>
+            `;
         });
     }
 
-    // Add exchange requests as activities
-    if (exchangeRequests && exchangeRequests.length > 0) {
-        exchangeRequests.forEach(request => {
-            allActivities.push({
-                type: 'exchange_requested',
-                id: request.id,
-                title: `Requested Exchange`,
-                description: `You requested to exchange "${request.exchangeItemName}" for "${request.targetProduct?.name || 'Unknown Product'}"`,
-                status: request.status,
-                time: request.createdAt,
-                data: request,
-                icon: 'fa-right-left',
-                statusClass: getExchangeStatusClass(request.status)
-            });
-        });
-    }
+    // Function to display actions in the My Actions section
+    function displayActions(actions) {
+        const container = document.getElementById('actionsList');
 
-    // Sort by time (newest first)
-    allActivities.sort((a, b) => new Date(b.time) - new Date(a.time));
+        if (!actions || actions.length === 0) {
+            container.innerHTML = `
+                <div class="col-12 text-center py-5">
+                    <i class="fa-solid fa-clock-rotate-left fa-3x text-muted mb-3"></i>
+                    <p class="text-muted">No actions found</p>
+                    <p class="text-muted small">Your actions will appear here when you add items or make purchases</p>
+                    <button class="btn btn-primary mt-3" onclick="showSection('items')">
+                        <i class="fa-solid fa-plus me-2"></i>Add Your First Item
+                    </button>
+                </div>
+            `;
+            return;
+        }
 
-    // Return only the last 3 activities
-    return allActivities.slice(0, 3);
-}
-
-// Function to display recent activities
-function displayRecentActivities(activities, container) {
-    if (!activities || activities.length === 0) {
-        container.innerHTML = `
-            <p class="text-muted">You haven't performed any activities yet.</p>
-            <div class="alert alert-info">
-                <i class="fa-solid fa-info-circle me-2"></i>
-                Start by exchanging or reselling items to see your activities here.
-            </div>
-        `;
-        return;
-    }
-
-    container.innerHTML = activities.map(activity => `
-        <div class="activity-item mb-3">
-            <div class="card activity-card ${activity.type}">
-                <div class="card-body">
-                    <div class="d-flex align-items-center">
-                        <div class="activity-icon me-3">
-                            <i class="fa-solid ${activity.icon} ${activity.type === 'product_added' ? 'text-primary' : 'text-warning'}"></i>
-                        </div>
-                        <div class="flex-grow-1">
-                            <h6 class="card-title mb-1">${activity.title}</h6>
-                            <p class="card-text small mb-1">${activity.description}</p>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <span class="badge ${activity.statusClass}">${activity.status}</span>
+        container.innerHTML = actions.map(action => `
+            <div class="col-12 mb-3">
+                <div class="card action-item-card">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col-md-1 text-center">
+                                <div class="action-icon">
+                                    ${getActionIcon(action.type)}
+                                </div>
+                            </div>
+                            <div class="col-md-7">
+                                <h6 class="card-title mb-1">${action.productName || 'Item'}</h6>
+                                <p class="card-text text-muted small mb-1">
+                                    ${action.description || 'No description available'}
+                                </p>
+                                <p class="card-text small mb-0">
+                                    <strong>Price:</strong> ₹${action.price || '0'}
+                                </p>
+                            </div>
+                            <div class="col-md-2 text-center">
+                                <span class="badge ${getActionBadgeClass(action.type)} action-badge">
+                                    ${action.type}
+                                </span>
+                                <br>
+                                <span class="badge ${getStatusBadgeClass(action.status)} mt-1">
+                                    ${action.status}
+                                </span>
+                            </div>
+                            <div class="col-md-2 text-end">
                                 <small class="text-muted">
-                                    ${formatActivityTime(activity.time)}
+                                    ${action.createdAt ? new Date(action.createdAt).toLocaleDateString() : 'Unknown date'}
                                 </small>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    `).join('');
-
-    // Add a link to view all activities
-    container.innerHTML += `
-        <div class="text-center mt-3">
-            <button class="btn btn-outline-primary btn-sm" onclick="showSection('activity')">
-                <i class="fa-solid fa-clock-rotate-left me-1"></i>View All Activities
-            </button>
-        </div>
-    `;
-}
-
-// Update the DOMContentLoaded event to load recent activities
-window.addEventListener('DOMContentLoaded', () => {
-    const token = localStorage.getItem('jwtToken');
-    if (!token) {
-        window.location.href = '/login';
-        return;
+        `).join('');
     }
 
-    loadDashboardStats();
-    updateProfileData();
-    showDashboardHome();
-    loadRecentActivities(); // Add this line
-});
+    // Helper function to get action icon
+    function getActionIcon(actionType) {
+        switch(actionType) {
+            case 'Donate':
+                return '<i class="fa-solid fa-hand-holding-heart fa-2x text-success"></i>';
+            case 'Exchange':
+                return '<i class="fa-solid fa-right-left fa-2x text-warning"></i>';
+            case 'Resell':
+                return '<i class="fa-solid fa-tag fa-2x text-info"></i>';
+            default:
+                return '<i class="fa-solid fa-cube fa-2x text-secondary"></i>';
+        }
+    }
+
+    // Helper function to get action badge class
+    function getActionBadgeClass(actionType) {
+        switch(actionType) {
+            case 'Donate': return 'bg-success';
+            case 'Exchange': return 'bg-warning';
+            case 'Resell': return 'bg-info';
+            default: return 'bg-secondary';
+        }
+    }
+
+    // Function to filter actions
+    function filterActions(actionType) {
+        document.querySelectorAll('#actionsSection .btn-group .btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        event.target.classList.add('active');
+
+        loadMyActions(actionType);
+    }
 </script>
 </body>
 </html>
