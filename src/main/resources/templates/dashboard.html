@@ -1279,6 +1279,247 @@
             }
         }
 
+        /* Enhanced Image Upload Styles for Both Forms */
+        .image-upload-section {
+            margin-bottom: 25px;
+        }
+
+        .image-upload-info {
+            font-size: 0.85rem;
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        .image-preview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 10px;
+            margin-bottom: 15px;
+            min-height: 100px;
+        }
+
+        .image-preview-container {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            border: 2px dashed #dee2e6;
+            border-radius: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            overflow: hidden;
+            background: linear-gradient(45deg, #f8f9fa, #e9ecef);
+            transition: all 0.3s ease;
+        }
+
+        .image-preview-container:hover {
+            border-color: var(--primary-color);
+            transform: scale(1.02);
+        }
+
+        .image-preview {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: none;
+        }
+
+        .image-preview-placeholder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #6c757d;
+            font-size: 0.8rem;
+            text-align: center;
+            padding: 5px;
+        }
+
+        .image-preview-placeholder i {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+        }
+
+        .image-preview-container.has-image .image-preview {
+            display: block;
+        }
+
+        .image-preview-container.has-image .image-preview-placeholder {
+            display: none;
+        }
+
+        .image-remove-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: rgba(220, 53, 69, 0.9);
+            color: white;
+            border: none;
+            border-radius: 0;
+            width: 20px;
+            height: 20px;
+            font-size: 0.6rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 10;
+        }
+
+        .image-preview-container:hover .image-remove-btn {
+            opacity: 1;
+        }
+
+        .image-upload-input {
+            display: none;
+        }
+
+        /* Exchange Request Image Upload Styles */
+        .exchange-image-upload-section {
+            margin-bottom: 25px;
+        }
+
+        .exchange-image-upload-info {
+            font-size: 0.85rem;
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        .exchange-image-preview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 10px;
+            margin-bottom: 15px;
+            min-height: 100px;
+        }
+
+        .exchange-image-preview-container {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            border: 2px dashed #dee2e6;
+            border-radius: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            overflow: hidden;
+            background: linear-gradient(45deg, #f8f9fa, #e9ecef);
+            transition: all 0.3s ease;
+        }
+
+        .exchange-image-preview-container:hover {
+            border-color: #ffc107;
+            transform: scale(1.02);
+        }
+
+        .exchange-image-preview {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: none;
+        }
+
+        .exchange-image-preview-placeholder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #6c757d;
+            font-size: 0.8rem;
+            text-align: center;
+            padding: 5px;
+        }
+
+        .exchange-image-preview-placeholder i {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+        }
+
+        .exchange-image-preview-container.has-image .exchange-image-preview {
+            display: block;
+        }
+
+        .exchange-image-preview-container.has-image .exchange-image-preview-placeholder {
+            display: none;
+        }
+
+        .exchange-image-remove-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: rgba(220, 53, 69, 0.9);
+            color: white;
+            border: none;
+            border-radius: 0;
+            width: 20px;
+            height: 20px;
+            font-size: 0.6rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 10;
+        }
+
+        .exchange-image-preview-container:hover .exchange-image-remove-btn {
+            opacity: 1;
+        }
+
+        .exchange-image-upload-input {
+            display: none;
+        }
+
+        /* Image Carousel Styles */
+        .carousel-control-prev-icon,
+        .carousel-control-next-icon {
+            background-color: rgba(0, 0, 0, 0.5);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            background-size: 50%;
+        }
+
+        .carousel-indicators button {
+            width: 10px !important;
+            height: 10px !important;
+            border-radius: 50%;
+            margin: 0 4px;
+            background-color: rgba(255, 255, 255, 0.5);
+            border: none;
+        }
+
+        .carousel-indicators button.active {
+            background-color: var(--primary-color);
+        }
+
+        /* Thumbnail styles */
+        .thumbnail-container {
+            display: flex;
+            overflow-x: auto;
+            padding: 5px 0;
+        }
+
+        .thumbnail {
+            transition: all 0.3s ease;
+        }
+
+        .thumbnail:hover,
+        .thumbnail.active {
+            border-color: var(--primary-color) !important;
+            transform: scale(1.05);
+        }
+
+        /* Custom carousel dot styles */
+        .carousel-dot.active {
+            background: var(--primary-color) !important;
+        }
+
         @media (max-width: 768px) {
              .dashboard-header {
                  padding: 60px 0;
@@ -1327,6 +1568,12 @@
              }
              .activity-item::before {
                  left: 11px;
+             }
+             .image-preview-grid {
+                 grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+             }
+             .exchange-image-preview-grid {
+                 grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
              }
         }
     </style>
@@ -1647,11 +1894,22 @@
                                     <input type="number" class="form-control" id="productPrice" step="0.01" required>
                                 </div>
                                 <div class="mb-3">
-                                    <label for="productCategory" class="form-label">Category *</label>
+                                    <label for="productCondition" class="form-label">Product Condition *</label>
+                                    <select class="form-select" id="productCondition" required>
+                                        <option value="">Select Condition</option>
+                                        <option value="Good">Good</option>
+                                        <option value="Like new">Like New</option>
+                                        <option value="Excellent">Excellent</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="productCategory" class="form-label">Product Category *</label>
                                     <select class="form-select" id="productCategory" required>
                                         <option value="">Select Category</option>
-                                        <option value="old">Old</option>
-                                        <option value="new">New</option>
+                                        <option value="Books">Books</option>
+                                        <option value="Cloths">Cloths</option>
+                                        <option value="Toys">Toys</option>
+                                        <option value="Stationary">Stationary</option>
                                     </select>
                                 </div>
                             </div>
@@ -1664,10 +1922,30 @@
                                         <option value="Resell">Resell</option>
                                     </select>
                                 </div>
-                                <div class="mb-3">
-                                    <label for="productImage" class="form-label">Product Image *</label>
-                                    <input type="file" class="form-control" id="productImage" accept="image/*" required>
-                                    <div class="form-text">Upload a clear image of your product</div>
+
+                                <!-- UPDATED: Multiple Image Upload Section -->
+                                <div class="image-upload-section">
+                                    <label class="form-label">Product Images *</label>
+                                    <div class="image-upload-info">
+                                        <i class="fa-solid fa-circle-info"></i> Upload up to 12 photos. First image will be used as the main display.
+                                    </div>
+
+                                    <div class="image-preview-grid" id="imagePreviewGrid">
+                                        <!-- Image preview containers will be added here dynamically -->
+                                        <div class="image-preview-container" onclick="document.getElementById('productImages').click()">
+                                            <div class="image-preview-placeholder">
+                                                <i class="fa-solid fa-plus"></i>
+                                                <span>Add Photo</span>
+                                            </div>
+                                            <img class="image-preview" src="" alt="Preview">
+                                            <button type="button" class="image-remove-btn" onclick="removeImage(this)">
+                                                <i class="fa-solid fa-times"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <input type="file" class="image-upload-input" id="productImages" accept="image/*" multiple onchange="handleImageUpload(event)">
+                                    <div class="form-text">Supported formats: JPG, PNG, GIF. Max file size: 5MB each.</div>
                                 </div>
                             </div>
                         </div>
@@ -1897,6 +2175,7 @@
     </div>
 </div>
 
+<!-- UPDATED: Exchange Request Modal with Multiple Image Upload -->
 <div class="modal fade exchange-request-modal" id="exchangeRequestModal" tabindex="-1" aria-labelledby="exchangeRequestModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -1923,26 +2202,47 @@
                                 <label for="exchangeItemCategory" class="form-label">Category *</label>
                                 <select class="form-select" id="exchangeItemCategory" required>
                                     <option value="">Select Category</option>
-                                    <option value="Electronics">Electronics</option>
+                                    <!--                                    <option value="Electronics">Electronics</option>-->
                                     <option value="Clothing">Clothing</option>
                                     <option value="Books">Books</option>
-                                    <option value="Furniture">Furniture</option>
-                                    <option value="Home Appliances">Home Appliances</option>
-                                    <option value="Sports">Sports</option>
+                                    <!--                                    <option value="Furniture">Furniture</option>-->
+                                    <!--                                    <option value="Home Appliances">Home Appliances</option>-->
+                                    <!--                                    <option value="Sports">Sports</option>-->
                                     <option value="Toys">Toys</option>
-                                    <option value="Other">Other</option>
+                                    <!--                                    <option value="Other">Other</option>-->
+                                    <option value="Stationary">Stationary</option>
                                 </select>
                             </div>
-                            <div class="mb-3">
-                                <label for="exchangeItemImage" class="form-label">Item Image *</label>
-                                <input type="file" class="form-control" id="exchangeItemImage" accept="image/*" required>
-                                <div class="form-text">Upload a clear image of your exchange item</div>
+
+                            <!-- UPDATED: Multiple Image Upload for Exchange Request -->
+                            <div class="exchange-image-upload-section">
+                                <label class="form-label">Item Images *</label>
+                                <div class="exchange-image-upload-info">
+                                    <i class="fa-solid fa-circle-info"></i> Upload up to 12 photos. First image will be used as the main display.
+                                </div>
+
+                                <div class="exchange-image-preview-grid" id="exchangeImagePreviewGrid">
+                                    <!-- Image preview containers will be added here dynamically -->
+                                    <div class="exchange-image-preview-container" onclick="document.getElementById('exchangeItemImages').click()">
+                                        <div class="exchange-image-preview-placeholder">
+                                            <i class="fa-solid fa-plus"></i>
+                                            <span>Add Photo</span>
+                                        </div>
+                                        <img class="exchange-image-preview" src="" alt="Preview">
+                                        <button type="button" class="exchange-image-remove-btn" onclick="removeExchangeImage(this)">
+                                            <i class="fa-solid fa-times"></i>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <input type="file" class="exchange-image-upload-input" id="exchangeItemImages" accept="image/*" multiple onchange="handleExchangeImageUpload(event)">
+                                <div class="form-text">Supported formats: JPG, PNG, GIF. Max file size: 5MB each.</div>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="exchangeItemDescription" class="form-label">Description *</label>
-                                <textarea class="form-control" id="exchangeItemDescription" rows="8" placeholder="Describe your item in detail..." required></textarea>
+                                <textarea class="form-control" id="exchangeItemDescription" rows="11" placeholder="Describe your item in detail..." required></textarea>
                             </div>
                         </div>
                     </div>
@@ -2044,6 +2344,333 @@
     let currentExchangeRequests = [];
     let currentFilterType = 'all';
     let currentUserData = null;
+
+    // Image management variables
+    let uploadedImages = [];
+    let exchangeUploadedImages = [];
+    const MAX_IMAGES = 12;
+
+    // NEW: Multiple Image Upload Functions for Product Form
+    function handleImageUpload(event) {
+        const files = event.target.files;
+        const container = document.getElementById('imagePreviewGrid');
+
+        for (let i = 0; i < files.length && uploadedImages.length < MAX_IMAGES; i++) {
+            const file = files[i];
+
+            // Check file size (5MB limit)
+            if (file.size > 5 * 1024 * 1024) {
+                showNotification(`File ${file.name} exceeds 5MB limit`, 'warning');
+                continue;
+            }
+
+            // Check file type
+            if (!file.type.match('image.*')) {
+                showNotification(`File ${file.name} is not an image`, 'warning');
+                continue;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                uploadedImages.push({
+                    file: file,
+                    preview: e.target.result
+                });
+                updateImagePreviews();
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Reset file input
+        event.target.value = '';
+
+        // Update file count
+        updateImageCount();
+    }
+
+    function updateImagePreviews() {
+        const container = document.getElementById('imagePreviewGrid');
+        container.innerHTML = '';
+
+        // Create preview for each uploaded image
+        uploadedImages.forEach((image, index) => {
+            const previewContainer = document.createElement('div');
+            previewContainer.className = 'image-preview-container has-image';
+            previewContainer.innerHTML = `
+                <img class="image-preview" src="${image.preview}" alt="Preview ${index + 1}">
+                <button type="button" class="image-remove-btn" onclick="removeImage(${index})">
+                    <i class="fa-solid fa-times"></i>
+                </button>
+            `;
+            container.appendChild(previewContainer);
+        });
+
+        // Add the "Add Photo" button if we haven't reached the max
+        if (uploadedImages.length < MAX_IMAGES) {
+            const addButton = document.createElement('div');
+            addButton.className = 'image-preview-container';
+            addButton.onclick = () => document.getElementById('productImages').click();
+            addButton.innerHTML = `
+                <div class="image-preview-placeholder">
+                    <i class="fa-solid fa-plus"></i>
+                    <span>Add Photo</span>
+                </div>
+                <img class="image-preview" src="" alt="Preview">
+                <button type="button" class="image-remove-btn" onclick="removeImage(this)">
+                    <i class="fa-solid fa-times"></i>
+                </button>
+            `;
+            container.appendChild(addButton);
+        }
+
+        updateImageCount();
+    }
+
+    function removeImage(index) {
+        if (typeof index === 'object') {
+            // If button element was passed
+            const container = index.closest('.image-preview-container');
+            const indexToRemove = Array.from(container.parentNode.children).indexOf(container);
+
+            if (indexToRemove < uploadedImages.length) {
+                uploadedImages.splice(indexToRemove, 1);
+                updateImagePreviews();
+            }
+        } else {
+            uploadedImages.splice(index, 1);
+            updateImagePreviews();
+        }
+    }
+
+    function updateImageCount() {
+        const infoText = document.querySelector('.image-upload-info');
+        if (infoText) {
+            infoText.innerHTML = `<i class="fa-solid fa-circle-info"></i>
+                Upload up to 12 photos. ${uploadedImages.length} of 12 photos uploaded.
+                First image will be used as the main display.`;
+        }
+    }
+
+    // NEW: Multiple Image Upload Functions for Exchange Form
+    function handleExchangeImageUpload(event) {
+        const files = event.target.files;
+        const container = document.getElementById('exchangeImagePreviewGrid');
+
+        for (let i = 0; i < files.length && exchangeUploadedImages.length < MAX_IMAGES; i++) {
+            const file = files[i];
+
+            // Check file size (5MB limit)
+            if (file.size > 5 * 1024 * 1024) {
+                showNotification(`File ${file.name} exceeds 5MB limit`, 'warning');
+                continue;
+            }
+
+            // Check file type
+            if (!file.type.match('image.*')) {
+                showNotification(`File ${file.name} is not an image`, 'warning');
+                continue;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                exchangeUploadedImages.push({
+                    file: file,
+                    preview: e.target.result
+                });
+                updateExchangeImagePreviews();
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Reset file input
+        event.target.value = '';
+
+        // Update file count
+        updateExchangeImageCount();
+    }
+
+    function updateExchangeImagePreviews() {
+        const container = document.getElementById('exchangeImagePreviewGrid');
+        container.innerHTML = '';
+
+        // Create preview for each uploaded image
+        exchangeUploadedImages.forEach((image, index) => {
+            const previewContainer = document.createElement('div');
+            previewContainer.className = 'exchange-image-preview-container has-image';
+            previewContainer.innerHTML = `
+                <img class="exchange-image-preview" src="${image.preview}" alt="Preview ${index + 1}">
+                <button type="button" class="exchange-image-remove-btn" onclick="removeExchangeImage(${index})">
+                    <i class="fa-solid fa-times"></i>
+                </button>
+            `;
+            container.appendChild(previewContainer);
+        });
+
+        // Add the "Add Photo" button if we haven't reached the max
+        if (exchangeUploadedImages.length < MAX_IMAGES) {
+            const addButton = document.createElement('div');
+            addButton.className = 'exchange-image-preview-container';
+            addButton.onclick = () => document.getElementById('exchangeItemImages').click();
+            addButton.innerHTML = `
+                <div class="exchange-image-preview-placeholder">
+                    <i class="fa-solid fa-plus"></i>
+                    <span>Add Photo</span>
+                </div>
+                <img class="exchange-image-preview" src="" alt="Preview">
+                <button type="button" class="exchange-image-remove-btn" onclick="removeExchangeImage(this)">
+                    <i class="fa-solid fa-times"></i>
+                </button>
+            `;
+            container.appendChild(addButton);
+        }
+
+        updateExchangeImageCount();
+    }
+
+    function removeExchangeImage(index) {
+        if (typeof index === 'object') {
+            // If button element was passed
+            const container = index.closest('.exchange-image-preview-container');
+            const indexToRemove = Array.from(container.parentNode.children).indexOf(container);
+
+            if (indexToRemove < exchangeUploadedImages.length) {
+                exchangeUploadedImages.splice(indexToRemove, 1);
+                updateExchangeImagePreviews();
+            }
+        } else {
+            exchangeUploadedImages.splice(index, 1);
+            updateExchangeImagePreviews();
+        }
+    }
+
+    function updateExchangeImageCount() {
+        const infoText = document.querySelector('.exchange-image-upload-info');
+        if (infoText) {
+            infoText.innerHTML = `<i class="fa-solid fa-circle-info"></i>
+                Upload up to 12 photos. ${exchangeUploadedImages.length} of 12 photos uploaded.
+                First image will be used as the main display.`;
+        }
+    }
+
+    // UPDATED: Enhanced Product Form Submission with Debugging and Product Condition Handling
+    async function submitProductForm(event) {
+        event.preventDefault();
+
+        // Validate images
+        if (uploadedImages.length === 0) {
+            showNotification('Please upload at least one product image', 'warning');
+            return;
+        }
+
+        // Get form values
+        const productName = document.getElementById('productName').value.trim();
+        const productPrice = document.getElementById('productPrice').value;
+        const productCategory = document.getElementById('productCategory').value;
+        const productType = document.getElementById('productType').value;
+        const productDescription = document.getElementById('productDescription').value.trim();
+        const productCondition = document.getElementById('productCondition').value;
+
+        // Debug logging
+        console.log("=== DEBUG: Form Submission ===");
+        console.log("Product Name:", productName);
+        console.log("Product Price:", productPrice);
+        console.log("Product Category:", productCategory);
+        console.log("Product Type:", productType);
+        console.log("Product Condition:", productCondition);
+        console.log("Product Description:", productDescription);
+        console.log("Number of Images:", uploadedImages.length);
+
+        // Validate required fields
+        if (!productCondition || productCondition === "") {
+            showNotification('Please select a product condition', 'warning');
+            return;
+        }
+
+        if (!productName || !productPrice || !productCategory || !productType) {
+            showNotification('Please fill in all required fields', 'warning');
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('name', productName);
+        formData.append('price', parseFloat(productPrice));
+        formData.append('category', productCategory);
+        formData.append('type', productType);
+        formData.append('description', productDescription);
+        formData.append('condition', productCondition); // THIS IS THE KEY LINE
+
+        // Debug FormData
+        console.log("FormData contents:");
+        for (let [key, value] of formData.entries()) {
+            console.log(key + ":", value);
+        }
+
+        // Append all images
+        uploadedImages.forEach((image, index) => {
+            formData.append('images', image.file);
+            console.log("Image " + (index + 1) + ":", image.file.name);
+        });
+
+        const token = localStorage.getItem('jwtToken');
+
+        const submitBtn = event.target.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerHTML;
+        submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-2"></i>Uploading...';
+        submitBtn.disabled = true;
+
+        try {
+            const response = await fetch('/api/products/add', {
+                method: 'POST',
+                headers: {
+                    'Authorization': 'Bearer ' + token
+                },
+                body: formData
+            });
+
+            console.log("Response status:", response.status);
+
+            const responseText = await response.text();
+            console.log("Response text:", responseText);
+
+            let data;
+            if (!responseText.trim()) {
+                data = { message: 'Product submitted successfully!' };
+            } else {
+                try {
+                    data = JSON.parse(responseText);
+                } catch (e) {
+                    console.error('Failed to parse response as JSON:', e);
+                    if (response.ok) {
+                        data = { message: responseText || 'Product submitted successfully!' };
+                    } else {
+                        throw new Error(responseText || 'Server returned invalid response');
+                    }
+                }
+            }
+
+            if (!response.ok) {
+                throw new Error(data.message || `Server error: ${response.status}`);
+            }
+
+            if (data.message) {
+                showNotification(data.message, 'success');
+                // Reset form
+                document.getElementById('addProductForm').reset();
+                uploadedImages = [];
+                updateImagePreviews();
+                loadMyProducts();
+                loadActivities();
+            } else {
+                showNotification('Error: ' + (data.message || 'Unknown error'), 'error');
+            }
+        } catch (error) {
+            console.error('Error submitting product:', error);
+            showNotification('Error submitting product: ' + error.message, 'error');
+        } finally {
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+        }
+    }
 
     // Notification System
     function showNotification(message, type = 'info', duration = 5000) {
@@ -2306,32 +2933,32 @@
 
     // Function to show fullscreen available items with filtering - FIXED
     function showAvailableItemsFullscreen(type = 'all') {
-    currentFilterType = type;
-    document.body.classList.add('fullscreen-available');
-    document.getElementById('fullscreenAvailableItems').classList.add('active');
+        currentFilterType = type;
+        document.body.classList.add('fullscreen-available');
+        document.getElementById('fullscreenAvailableItems').classList.add('active');
 
         // Set title based on type
-         const title = document.getElementById('fullscreenTitle');
-    if (type === 'exchange') {
-        title.textContent = 'Available Exchange Items';
-    } else if (type === 'resell') {
-        title.textContent = 'Available Resell Items';
-    } else {
-        title.textContent = 'Available Items Marketplace';
-    }
+        const title = document.getElementById('fullscreenTitle');
+        if (type === 'exchange') {
+            title.textContent = 'Available Exchange Items';
+        } else if (type === 'resell') {
+            title.textContent = 'Available Resell Items';
+        } else {
+            title.textContent = 'Available Items Marketplace';
+        }
 
         // Set type filter based on selection - FIXED: Don't override the filter when showing specific type
         const typeFilter = document.getElementById('fullscreenItemTypeFilter');
-    if (type === 'exchange') {
-        typeFilter.value = 'Exchange';
-    } else if (type === 'resell') {
-        typeFilter.value = 'Resell';
-    } else {
-        typeFilter.value = 'all';
-    }
+        if (type === 'exchange') {
+            typeFilter.value = 'Exchange';
+        } else if (type === 'resell') {
+            typeFilter.value = 'Resell';
+        } else {
+            typeFilter.value = 'all';
+        }
 
-    loadFullscreenAvailableItems();
-}
+        loadFullscreenAvailableItems();
+    }
 
     function closeFullscreenAvailableItems() {
         document.body.classList.remove('fullscreen-available');
@@ -2349,44 +2976,6 @@
     }
 
     // Product Management Functions
-    function submitProductForm(event) {
-        event.preventDefault();
-
-        const formData = new FormData();
-        formData.append('name', document.getElementById('productName').value);
-        formData.append('price', document.getElementById('productPrice').value);
-        formData.append('category', document.getElementById('productCategory').value);
-        formData.append('type', document.getElementById('productType').value);
-        formData.append('description', document.getElementById('productDescription').value);
-        formData.append('image', document.getElementById('productImage').files[0]);
-
-        const token = localStorage.getItem('jwtToken');
-
-        fetch('/api/products/add', {
-            method: 'POST',
-            headers: {
-                'Authorization': 'Bearer ' + token
-            },
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.message) {
-                showNotification(data.message, 'success');
-                document.getElementById('addProductForm').reset();
-                loadMyProducts();
-                // Refresh activities to show the new product
-                loadActivities();
-            } else {
-                showNotification('Error: ' + (data.message || 'Unknown error'), 'error');
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            showNotification('Error submitting product', 'error');
-        });
-    }
-
     function loadMyProducts(status = 'all') {
         const token = localStorage.getItem('jwtToken');
         let url = '/api/products/my-products';
@@ -2426,6 +3015,7 @@
         });
     }
 
+    // UPDATED: Display products with sliding images
     function displayProducts(products) {
         const container = document.getElementById('productsList');
 
@@ -2440,37 +3030,94 @@
             return;
         }
 
-        container.innerHTML = products.map(product => `
-            <div class="col-md-6 col-lg-4 mb-4">
-                <div class="card h-100">
-                    <img src="${product.imagePath || 'https://via.placeholder.com/300x200?text=No+Image'}"
-                         class="card-img-top" alt="${product.name}"
-                         style="height: 200px; object-fit: cover;">
-                    <div class="card-body">
-                        <h5 class="card-title">${product.name}</h5>
-                        <p class="card-text">${product.description || 'No description available'}</p>
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <span class="badge bg-secondary">${product.category}</span>
-                            <span class="badge ${getTypeBadgeClass(product.type)}">${product.type}</span>
-                        </div>
-                        <p class="card-text"><strong>${product.type === 'Resell' ? 'Price: ₹' + product.price : 'Not for sale'}</strong></p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="badge ${getStatusBadgeClass(product.status)}">
-                                ${product.status}
-                            </span>
-                            <small class="text-muted">
-                                ${product.createdAt ? new Date(product.createdAt).toLocaleDateString() : 'Unknown date'}
-                            </small>
-                        </div>
-                        ${product.status === 'REJECTED' && product.rejectionReason ? `
-                            <div class="mt-2">
-                                <small class="text-danger"><strong>Reason: </strong>${product.rejectionReason}</small>
+        container.innerHTML = products.map(product => {
+            // Get image paths - assuming your Product entity now has multiple images
+            const imagePaths = product.imagePaths || [product.imagePath || 'https://via.placeholder.com/300x200?text=No+Image'];
+
+            return `
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card h-100">
+                        ${createImageGalleryCard(imagePaths, product.name)}
+                        <div class="card-body">
+                            <h5 class="card-title">${product.name}</h5>
+                            <p class="card-text">${product.description || 'No description available'}</p>
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="badge bg-secondary">${product.category}</span>
+                                <span class="badge ${getTypeBadgeClass(product.type)}">${product.type}</span>
                             </div>
-                        ` : ''}
+                            <p class="card-text"><strong>${product.type === 'Resell' ? 'Price: ₹' + product.price : 'Not for sale'}</strong></p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="badge ${getStatusBadgeClass(product.status)}">
+                                    ${product.status}
+                                </span>
+                                <small class="text-muted">
+                                    ${product.createdAt ? new Date(product.createdAt).toLocaleDateString() : 'Unknown date'}
+                                </small>
+                            </div>
+                            ${product.status === 'REJECTED' && product.rejectionReason ? `
+                                <div class="mt-2">
+                                    <small class="text-danger"><strong>Reason: </strong>${product.rejectionReason}</small>
+                                </div>
+                            ` : ''}
+                        </div>
                     </div>
                 </div>
+            `;
+        }).join('');
+    }
+
+    // UPDATED: Create image gallery for product card
+    function createImageGalleryCard(imagePaths, productName) {
+        if (!imagePaths || imagePaths.length === 0) {
+            return `
+                <img src="https://via.placeholder.com/300x200?text=No+Image"
+                     class="card-img-top" alt="${productName}"
+                     style="height: 200px; object-fit: cover;">
+            `;
+        }
+
+        // If only one image, show it directly
+        if (imagePaths.length === 1) {
+            return `
+                <img src="${imagePaths[0]}"
+                     class="card-img-top" alt="${productName}"
+                     style="height: 200px; object-fit: cover;">
+            `;
+        }
+
+        // If multiple images, create a simple carousel
+        return `
+            <div class="product-image-carousel" data-images='${JSON.stringify(imagePaths)}' data-name="${productName}">
+                <div class="position-relative" style="height: 200px; overflow: hidden;">
+                    <img src="${imagePaths[0]}"
+                         class="card-img-top product-main-image"
+                         alt="${productName}"
+                         style="height: 200px; object-fit: cover; width: 100%;">
+
+                    <!-- Navigation arrows -->
+                    <button class="carousel-prev-btn" style="position: absolute; top: 50%; left: 10px; transform: translateY(-50%); background: rgba(0,0,0,0.5); color: white; border: none; border-radius: 50%; width: 30px; height: 30px; z-index: 2;">
+                        <i class="fa-solid fa-chevron-left"></i>
+                    </button>
+                    <button class="carousel-next-btn" style="position: absolute; top: 50%; right: 10px; transform: translateY(-50%); background: rgba(0,0,0,0.5); color: white; border: none; border-radius: 50%; width: 30px; height: 30px; z-index: 2;">
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </button>
+
+                    <!-- Image counter -->
+                    <div style="position: absolute; bottom: 10px; right: 10px; background: rgba(0,0,0,0.7); color: white; padding: 2px 8px; border-radius: 10px; font-size: 0.8rem;">
+                        <span class="current-index">1</span> / <span class="total-images">${imagePaths.length}</span>
+                    </div>
+                </div>
+
+                <!-- Thumbnail dots -->
+                <div class="carousel-dots d-flex justify-content-center mt-2">
+                    ${imagePaths.map((_, index) => `
+                        <button class="carousel-dot ${index === 0 ? 'active' : ''}"
+                                data-index="${index}"
+                                style="width: 8px; height: 8px; border-radius: 50%; border: none; background: ${index === 0 ? 'var(--primary-color)' : '#ccc'}; margin: 0 3px; padding: 0;"></button>
+                    `).join('')}
+                </div>
             </div>
-        `).join('');
+        `;
     }
 
     function getStatusBadgeClass(status) {
@@ -2493,58 +3140,58 @@
 
     // Fullscreen Available Items Functions - FIXED
     function loadFullscreenAvailableItems(type = 'all', category = 'all', sort = 'newest') {
-    const token = localStorage.getItem('jwtToken');
-    let url = '/api/products/available';
+        const token = localStorage.getItem('jwtToken');
+        let url = '/api/products/available';
 
         // FIXED: Use the currentFilterType to determine what to show
         let filterType = currentFilterType;
-    if (filterType === 'exchange') {
-        filterType = 'Exchange';
-    } else if (filterType === 'resell') {
-        filterType = 'Resell';
-    } else {
-        filterType = type; // Use the passed type parameter only when no specific filter
-    }
-
-    const params = new URLSearchParams();
-    if (filterType !== 'all') params.append('type', filterType);
-    if (category !== 'all') params.append('category', category);
-    if (sort !== 'newest') params.append('sort', sort);
-
-    if (params.toString()) {
-        url += '?' + params.toString();
-    }
-
-    fetch(url, {
-        method: 'GET',
-        headers: {
-            'Authorization': 'Bearer ' + token,
-            'Content-Type': 'application/json'
+        if (filterType === 'exchange') {
+            filterType = 'Exchange';
+        } else if (filterType === 'resell') {
+            filterType = 'Resell';
+        } else {
+            filterType = type; // Use the passed type parameter only when no specific filter
         }
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Failed to fetch available products');
+
+        const params = new URLSearchParams();
+        if (filterType !== 'all') params.append('type', filterType);
+        if (category !== 'all') params.append('category', category);
+        if (sort !== 'newest') params.append('sort', sort);
+
+        if (params.toString()) {
+            url += '?' + params.toString();
         }
-        return response.json();
-    })
-    .then(products => {
-        const sortedProducts = sortProducts(products, sort);
-        displayFullscreenAvailableItems(sortedProducts);
-    })
-    .catch(error => {
-        console.error('Error loading available items:', error);
-        document.getElementById('fullscreenAvailableItemsList').innerHTML = `
-            <div class="col-12 text-center py-5">
-                <i class="fa-solid fa-exclamation-triangle fa-2x text-muted mb-3"></i>
-                <p class="text-muted">Failed to load items. Please try again.</p>
-                <button class="btn btn-primary mt-3" onclick="loadFullscreenAvailableItems()">
-                    <i class="fa-solid fa-refresh me-2"></i>Retry
-                </button>
-            </div>
-        `;
-    });
-}
+
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + token,
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to fetch available products');
+            }
+            return response.json();
+        })
+        .then(products => {
+            const sortedProducts = sortProducts(products, sort);
+            displayFullscreenAvailableItems(sortedProducts);
+        })
+        .catch(error => {
+            console.error('Error loading available items:', error);
+            document.getElementById('fullscreenAvailableItemsList').innerHTML = `
+                <div class="col-12 text-center py-5">
+                    <i class="fa-solid fa-exclamation-triangle fa-2x text-muted mb-3"></i>
+                    <p class="text-muted">Failed to load items. Please try again.</p>
+                    <button class="btn btn-primary mt-3" onclick="loadFullscreenAvailableItems()">
+                        <i class="fa-solid fa-refresh me-2"></i>Retry
+                    </button>
+                </div>
+            `;
+        });
+    }
 
     // Client-side sorting function
     function sortProducts(products, sortType) {
@@ -2596,20 +3243,21 @@
         return buttons;
     }
 
-    // Function to update product card display based on type
+    // UPDATED: Function to update product card display with image gallery
     function updateProductCardDisplay(product) {
         const priceDisplay = (product.type === 'Exchange' || product.type === 'Donate') ? // Kept "Donate" check here for price logic
             '' : `<span class="text-primary fw-bold">₹${product.price}</span>`;
 
         const buttons = getProductActionButtons(product);
 
+        // Get image paths - assuming your Product entity now has multiple images
+        const imagePaths = product.imagePaths || [product.imagePath || 'https://via.placeholder.com/300x200?text=No+Image'];
+
         return `
             <div class="col-md-6 col-lg-4 col-xl-3 mb-4">
                 <div class="card h-100 product-card">
                     <div class="position-relative">
-                        <img src="${product.imagePath || 'https://via.placeholder.com/300x200?text=No+Image'}"
-                             class="card-img-top" alt="${product.name}"
-                             style="height: 200px; object-fit: cover;">
+                        ${createImageGalleryForAvailableItems(imagePaths, product)}
                         <span class="position-absolute top-0 end-0 m-2 badge ${getTypeBadgeClass(product.type)}">
                             ${product.type}
                         </span>
@@ -2644,6 +3292,66 @@
         `;
     }
 
+    // UPDATED: Create image gallery for available items
+    function createImageGalleryForAvailableItems(imagePaths, product) {
+        if (!imagePaths || imagePaths.length === 0) {
+            return `
+                <img src="https://via.placeholder.com/300x200?text=No+Image"
+                     class="card-img-top" alt="${product.name}"
+                     style="height: 200px; object-fit: cover;">
+            `;
+        }
+
+        // If only one image, show it directly
+        if (imagePaths.length === 1) {
+            return `
+                <img src="${imagePaths[0]}"
+                     class="card-img-top" alt="${product.name}"
+                     style="height: 200px; object-fit: cover;">
+            `;
+        }
+
+        // If multiple images, create a Bootstrap carousel
+        const carouselId = `carousel-${product.id}`;
+
+        return `
+            <div id="${carouselId}" class="carousel slide" data-bs-ride="carousel" style="height: 200px;">
+                <div class="carousel-inner" style="height: 100%;">
+                    ${imagePaths.map((img, index) => `
+                        <div class="carousel-item ${index === 0 ? 'active' : ''}" style="height: 100%;">
+                            <img src="${img}"
+                                 class="d-block w-100"
+                                 alt="${product.name} - Image ${index + 1}"
+                                 style="height: 100%; object-fit: cover;">
+                        </div>
+                    `).join('')}
+                </div>
+
+                <!-- Carousel controls -->
+                ${imagePaths.length > 1 ? `
+                    <button class="carousel-control-prev" type="button" data-bs-target="#${carouselId}" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#${carouselId}" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+
+                    <!-- Carousel indicators -->
+                    <div class="carousel-indicators" style="bottom: 5px;">
+                        ${imagePaths.map((_, index) => `
+                            <button type="button" data-bs-target="#${carouselId}" data-bs-slide-to="${index}"
+                                    class="${index === 0 ? 'active' : ''}"
+                                    style="width: 8px; height: 8px; border-radius: 50%; border: none; background: ${index === 0 ? 'var(--primary-color)' : 'rgba(255,255,255,0.5)'}; margin: 0 3px;"></button>
+                        `).join('')}
+                    </div>
+                ` : ''}
+            </div>
+        `;
+    }
+
+    // UPDATED: Display fullscreen available items with image galleries
     function displayFullscreenAvailableItems(products) {
         const container = document.getElementById('fullscreenAvailableItemsList');
         const countElement = document.getElementById('fullscreenItemsCount');
@@ -2662,6 +3370,15 @@
 
         countElement.textContent = `${products.length} items`;
         container.innerHTML = products.map(product => updateProductCardDisplay(product)).join('');
+
+        // Initialize Bootstrap carousels
+        initializeCarousels();
+    }
+
+    // Function to initialize Bootstrap carousels
+    function initializeCarousels() {
+        // Bootstrap carousels are automatically initialized by Bootstrap
+        // If you need custom initialization, you can add it here
     }
 
     function getTypeBadgeClass(type) {
@@ -2740,18 +3457,20 @@
         }
     }
 
-    // Function to display product details in modal
+    // UPDATED: Product Detail Modal with Image Gallery
     function displayProductDetails(product) {
         const modalContent = document.getElementById('productDetailContent');
 
         const priceDisplay = (product.type === 'Exchange' || product.type === 'Donate') ?
             'Not applicable' : `₹${product.price}`;
 
+        // Get image paths - assuming your Product entity now has multiple images
+        const imagePaths = product.imagePaths || [product.imagePath || 'https://via.placeholder.com/400x300?text=No+Image'];
+
         modalContent.innerHTML = `
             <div class="row">
                 <div class="col-md-6">
-                    <img src="${product.imagePath || 'https://via.placeholder.com/400x300?text=No+Image'}"
-                         class="product-detail-image w-100" alt="${product.name}">
+                    ${createDetailedImageGallery(imagePaths, product.name)}
                 </div>
                 <div class="col-md-6">
                     <h4 class="text-primary mb-3">${product.name}</h4>
@@ -2826,6 +3545,71 @@
 
         document.getElementById('productDetailModalLabel').textContent = product.name;
         updateModalButtons(product);
+    }
+
+    // Create detailed image gallery for product detail modal
+    function createDetailedImageGallery(imagePaths, productName) {
+        if (!imagePaths || imagePaths.length === 0) {
+            return `
+                <img src="https://via.placeholder.com/400x300?text=No+Image"
+                     class="product-detail-image w-100" alt="${productName}">
+            `;
+        }
+
+        // If only one image, show it directly
+        if (imagePaths.length === 1) {
+            return `
+                <img src="${imagePaths[0]}"
+                     class="product-detail-image w-100" alt="${productName}">
+            `;
+        }
+
+        // If multiple images, create a Bootstrap carousel
+        const carouselId = `detail-carousel-${Date.now()}`;
+
+        return `
+            <div id="${carouselId}" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    ${imagePaths.map((img, index) => `
+                        <div class="carousel-item ${index === 0 ? 'active' : ''}">
+                            <img src="${img}"
+                                 class="d-block w-100 product-detail-image"
+                                 alt="${productName} - Image ${index + 1}">
+                        </div>
+                    `).join('')}
+                </div>
+
+                <!-- Carousel controls -->
+                <button class="carousel-control-prev" type="button" data-bs-target="#${carouselId}" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#${carouselId}" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+
+                <!-- Carousel indicators -->
+                <div class="carousel-indicators">
+                    ${imagePaths.map((_, index) => `
+                        <button type="button" data-bs-target="#${carouselId}" data-bs-slide-to="${index}"
+                                class="${index === 0 ? 'active' : ''}"></button>
+                    `).join('')}
+                </div>
+            </div>
+
+            <!-- Thumbnail preview -->
+            <div class="thumbnail-container mt-3">
+                ${imagePaths.map((img, index) => `
+                    <img src="${img}"
+                         class="thumbnail ${index === 0 ? 'active' : ''}"
+                         data-bs-target="#${carouselId}"
+                         data-bs-slide-to="${index}"
+                         alt="Thumbnail ${index + 1}"
+                         style="width: 60px; height: 60px; object-fit: cover; margin-right: 5px; cursor: pointer; border: 2px solid ${index === 0 ? 'var(--primary-color)' : 'transparent'};">
+                `).join('')}
+            </div>
+        `;
     }
 
     function contactSeller(productId) {
@@ -2987,73 +3771,208 @@
         }
     }
 
-    // Exchange Request Functions - UPDATED TO REFRESH ACTIVITIES
+    // UPDATED: Exchange Request Functions with Multiple Image Upload - COMPLETELY FIXED VERSION
     function openExchangeRequest(productId) {
         currentExchangeProductId = productId;
         document.getElementById('targetProductId').value = productId;
         document.getElementById('exchangeRequestForm').reset();
 
+        // Reset exchange images
+        exchangeUploadedImages = [];
+        updateExchangeImagePreviews();
+
         const modal = new bootstrap.Modal(document.getElementById('exchangeRequestModal'));
         modal.show();
     }
 
+    // UPDATED: Submit Exchange Request with Multiple Images - DEBUG VERSION
     function submitExchangeRequest() {
         const itemName = document.getElementById('exchangeItemName').value;
         const category = document.getElementById('exchangeItemCategory').value;
         const description = document.getElementById('exchangeItemDescription').value;
-        const imageFile = document.getElementById('exchangeItemImage').files[0];
 
-        if (!itemName || !category || !description || !imageFile) {
-            showNotification('Please fill in all required fields including the image.', 'warning');
+        // Debug logging
+        console.log('Form values:');
+        console.log('- Target Product ID:', currentExchangeProductId);
+        console.log('- Item Name:', itemName);
+        console.log('- Category:', category);
+        console.log('- Description:', description);
+        console.log('- Number of images:', exchangeUploadedImages.length);
+
+        // Validate required fields
+        if (!itemName || !category || !description) {
+            showNotification('Please fill in all required fields.', 'warning');
+            return;
+        }
+
+        // Validate images
+        if (exchangeUploadedImages.length === 0) {
+            showNotification('Please upload at least one image of your exchange item.', 'warning');
             return;
         }
 
         const formData = new FormData();
-        formData.append('targetProductId', currentExchangeProductId);
+        formData.append('targetProductId', currentExchangeProductId.toString());
         formData.append('itemName', itemName);
         formData.append('category', category);
         formData.append('description', description);
-        formData.append('additionalMessage', document.getElementById('exchangeMessage').value);
-        formData.append('image', imageFile);
+
+        const additionalMessage = document.getElementById('exchangeMessage').value;
+        if (additionalMessage && additionalMessage.trim() !== '') {
+            formData.append('additionalMessage', additionalMessage);
+        }
+
+        // Debug: Log FormData contents
+        console.log('FormData contents:');
+        for (let pair of formData.entries()) {
+            console.log(pair[0] + ': ' + pair[1]);
+        }
+
+        // Append all exchange images
+        console.log('Appending images:');
+        exchangeUploadedImages.forEach((image, index) => {
+            console.log(`Image ${index + 1}:`, image.file.name, image.file.size, image.file.type);
+            formData.append('images', image.file);
+        });
 
         const token = localStorage.getItem('jwtToken');
+
+        // Check if token exists
+        if (!token) {
+            showNotification('You are not logged in. Please log in again.', 'error');
+            window.location.href = '/login';
+            return;
+        }
 
         const submitBtn = document.querySelector('#exchangeRequestModal .btn-warning');
         const originalText = submitBtn.innerHTML;
         submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-2"></i>Submitting...';
         submitBtn.disabled = true;
 
+        // Show loading notification
+        showNotification('Submitting exchange request...', 'info', 3000);
+
         fetch('/api/exchange-requests/submit', {
             method: 'POST',
             headers: {
                 'Authorization': 'Bearer ' + token
+                // Note: Don't set Content-Type for FormData - browser sets it automatically with boundary
             },
             body: formData
         })
         .then(response => {
-            if (!response.ok) {
-                return response.json().then(data => {
-                    throw new Error(data.message || 'Failed to submit exchange request');
-                });
-            }
-            return response.json();
-        })
-        .then(data => {
-            if (data.message) {
-                showNotification('Exchange request submitted successfully! It will be reviewed by admin.', 'success');
-                const modal = bootstrap.Modal.getInstance(document.getElementById('exchangeRequestModal'));
-                modal.hide();
-                document.getElementById('exchangeRequestForm').reset();
+            console.log('Response status:', response.status, response.statusText);
 
-                // Refresh activities to show the new exchange request
-                loadActivities();
+            // Log response headers for debugging
+            console.log('Response headers:');
+            for (let [key, value] of response.headers.entries()) {
+                console.log(key + ': ' + value);
+            }
+
+            // Get response as text first
+            return response.text().then(text => {
+                console.log('Raw response text:', text);
+
+                return {
+                    text: text,
+                    ok: response.ok,
+                    status: response.status,
+                    statusText: response.statusText
+                };
+            });
+        })
+        .then(result => {
+            console.log('Response result:', result);
+
+            if (result.ok) {
+                // Try to parse as JSON
+                try {
+                    const data = JSON.parse(result.text);
+                    console.log('Parsed response data:', data);
+
+                    if (data.success) {
+                        const successMessage = data.message || 'Exchange request submitted successfully! It will be reviewed by admin.';
+                        showNotification(successMessage, 'success');
+
+                        // Close the modal
+                        const modal = bootstrap.Modal.getInstance(document.getElementById('exchangeRequestModal'));
+                        if (modal) {
+                            modal.hide();
+                        }
+
+                        // Reset form
+                        document.getElementById('exchangeRequestForm').reset();
+                        exchangeUploadedImages = [];
+                        updateExchangeImagePreviews();
+
+                        // Refresh activities to show the new exchange request
+                        loadActivities();
+
+                        // Update exchange count
+                        const exchangeCountEl = document.getElementById('exchangesCount');
+                        const currentExchanges = parseInt(exchangeCountEl.textContent) || 0;
+                        exchangeCountEl.textContent = currentExchanges + 1;
+
+                        // If we're in fullscreen mode, refresh the items list
+                        if (document.body.classList.contains('fullscreen-available')) {
+                            loadFullscreenAvailableItems();
+                        }
+                    } else {
+                        throw new Error(data.message || 'Unknown error');
+                    }
+                } catch (e) {
+                    // If response is not JSON but status is OK
+                    if (result.text && result.text.trim()) {
+                        showNotification(result.text, 'success');
+
+                        // Close the modal
+                        const modal = bootstrap.Modal.getInstance(document.getElementById('exchangeRequestModal'));
+                        if (modal) {
+                            modal.hide();
+                        }
+
+                        // Reset form
+                        document.getElementById('exchangeRequestForm').reset();
+                        exchangeUploadedImages = [];
+                        updateExchangeImagePreviews();
+
+                        // Refresh activities
+                        loadActivities();
+                    } else {
+                        throw new Error('Invalid server response');
+                    }
+                }
             } else {
-                throw new Error(data.message || 'Unknown error occurred');
+                // Server returned error
+                let errorMessage = `Server error: ${result.status} - ${result.statusText}`;
+
+                // Try to parse error response
+                if (result.text && result.text.trim()) {
+                    try {
+                        const errorData = JSON.parse(result.text);
+                        errorMessage = errorData.message || errorData.error || errorMessage;
+                    } catch (e) {
+                        // If not JSON, use text as error message
+                        errorMessage = result.text;
+                    }
+                }
+
+                throw new Error(errorMessage);
             }
         })
         .catch(error => {
-            console.error('Error:', error);
-            showNotification('Error submitting exchange request: ' + error.message, 'error');
+            console.error('Error submitting exchange request:', error);
+
+            let errorMessage = 'Failed to submit exchange request';
+            if (error.message) {
+                errorMessage = error.message;
+            }
+
+            if (error.message.includes('Failed to fetch')) {
+                errorMessage = 'Network error: Cannot connect to server. Please check your internet connection.';
+            }
+
+            showNotification(errorMessage, 'error');
         })
         .finally(() => {
             submitBtn.innerHTML = originalText;
@@ -3249,6 +4168,7 @@
                         </div>
                     </div>
                 </div>
+            </div>
             </div>
         `).join('');
     }

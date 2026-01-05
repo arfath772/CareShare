@@ -7,14 +7,15 @@ import retouch.project.careNdShare.dto.DonateItemDTO;
 import retouch.project.careNdShare.dto.DonateItemResponseDTO;
 import retouch.project.careNdShare.entity.DonateItem;
 import retouch.project.careNdShare.entity.User;
-// ❗️ IMPORT THE ENUM FROM THE CORRECT PACKAGE
 import retouch.project.careNdShare.entity.DonationStatus;
 import retouch.project.careNdShare.repository.DonateItemRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -28,14 +29,27 @@ public class DonateItemService {
     @Autowired
     private AuthService authService;
 
-    // ✅ UPLOAD_DIR is declared ONCE here
+    @Autowired
+    private ObjectMapper objectMapper;
+
     private final String UPLOAD_DIR = "uploads/donations/";
 
     // ✅ Add a new donation (sets status to PENDING)
     public DonateItemResponseDTO addDonation(DonateItemDTO dto) throws IOException {
         User currentUser = authService.getCurrentUser();
 
-        String imageUrl = saveImage(dto.getImageFile(), currentUser.getId());
+        // Save all images
+        List<String> imageUrls = new ArrayList<>();
+        for (MultipartFile file : dto.getImageFiles()) {
+            if (!file.isEmpty()) {
+                String imageUrl = saveImage(file, currentUser.getId());
+                imageUrls.add(imageUrl);
+            }
+        }
+
+        if (imageUrls.isEmpty()) {
+            throw new RuntimeException("At least one image is required");
+        }
 
         DonateItem item = new DonateItem();
         item.setItemType(dto.getItemType());
@@ -43,19 +57,29 @@ public class DonateItemService {
         item.setQuantity(dto.getQuantity());
         item.setItemCondition(dto.getItemCondition());
         item.setPickupAddress(dto.getPickupAddress());
-        item.setImageUrl(imageUrl);
         item.setUser(currentUser);
         item.setStatus(DonationStatus.PENDING); // Default status
+
+        // Set main image as first image
+        if (!imageUrls.isEmpty()) {
+            item.setMainImageUrl(imageUrls.get(0));
+        }
+
+        // Store all image URLs as JSON array
+        try {
+            String imageUrlsJson = objectMapper.writeValueAsString(imageUrls);
+            item.setImageUrls(imageUrlsJson);
+        } catch (Exception e) {
+            throw new RuntimeException("Error processing images");
+        }
 
         DonateItem savedItem = donateItemRepository.save(item);
         return new DonateItemResponseDTO(savedItem);
     }
 
-    // ❗️ REMOVED THE DUPLICATE DECLARATION OF UPLOAD_DIR FROM HERE
-
     // ✅ Helper to save image (Corrected Path)
     private String saveImage(MultipartFile file, Long userId) throws IOException {
-        String folder = UPLOAD_DIR + userId + "/"; // e.g., "uploads/donations/1/"
+        String folder = UPLOAD_DIR + userId + "/";
         Files.createDirectories(Paths.get(folder));
 
         String originalFilename = file.getOriginalFilename() != null ? file.getOriginalFilename() : "image.jpg";
@@ -69,9 +93,6 @@ public class DonateItemService {
         Path filePath = Paths.get(folder + fileName);
         Files.write(filePath, file.getBytes());
 
-        // Return the web-accessible path (NO LEADING SLASH)
-        // This will be stored in DB as "uploads/donations/1/uuid.jpg"
-        // And served by WebConfig as "http://localhost:8080/uploads/donations/1/uuid.jpg"
         return folder + fileName;
     }
 
@@ -167,7 +188,7 @@ public class DonateItemService {
             throw new RuntimeException("You are not authorized to delete this item.");
         }
 
-        // TODO: Delete image file from storage
+        // TODO: Delete image files from storage
 
         donateItemRepository.delete(item);
     }

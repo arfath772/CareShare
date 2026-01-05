@@ -6,6 +6,7 @@ import retouch.project.careNdShare.entity.User;
 import retouch.project.careNdShare.entity.DonateRequestStatus;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Data
 public class DonateRequestResponseDTO {
@@ -14,6 +15,7 @@ public class DonateRequestResponseDTO {
     private UserInfo receiver;
     private DonateRequestStatus status;
     private LocalDateTime requestedDate;
+    private String formattedRequestDate; // Add formatted date
     private String rejectionReason;
 
     @Data
@@ -35,6 +37,13 @@ public class DonateRequestResponseDTO {
         this.id = request.getId();
         this.status = request.getStatus();
         this.requestedDate = request.getRequestedDate();
+
+        // Format the date for display
+        if (request.getRequestedDate() != null) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+            this.formattedRequestDate = request.getRequestedDate().format(formatter);
+        }
+
         this.rejectionReason = request.getRejectionReason();
 
         if (request.getDonateItem() != null) {

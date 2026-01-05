@@ -19,6 +19,10 @@ public interface ExchangeRequestRepository extends JpaRepository<ExchangeRequest
     List<ExchangeRequest> findByTargetProductUserId(Long ownerId);
     List<ExchangeRequest> findByTargetProductUserIdAndStatus(Long ownerId, String status);
 
+    // Find by product ID
+    List<ExchangeRequest> findByTargetProductId(Long productId);
+    List<ExchangeRequest> findByTargetProductIdAndStatus(Long productId, String status);
+
     // Custom query to fetch exchange requests with eager loading of relationships
     @Query("SELECT er FROM ExchangeRequest er " +
             "LEFT JOIN FETCH er.requester " +
@@ -45,4 +49,8 @@ public interface ExchangeRequestRepository extends JpaRepository<ExchangeRequest
             "WHERE tp.user.id = :ownerId AND (:status IS NULL OR er.status = :status) " +
             "ORDER BY er.createdAt DESC")
     List<ExchangeRequest> findByTargetProductUserIdWithDetails(@Param("ownerId") Long ownerId, @Param("status") String status);
+
+    // Check if user already has a pending request for a product
+    @Query("SELECT COUNT(er) > 0 FROM ExchangeRequest er WHERE er.requester.id = :userId AND er.targetProduct.id = :productId AND er.status = 'PENDING'")
+    boolean existsPendingRequestForProduct(@Param("userId") Long userId, @Param("productId") Long productId);
 }

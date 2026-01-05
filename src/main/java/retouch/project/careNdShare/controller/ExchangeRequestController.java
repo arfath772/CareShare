@@ -35,7 +35,7 @@ public class ExchangeRequestController {
             @RequestParam("category") String category,
             @RequestParam("description") String description,
             @RequestParam(value = "additionalMessage", required = false) String additionalMessage,
-            @RequestParam("image") MultipartFile image,
+            @RequestParam("images") List<MultipartFile> images,  // Changed from "image" to "images"
             Authentication authentication) {
 
         try {
@@ -45,6 +45,9 @@ public class ExchangeRequestController {
                     .orElseThrow(() -> new RuntimeException("User not found"));
 
             // Validate required fields
+            if (targetProductId == null) {
+                return ResponseEntity.badRequest().body(createErrorResponse("Target product ID is required"));
+            }
             if (itemName == null || itemName.trim().isEmpty()) {
                 return ResponseEntity.badRequest().body(createErrorResponse("Item name is required"));
             }
@@ -54,29 +57,55 @@ public class ExchangeRequestController {
             if (description == null || description.trim().isEmpty()) {
                 return ResponseEntity.badRequest().body(createErrorResponse("Description is required"));
             }
-            if (image == null || image.isEmpty()) {
-                return ResponseEntity.badRequest().body(createErrorResponse("Image is required"));
+            if (images == null || images.isEmpty() || images.get(0).isEmpty()) {
+                return ResponseEntity.badRequest().body(createErrorResponse("At least one image is required"));
+            }
+
+            // Validate number of images (max 12)
+            if (images.size() > 12) {
+                return ResponseEntity.badRequest().body(createErrorResponse("Maximum 12 images allowed"));
+            }
+
+            // Validate each image size and type
+            for (MultipartFile image : images) {
+                if (!image.isEmpty()) {
+                    // Check file size (5MB max)
+                    if (image.getSize() > 5 * 1024 * 1024) {
+                        return ResponseEntity.badRequest().body(createErrorResponse("Each image must be less than 5MB"));
+                    }
+
+                    // Check file type
+                    String contentType = image.getContentType();
+                    if (contentType == null ||
+                            (!contentType.equals("image/jpeg") &&
+                                    !contentType.equals("image/png") &&
+                                    !contentType.equals("image/gif"))) {
+                        return ResponseEntity.badRequest().body(createErrorResponse("Only JPG, PNG, and GIF images are allowed"));
+                    }
+                }
             }
 
             // Submit exchange request
             ExchangeRequest exchangeRequest = exchangeRequestService.submitExchangeRequest(
                     targetProductId, itemName, category, description,
-                    additionalMessage, image, user);
+                    additionalMessage, images, user);
 
             // Get emails for notification
-            String ownerEmail = exchangeRequest.getRequestedProduct().getUser().getEmail();
+            String ownerEmail = exchangeRequest.getTargetProduct().getUser().getEmail();
             String requesterEmail = exchangeRequest.getRequester().getEmail();
 
             // Send exchange request notifications
             emailService.sendExchangeRequestNotifications(exchangeRequest, ownerEmail, requesterEmail);
 
             Map<String, Object> response = new HashMap<>();
+            response.put("success", true);
             response.put("message", "Exchange request submitted successfully");
             response.put("exchangeRequest", exchangeRequest);
+            response.put("imageCount", exchangeRequest.getExchangeItemImages().size());
             return ResponseEntity.ok(response);
 
         } catch (Exception e) {
-            e.printStackTrace(); // Log the error
+            e.printStackTrace();
             return ResponseEntity.badRequest().body(createErrorResponse("Error submitting exchange request: " + e.getMessage()));
         }
     }
@@ -98,7 +127,23 @@ public class ExchangeRequestController {
         }
     }
 
-    // Owner accept exchange request
+    @GetMapping("/received")
+    public ResponseEntity<?> getReceivedExchangeRequests(
+            @RequestParam(required = false) String status,
+            Authentication authentication) {
+        try {
+            String username = authentication.getName();
+            User user = userService.findByEmail(username)
+                    .orElseThrow(() -> new RuntimeException("User not found"));
+
+            List<ExchangeRequest> requests = exchangeRequestService.getReceivedExchangeRequests(user.getId(), status);
+            return ResponseEntity.ok(requests);
+
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(createErrorResponse("Error fetching received exchange requests: " + e.getMessage()));
+        }
+    }
+
     @PutMapping("/{id}/accept")
     public ResponseEntity<?> acceptExchangeRequest(@PathVariable Long id, Authentication authentication) {
         try {
@@ -111,8 +156,8 @@ public class ExchangeRequestController {
                     .orElseThrow(() -> new RuntimeException("Exchange request not found"));
 
             // Check if current user is the owner of the requested product
-            if (!exchangeRequest.getRequestedProduct().getUser().getId().equals(currentUser.getId())) {
-                return ResponseEntity.badRequest().body(createErrorResponse("You are not authorized to accept this exchange request"));
+            if (!exchangeRequest.getTargetProduct().getUser().getId().equals(currentUser.getId())) {
+                return ResponseEntity.status(403).body(createErrorResponse("You are not authorized to accept this exchange request"));
             }
 
             // Update status
@@ -120,26 +165,27 @@ public class ExchangeRequestController {
             ExchangeRequest updatedRequest = exchangeRequestService.save(exchangeRequest);
 
             // Get emails for notification
-            String ownerEmail = exchangeRequest.getRequestedProduct().getUser().getEmail();
+            String ownerEmail = exchangeRequest.getTargetProduct().getUser().getEmail();
             String requesterEmail = exchangeRequest.getRequester().getEmail();
 
             // Send status update notifications
             emailService.sendExchangeStatusUpdate(updatedRequest, ownerEmail, requesterEmail);
 
             Map<String, Object> response = new HashMap<>();
+            response.put("success", true);
             response.put("message", "Exchange request accepted successfully");
             response.put("exchangeRequest", updatedRequest);
             return ResponseEntity.ok(response);
 
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.badRequest().body(createErrorResponse("Error accepting exchange request: " + e.getMessage()));
         }
     }
 
-    // Owner decline exchange request
     @PutMapping("/{id}/decline")
     public ResponseEntity<?> declineExchangeRequest(@PathVariable Long id,
-                                                    @RequestBody(required = false) Map<String, String> request,
+                                                    @RequestBody(required = false) Map<String, String> requestBody,
                                                     Authentication authentication) {
         try {
             // Verify the current user is the owner of the requested product
@@ -151,41 +197,85 @@ public class ExchangeRequestController {
                     .orElseThrow(() -> new RuntimeException("Exchange request not found"));
 
             // Check if current user is the owner of the requested product
-            if (!exchangeRequest.getRequestedProduct().getUser().getId().equals(currentUser.getId())) {
-                return ResponseEntity.badRequest().body(createErrorResponse("You are not authorized to decline this exchange request"));
+            if (!exchangeRequest.getTargetProduct().getUser().getId().equals(currentUser.getId())) {
+                return ResponseEntity.status(403).body(createErrorResponse("You are not authorized to decline this exchange request"));
             }
 
-            String rejectionReason = request != null ? request.get("rejectionReason") : "No reason provided";
+            String rejectionReason = requestBody != null ? requestBody.get("rejectionReason") : "No reason provided";
 
             // Update status
             exchangeRequest.setStatus("REJECTED");
-            if (rejectionReason != null) {
-                // You might want to add a rejectionReason field to your ExchangeRequest entity
-                // exchangeRequest.setRejectionReason(rejectionReason);
-            }
+            exchangeRequest.setRejectionReason(rejectionReason);
             ExchangeRequest updatedRequest = exchangeRequestService.save(exchangeRequest);
 
             // Get emails for notification
-            String ownerEmail = exchangeRequest.getRequestedProduct().getUser().getEmail();
+            String ownerEmail = exchangeRequest.getTargetProduct().getUser().getEmail();
             String requesterEmail = exchangeRequest.getRequester().getEmail();
 
             // Send status update notifications
             emailService.sendExchangeStatusUpdate(updatedRequest, ownerEmail, requesterEmail);
 
             Map<String, Object> response = new HashMap<>();
+            response.put("success", true);
             response.put("message", "Exchange request declined successfully");
             response.put("exchangeRequest", updatedRequest);
             return ResponseEntity.ok(response);
 
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.badRequest().body(createErrorResponse("Error declining exchange request: " + e.getMessage()));
+        }
+    }
+
+    @DeleteMapping("/{id}/cancel")
+    public ResponseEntity<?> cancelExchangeRequest(@PathVariable Long id, Authentication authentication) {
+        try {
+            String username = authentication.getName();
+            User currentUser = userService.findByEmail(username)
+                    .orElseThrow(() -> new RuntimeException("User not found"));
+
+            ExchangeRequest exchangeRequest = exchangeRequestService.findById(id)
+                    .orElseThrow(() -> new RuntimeException("Exchange request not found"));
+
+            // Check if current user is the requester
+            if (!exchangeRequest.getRequester().getId().equals(currentUser.getId())) {
+                return ResponseEntity.status(403).body(createErrorResponse("You are not authorized to cancel this exchange request"));
+            }
+
+            // Only allow cancellation if status is PENDING
+            if (!"PENDING".equals(exchangeRequest.getStatus())) {
+                return ResponseEntity.badRequest().body(createErrorResponse("Only pending requests can be cancelled"));
+            }
+
+            exchangeRequestService.deleteExchangeRequest(id);
+
+            Map<String, String> response = new HashMap<>();
+            response.put("success", "true");
+            response.put("message", "Exchange request cancelled successfully");
+            return ResponseEntity.ok(response);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body(createErrorResponse("Error cancelling exchange request: " + e.getMessage()));
+        }
+    }
+
+    // New endpoint to get exchange request by ID
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getExchangeRequestById(@PathVariable Long id, Authentication authentication) {
+        try {
+            ExchangeRequest exchangeRequest = exchangeRequestService.findById(id)
+                    .orElseThrow(() -> new RuntimeException("Exchange request not found"));
+            return ResponseEntity.ok(exchangeRequest);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(createErrorResponse("Error fetching exchange request: " + e.getMessage()));
         }
     }
 
     // Helper method to create error response
     private Map<String, String> createErrorResponse(String message) {
         Map<String, String> response = new HashMap<>();
-        response.put("message", message);
+        response.put("error", message);
         return response;
     }
 }

@@ -29,8 +29,13 @@ public class DonateItem {
     @Column(nullable = false)
     private String pickupAddress;
 
+    // Store multiple image URLs as JSON array
     @Column(columnDefinition = "TEXT")
-    private String imageUrl;
+    private String imageUrls;
+
+    // Store main image URL separately for easy access
+    @Column(columnDefinition = "TEXT")
+    private String mainImageUrl;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -78,8 +83,10 @@ public class DonateItem {
     public void setItemCondition(String itemCondition) { this.itemCondition = itemCondition; }
     public String getPickupAddress() { return pickupAddress; }
     public void setPickupAddress(String pickupAddress) { this.pickupAddress = pickupAddress; }
-    public String getImageUrl() { return imageUrl; }
-    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
+    public String getImageUrls() { return imageUrls; }
+    public void setImageUrls(String imageUrls) { this.imageUrls = imageUrls; }
+    public String getMainImageUrl() { return mainImageUrl; }
+    public void setMainImageUrl(String mainImageUrl) { this.mainImageUrl = mainImageUrl; }
     public DonationStatus getStatus() { return status; }
     public void setStatus(DonationStatus status) { this.status = status; }
     public String getRejectionReason() { return rejectionReason; }

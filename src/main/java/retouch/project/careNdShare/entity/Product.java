@@ -1,10 +1,11 @@
-// Product.java
 package retouch.project.careNdShare.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "products")
@@ -28,8 +29,13 @@ public class Product {
     @Column(length = 1000)
     private String description;
 
-    @Column(nullable = false)
-    private String imagePath;
+    @Column(name = "image_path")
+    private String imagePath; // Main image (for backward compatibility)
+
+    @ElementCollection
+    @CollectionTable(name = "product_images", joinColumns = @JoinColumn(name = "product_id"))
+    @Column(name = "image_path")
+    private List<String> imagePaths = new ArrayList<>(); // Multiple images
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -40,25 +46,25 @@ public class Product {
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "password", "roles"})
     private User user;
 
-    @Column(nullable = false)
+    @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    // In your Product entity class
-    @Column(name = "product_type")
-    private String productType;
+    @Column(name = "product_condition", nullable = false)
+    private String productCondition; // Store actual condition value
 
-    // Add condition field - escape with backticks in column name
-    @Column(name = "`condition`", nullable = false)
-    private String condition = "Good"; // New, Like New, Good, Fair, Poor
-
+    @Column(name = "approved_at")
     private LocalDateTime approvedAt;
+
+    @Column(name = "rejected_at")
     private LocalDateTime rejectedAt;
 
+    @Column(name = "rejection_reason")
     private String rejectionReason;
 
     // Constructors
     public Product() {
         this.createdAt = LocalDateTime.now();
+        // No default value - will be set by controller/service
     }
 
     public Product(String name, Double price, String category, String type, String description, String imagePath, User user) {
@@ -72,8 +78,7 @@ public class Product {
         this.user = user;
     }
 
-    // Updated constructor with condition
-    public Product(String name, Double price, String category, String type, String description, String imagePath, User user, String condition) {
+    public Product(String name, Double price, String category, String type, String description, String imagePath, User user, String productCondition) {
         this();
         this.name = name;
         this.price = price;
@@ -82,7 +87,7 @@ public class Product {
         this.description = description;
         this.imagePath = imagePath;
         this.user = user;
-        this.condition = condition;
+        this.productCondition = productCondition;
     }
 
     // Getters and Setters
@@ -101,11 +106,19 @@ public class Product {
     public String getType() { return type; }
     public void setType(String type) { this.type = type; }
 
-    public String getDescription() { return description; }
+    public String getDescription() { return description != null ? description : ""; }
     public void setDescription(String description) { this.description = description; }
 
     public String getImagePath() { return imagePath; }
     public void setImagePath(String imagePath) { this.imagePath = imagePath; }
+
+    public List<String> getImagePaths() { return imagePaths; }
+    public void setImagePaths(List<String> imagePaths) { this.imagePaths = imagePaths; }
+
+    public void addImagePath(String imagePath) {
+        if (this.imagePaths == null) this.imagePaths = new ArrayList<>();
+        this.imagePaths.add(imagePath);
+    }
 
     public ProductStatus getStatus() { return status; }
     public void setStatus(ProductStatus status) { this.status = status; }
@@ -116,23 +129,11 @@ public class Product {
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 
-    // Don't forget getters and setters
-    public String getProductType() {
-        return productType;
-    }
+    public String getProductCondition() { return productCondition; }
+    public void setProductCondition(String productCondition) { this.productCondition = productCondition; }
 
-    public void setProductType(String productType) {
-        this.productType = productType;
-    }
-
-    // Add condition getter and setter
-    public String getCondition() {
-        return condition;
-    }
-
-    public void setCondition(String condition) {
-        this.condition = condition;
-    }
+    public String getCondition() { return getProductCondition(); }
+    public void setCondition(String condition) { setProductCondition(condition); }
 
     public LocalDateTime getApprovedAt() { return approvedAt; }
     public void setApprovedAt(LocalDateTime approvedAt) { this.approvedAt = approvedAt; }

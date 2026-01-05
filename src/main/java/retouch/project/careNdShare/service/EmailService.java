@@ -5,13 +5,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
-import retouch.project.careNdShare.entity.PurchaseRequest;
-import retouch.project.careNdShare.entity.ExchangeRequest;
-import retouch.project.careNdShare.entity.Product;
-import retouch.project.careNdShare.entity.User;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
+import retouch.project.careNdShare.entity.ExchangeRequest;
+import retouch.project.careNdShare.entity.Product;
+import retouch.project.careNdShare.entity.PurchaseRequest;
+import retouch.project.careNdShare.entity.User;
 
 @Service
 public class EmailService {
@@ -165,13 +165,92 @@ public class EmailService {
             String subject = "Order Status Update - " + purchase.getProduct().getName();
             String htmlContent = buildStatusUpdateEmail(purchase);
 
-            sendHtmlEmail(purchase.getBuyer().getEmail(), subject, htmlContent);
-            System.out.println("✅ Status update email sent to buyer: " + purchase.getBuyer().getEmail());
+            User buyer = purchase.getBuyer();
+            if (buyer == null) {
+                System.err.println("❌ Cannot send status update: Buyer is null");
+                return;
+            }
+
+            sendHtmlEmail(buyer.getEmail(), subject, htmlContent);
+            System.out.println("✅ Status update email sent to buyer: " + buyer.getEmail());
 
         } catch (Exception e) {
             System.err.println("❌ Failed to send status update email: " + e.getMessage());
         }
     }
+
+    // PRODUCT APPROVAL EMAIL METHODS START HERE
+
+    /**
+     * Send product approval notification to user
+     */
+    public void sendProductApprovalNotification(Product product) {
+        try {
+            User seller = product.getUser();
+            if (seller == null) {
+                System.err.println("❌ Cannot send approval notification: Seller is null");
+                return;
+            }
+
+            String subject = "Product Approved - " + product.getName();
+            String htmlContent = buildProductApprovalEmail(product, seller);
+
+            sendHtmlEmail(seller.getEmail(), subject, htmlContent);
+            System.out.println("✅ Product approval email sent to seller: " + seller.getEmail());
+
+        } catch (Exception e) {
+            System.err.println("❌ Failed to send product approval notification: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Send product rejection notification to user
+     */
+    public void sendProductRejectionNotification(Product product) {
+        try {
+            User seller = product.getUser();
+            if (seller == null) {
+                System.err.println("❌ Cannot send rejection notification: Seller is null");
+                return;
+            }
+
+            String subject = "Product Requires Changes - " + product.getName();
+            String htmlContent = buildProductRejectionEmail(product, seller);
+
+            sendHtmlEmail(seller.getEmail(), subject, htmlContent);
+            System.out.println("✅ Product rejection email sent to seller: " + seller.getEmail());
+
+        } catch (Exception e) {
+            System.err.println("❌ Failed to send product rejection notification: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Send product submission confirmation to user
+     */
+    public void sendProductSubmissionNotification(Product product) {
+        try {
+            User seller = product.getUser();
+            if (seller == null) {
+                System.err.println("❌ Cannot send submission notification: Seller is null");
+                return;
+            }
+
+            String subject = "Product Submitted for Review - " + product.getName();
+            String htmlContent = buildProductSubmissionEmail(product, seller);
+
+            sendHtmlEmail(seller.getEmail(), subject, htmlContent);
+            System.out.println("✅ Product submission email sent to seller: " + seller.getEmail());
+
+        } catch (Exception e) {
+            System.err.println("❌ Failed to send product submission notification: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    // PRODUCT APPROVAL EMAIL METHODS END HERE
 
     // EXCHANGE REQUEST METHODS START HERE
 
@@ -300,6 +379,10 @@ public class EmailService {
      * Build status update email HTML content
      */
     private String buildStatusUpdateEmail(PurchaseRequest purchase) {
+        Product product = purchase.getProduct();
+        User buyer = purchase.getBuyer();
+        User seller = product != null ? product.getUser() : null;
+
         StringBuilder html = new StringBuilder();
         html.append("<!DOCTYPE html>");
         html.append("<html>");
@@ -324,14 +407,14 @@ public class EmailService {
         html.append("            <p>Your order status has been updated</p>");
         html.append("        </div>");
         html.append("        <div class=\"content\">");
-        html.append("            <h2>Hello, ").append(purchase.getBuyer().getFirstName()).append("!</h2>");
+        html.append("            <h2>Hello, ").append(buyer != null ? buyer.getFirstName() : "Customer").append("!</h2>");
         html.append("            <p>Your order status has been updated. Here are the latest details:</p>");
         html.append("            ");
         html.append("            <div class=\"order-details\">");
         html.append("                <h3>Order Information</h3>");
         html.append("                <div class=\"info-item\"><span class=\"info-label\">Order ID:</span> #").append(purchase.getId()).append("</div>");
-        html.append("                <div class=\"info-item\"><span class=\"info-label\">Product:</span> ").append(purchase.getProduct().getName()).append("</div>");
-        html.append("                <div class=\"info-item\"><span class=\"info-label\">Seller:</span> ").append(purchase.getProduct().getUser().getFirstName()).append(" ").append(purchase.getProduct().getUser().getLastName()).append("</div>");
+        html.append("                <div class=\"info-item\"><span class=\"info-label\">Product:</span> ").append(product != null ? product.getName() : "N/A").append("</div>");
+        html.append("                <div class=\"info-item\"><span class=\"info-label\">Seller:</span> ").append(seller != null ? seller.getFirstName() + " " + seller.getLastName() : "N/A").append("</div>");
         html.append("                <div class=\"info-item\"><span class=\"info-label\">New Status:</span> <span class=\"status-badge\">").append(purchase.getStatus()).append("</span></div>");
         html.append("                <div class=\"info-item\"><span class=\"info-label\">Last Updated:</span> ").append(purchase.getUpdatedAt() != null ? purchase.getUpdatedAt() : purchase.getCreatedAt()).append("</div>");
         html.append("            </div>");
@@ -339,7 +422,7 @@ public class EmailService {
         html.append("            <div style=\"background: #e7f3ff; padding: 20px; border-radius: 10px; margin: 20px 0;\">");
         html.append("                <h3>ℹ️ What's Next?</h3>");
         html.append("                <p>If you have any questions about your order status, please contact the seller directly.</p>");
-        html.append("                <p>Seller Email: ").append(purchase.getProduct().getUser().getEmail()).append("</p>");
+        html.append("                <p>Seller Email: ").append(seller != null ? seller.getEmail() : "N/A").append("</p>");
         html.append("            </div>");
         html.append("            ");
         html.append("            <p>Thank you for choosing <strong>Care & Share</strong>!</p>");
@@ -354,6 +437,265 @@ public class EmailService {
 
         return html.toString();
     }
+
+    // PRODUCT APPROVAL EMAIL TEMPLATES START HERE
+
+    /**
+     * Build product approval email HTML content
+     */
+    private String buildProductApprovalEmail(Product product, User seller) {
+        String editLink = baseUrl + "/products/" + product.getId() + "/edit";
+        String dashboardLink = baseUrl + "/dashboard/my-products";
+
+        StringBuilder html = new StringBuilder();
+        html.append("<!DOCTYPE html>");
+        html.append("<html>");
+        html.append("<head>");
+        html.append("    <meta charset=\"UTF-8\">");
+        html.append("    <style>");
+        html.append("        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; }");
+        html.append("        .container { max-width: 600px; margin: 0 auto; background: #ffffff; }");
+        html.append("        .header { background: linear-gradient(135deg, #28a745, #218838); padding: 30px; text-align: center; color: white; }");
+        html.append("        .content { padding: 30px; background: #f8f9fa; }");
+        html.append("        .product-details { background: white; padding: 20px; margin: 20px 0; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }");
+        html.append("        .footer { text-align: center; padding: 20px; background: #343a40; color: white; font-size: 12px; }");
+        html.append("        .info-item { margin: 10px 0; }");
+        html.append("        .info-label { font-weight: bold; color: #28a745; }");
+        html.append("        .button-container { text-align: center; margin: 30px 0; }");
+        html.append("        .button { display: inline-block; padding: 12px 30px; color: white; text-decoration: none; border-radius: 5px; font-weight: bold; margin: 0 10px; }");
+        html.append("        .view-btn { background: #007bff; }");
+        html.append("        .dashboard-btn { background: #6c757d; }");
+        html.append("        .status-badge { display: inline-block; padding: 5px 15px; background: #28a745; color: white; border-radius: 20px; font-weight: bold; }");
+        html.append("    </style>");
+        html.append("</head>");
+        html.append("<body>");
+        html.append("    <div class=\"container\">");
+        html.append("        <div class=\"header\">");
+        html.append("            <h1>✅ Product Approved!</h1>");
+        html.append("            <p>Your product is now live on Care & Share</p>");
+        html.append("        </div>");
+        html.append("        <div class=\"content\">");
+        html.append("            <h2>Hello, ").append(seller.getFirstName()).append("!</h2>");
+        html.append("            <p>Great news! Your product has been approved by our admin team and is now visible to all users.</p>");
+        html.append("            ");
+        html.append("            <div class=\"product-details\">");
+        html.append("                <h3>📦 Product Details</h3>");
+        html.append("                <div class=\"info-item\"><span class=\"info-label\">Product Name:</span> ").append(product.getName()).append("</div>");
+        html.append("                <div class=\"info-item\"><span class=\"info-label\">Category:</span> ").append(product.getCategory()).append("</div>");
+        html.append("                <div class=\"info-item\"><span class=\"info-label\">Condition:</span> ").append(product.getCondition()).append("</div>");
+        html.append("                <div class=\"info-item\"><span class=\"info-label\">Description:</span> ").append(product.getDescription()).append("</div>");
+        html.append("                <div class=\"info-item\"><span class=\"info-label\">Status:</span> <span class=\"status-badge\">APPROVED</span></div>");
+        html.append("                <div class=\"info-item\"><span class=\"info-label\">Approved On:</span> ").append("Now").append("</div>");
+        html.append("            </div>");
+        html.append("            ");
+        html.append("            <div style=\"background: #e7f3ff; padding: 20px; border-radius: 10px; margin: 20px 0;\">");
+        html.append("                <h3>🎉 What's Next?</h3>");
+        html.append("                <p>Your product is now available for:</p>");
+        html.append("                <ul>");
+        html.append("                    <li><strong>Direct purchase</strong> by other users</li>");
+        html.append("                    <li><strong>Exchange requests</strong> with other items</li>");
+        html.append("                    <li><strong>Viewing</strong> by the entire community</li>");
+        html.append("                </ul>");
+        html.append("                <p>You can track views, inquiries, and sales from your seller dashboard.</p>");
+        html.append("            </div>");
+        html.append("            ");
+        html.append("            <div class=\"button-container\">");
+        html.append("                <a href=\"").append(editLink).append("\" class=\"button view-btn\">👁️ View Product</a>");
+        html.append("                <a href=\"").append(dashboardLink).append("\" class=\"button dashboard-btn\">📊 Go to Dashboard</a>");
+        html.append("            </div>");
+        html.append("            ");
+        html.append("            <p>Need to make changes? You can edit your product anytime from your dashboard.</p>");
+        html.append("            ");
+        html.append("            <p>Thank you for contributing to the <strong>Care & Share</strong> community!</p>");
+        html.append("        </div>");
+        html.append("        <div class=\"footer\">");
+        html.append("            <p>&copy; 2025 Care & Share. All rights reserved.</p>");
+        html.append("            <p>This is an automated email, please do not reply.</p>");
+        html.append("        </div>");
+        html.append("    </div>");
+        html.append("</body>");
+        html.append("</html>");
+
+        return html.toString();
+    }
+
+    /**
+     * Build product rejection email HTML content
+     */
+    private String buildProductRejectionEmail(Product product, User seller) {
+        String editLink = baseUrl + "/products/" + product.getId() + "/edit";
+        String resubmitLink = baseUrl + "/products/" + product.getId() + "/resubmit";
+
+        StringBuilder html = new StringBuilder();
+        html.append("<!DOCTYPE html>");
+        html.append("<html>");
+        html.append("<head>");
+        html.append("    <meta charset=\"UTF-8\">");
+        html.append("    <style>");
+        html.append("        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; }");
+        html.append("        .container { max-width: 600px; margin: 0 auto; background: #ffffff; }");
+        html.append("        .header { background: linear-gradient(135deg, #dc3545, #c82333); padding: 30px; text-align: center; color: white; }");
+        html.append("        .content { padding: 30px; background: #f8f9fa; }");
+        html.append("        .product-details { background: white; padding: 20px; margin: 20px 0; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }");
+        html.append("        .review-notes { background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin: 20px 0; }");
+        html.append("        .footer { text-align: center; padding: 20px; background: #343a40; color: white; font-size: 12px; }");
+        html.append("        .info-item { margin: 10px 0; }");
+        html.append("        .info-label { font-weight: bold; color: #dc3545; }");
+        html.append("        .button-container { text-align: center; margin: 30px 0; }");
+        html.append("        .button { display: inline-block; padding: 12px 30px; color: white; text-decoration: none; border-radius: 5px; font-weight: bold; margin: 0 10px; }");
+        html.append("        .edit-btn { background: #007bff; }");
+        html.append("        .resubmit-btn { background: #28a745; }");
+        html.append("        .status-badge { display: inline-block; padding: 5px 15px; background: #dc3545; color: white; border-radius: 20px; font-weight: bold; }");
+        html.append("    </style>");
+        html.append("</head>");
+        html.append("<body>");
+        html.append("    <div class=\"container\">");
+        html.append("        <div class=\"header\">");
+        html.append("            <h1>⚠️ Product Requires Changes</h1>");
+        html.append("            <p>Your product needs modifications before it can be approved</p>");
+        html.append("        </div>");
+        html.append("        <div class=\"content\">");
+        html.append("            <h2>Hello, ").append(seller.getFirstName()).append("!</h2>");
+        html.append("            <p>Our admin team has reviewed your product and found some issues that need to be addressed before it can be published.</p>");
+        html.append("            ");
+        html.append("            <div class=\"product-details\">");
+        html.append("                <h3>📦 Product Details</h3>");
+        html.append("                <div class=\"info-item\"><span class=\"info-label\">Product Name:</span> ").append(product.getName()).append("</div>");
+        html.append("                <div class=\"info-item\"><span class=\"info-label\">Category:</span> ").append(product.getCategory()).append("</div>");
+        html.append("                <div class=\"info-item\"><span class=\"info-label\">Status:</span> <span class=\"status-badge\">REQUIRES CHANGES</span></div>");
+        html.append("                <div class=\"info-item\"><span class=\"info-label\">Reviewed On:</span> ").append("Now").append("</div>");
+        html.append("            </div>");
+        html.append("            ");
+        // Check if adminReviewNotes exists using reflection or try-catch
+        String adminReviewNotes = null;
+        try {
+            // Try to get adminReviewNotes if the method exists
+            java.lang.reflect.Method method = product.getClass().getMethod("getAdminReviewNotes");
+            Object result = method.invoke(product);
+            if (result instanceof String) {
+                adminReviewNotes = (String) result;
+            }
+        } catch (Exception e) {
+            // Method doesn't exist or failed to invoke
+            adminReviewNotes = null;
+        }
+
+        if (adminReviewNotes != null && !adminReviewNotes.isEmpty()) {
+            html.append("            <div class=\"review-notes\">");
+            html.append("                <h3>📝 Admin Feedback</h3>");
+            html.append("                <p>").append(adminReviewNotes).append("</p>");
+            html.append("            </div>");
+        }
+        html.append("            ");
+        html.append("            <div style=\"background: #f8d7da; padding: 20px; border-radius: 10px; margin: 20px 0;\">");
+        html.append("                <h3>🔧 Common Issues to Check:</h3>");
+        html.append("                <ul>");
+        html.append("                    <li>Is your product description clear and detailed?</li>");
+        html.append("                    <li>Are the photos clear and show the item from multiple angles?</li>");
+        html.append("                    <li>Is the condition accurately described?</li>");
+        html.append("                    <li>Does the item comply with our community guidelines?</li>");
+        html.append("                    <li>Is the price reasonable and realistic?</li>");
+        html.append("                </ul>");
+        html.append("                <p>Please review our <a href=\"").append(baseUrl).append("/community-guidelines\" style=\"color: #007bff;\">Community Guidelines</a> for more details.</p>");
+        html.append("            </div>");
+        html.append("            ");
+        html.append("            <div class=\"button-container\">");
+        html.append("                <a href=\"").append(editLink).append("\" class=\"button edit-btn\">✏️ Edit Product</a>");
+        html.append("                <a href=\"").append(resubmitLink).append("\" class=\"button resubmit-btn\">🔄 Resubmit for Review</a>");
+        html.append("            </div>");
+        html.append("            ");
+        html.append("            <p><strong>Note:</strong> Once you make the necessary changes, you can resubmit your product for review.</p>");
+        html.append("            ");
+        html.append("            <p>Thank you for your understanding and cooperation!</p>");
+        html.append("        </div>");
+        html.append("        <div class=\"footer\">");
+        html.append("            <p>&copy; 2025 Care & Share. All rights reserved.</p>");
+        html.append("            <p>This is an automated email, please do not reply.</p>");
+        html.append("        </div>");
+        html.append("    </div>");
+        html.append("</body>");
+        html.append("</html>");
+
+        return html.toString();
+    }
+
+    /**
+     * Build product submission email HTML content
+     */
+    private String buildProductSubmissionEmail(Product product, User seller) {
+        StringBuilder html = new StringBuilder();
+        html.append("<!DOCTYPE html>");
+        html.append("<html>");
+        html.append("<head>");
+        html.append("    <meta charset=\"UTF-8\">");
+        html.append("    <style>");
+        html.append("        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; }");
+        html.append("        .container { max-width: 600px; margin: 0 auto; background: #ffffff; }");
+        html.append("        .header { background: linear-gradient(135deg, #007bff, #0056b3); padding: 30px; text-align: center; color: white; }");
+        html.append("        .content { padding: 30px; background: #f8f9fa; }");
+        html.append("        .product-details { background: white; padding: 20px; margin: 20px 0; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }");
+        html.append("        .footer { text-align: center; padding: 20px; background: #343a40; color: white; font-size: 12px; }");
+        html.append("        .info-item { margin: 10px 0; }");
+        html.append("        .info-label { font-weight: bold; color: #007bff; }");
+        html.append("        .status-badge { display: inline-block; padding: 5px 15px; background: #ffc107; color: #212529; border-radius: 20px; font-weight: bold; }");
+        html.append("    </style>");
+        html.append("</head>");
+        html.append("<body>");
+        html.append("    <div class=\"container\">");
+        html.append("        <div class=\"header\">");
+        html.append("            <h1>📤 Product Submitted for Review</h1>");
+        html.append("            <p>Your product is now under admin review</p>");
+        html.append("        </div>");
+        html.append("        <div class=\"content\">");
+        html.append("            <h2>Hello, ").append(seller.getFirstName()).append("!</h2>");
+        html.append("            <p>Thank you for submitting your product to Care & Share. We've received your submission and it's now in our review queue.</p>");
+        html.append("            ");
+        html.append("            <div class=\"product-details\">");
+        html.append("                <h3>📦 Product Details</h3>");
+        html.append("                <div class=\"info-item\"><span class=\"info-label\">Product Name:</span> ").append(product.getName()).append("</div>");
+        html.append("                <div class=\"info-item\"><span class=\"info-label\">Category:</span> ").append(product.getCategory()).append("</div>");
+        html.append("                <div class=\"info-item\"><span class=\"info-label\">Condition:</span> ").append(product.getCondition()).append("</div>");
+        html.append("                <div class=\"info-item\"><span class=\"info-label\">Description:</span> ").append(product.getDescription()).append("</div>");
+        html.append("                <div class=\"info-item\"><span class=\"info-label\">Status:</span> <span class=\"status-badge\">UNDER REVIEW</span></div>");
+        html.append("                <div class=\"info-item\"><span class=\"info-label\">Submitted On:</span> ").append("Now").append("</div>");
+        html.append("            </div>");
+        html.append("            ");
+        html.append("            <div style=\"background: #e7f3ff; padding: 20px; border-radius: 10px; margin: 20px 0;\">");
+        html.append("                <h3>⏳ What to Expect Next</h3>");
+        html.append("                <p><strong>Review Timeline:</strong> Our admin team typically reviews submissions within 24-48 hours.</p>");
+        html.append("                <p><strong>Possible Outcomes:</strong></p>");
+        html.append("                <ul>");
+        html.append("                    <li><strong>Approval:</strong> Your product goes live immediately</li>");
+        html.append("                    <li><strong>Modifications Required:</strong> We'll email you with specific feedback</li>");
+        html.append("                </ul>");
+        html.append("                <p><strong>You'll receive an email notification</strong> once the review is complete.</p>");
+        html.append("            </div>");
+        html.append("            ");
+        html.append("            <div style=\"background: #d4edda; padding: 20px; border-radius: 10px; margin: 20px 0;\">");
+        html.append("                <h3>💡 Tips for Faster Approval</h3>");
+        html.append("                <ul>");
+        html.append("                    <li>Clear, high-quality photos showing all angles</li>");
+        html.append("                    <li>Detailed and honest description</li>");
+        html.append("                    <li>Accurate condition assessment</li>");
+        html.append("                    <li>Reasonable pricing</li>");
+        html.append("                </ul>");
+        html.append("            </div>");
+        html.append("            ");
+        html.append("            <p>Thank you for contributing to the <strong>Care & Share</strong> community!</p>");
+        html.append("            <p>If you have any questions, please contact our support team.</p>");
+        html.append("        </div>");
+        html.append("        <div class=\"footer\">");
+        html.append("            <p>&copy; 2025 Care & Share. All rights reserved.</p>");
+        html.append("            <p>This is an automated email, please do not reply.</p>");
+        html.append("        </div>");
+        html.append("    </div>");
+        html.append("</body>");
+        html.append("</html>");
+
+        return html.toString();
+    }
+
+    // PRODUCT APPROVAL EMAIL TEMPLATES END HERE
 
     // EXCHANGE EMAIL TEMPLATES START HERE
 
@@ -562,7 +904,6 @@ public class EmailService {
         html.append("            <p>&copy; 2025 Care & Share. All rights reserved.</p>");
         html.append("            <p>This is an automated email, please do not reply.</p>");
         html.append("        </div>");
-        html.append("    </div>");
         html.append("</body>");
         html.append("</html>");
 
@@ -702,7 +1043,6 @@ public class EmailService {
         html.append("            <p>&copy; 2025 Care & Share. All rights reserved.</p>");
         html.append("            <p>This is an automated email, please do not reply.</p>");
         html.append("        </div>");
-        html.append("    </div>");
         html.append("</body>");
         html.append("</html>");
 
