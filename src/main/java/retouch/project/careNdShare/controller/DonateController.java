@@ -11,7 +11,7 @@ import retouch.project.careNdShare.service.DonateRequestService;
 
 @RestController
 @RequestMapping("/api/donate")
-@CrossOrigin(origins = "*") // Keep your CORS config
+@CrossOrigin(origins = "*")
 public class DonateController {
 
     @Autowired
@@ -20,12 +20,6 @@ public class DonateController {
     @Autowired
     private DonateRequestService donateRequestService;
 
-    // === DONATION ITEM ENDPOINTS ===
-
-    /**
-     * ✅ User submits a new donation item.
-     * Uses multipart/form-data
-     */
     @PostMapping(value = "/add", consumes = "multipart/form-data")
     public ResponseEntity<?> addDonation(@Valid @ModelAttribute DonateItemDTO dto) {
         try {
@@ -35,10 +29,6 @@ public class DonateController {
         }
     }
 
-    /**
-     * ✅ Public endpoint to see all APPROVED donation items.
-     * Can be filtered by type (e.g., /api/donate/available?type=book)
-     */
     @GetMapping("/available")
     public ResponseEntity<?> getAvailableDonations(@RequestParam(required = false) String type) {
         try {
@@ -48,9 +38,6 @@ public class DonateController {
         }
     }
 
-    /**
-     * ✅ User gets their own submitted donations (all statuses)
-     */
     @GetMapping("/my-donations")
     public ResponseEntity<?> getMyDonations() {
         try {
@@ -60,9 +47,6 @@ public class DonateController {
         }
     }
 
-    /**
-     * ✅ Get details for a single donation item
-     */
     @GetMapping("/{id}")
     public ResponseEntity<?> getDonationById(@PathVariable Long id) {
         try {
@@ -72,9 +56,16 @@ public class DonateController {
         }
     }
 
-    /**
-     * ✅ User deletes one of their own donations
-     */
+    // ✅ ADD THIS - for View Details feature
+    @GetMapping("/details/{id}")
+    public ResponseEntity<?> getDonationDetails(@PathVariable Long id) {
+        try {
+            return ResponseEntity.ok(donateItemService.getDonationById(id));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteDonation(@PathVariable Long id) {
         try {
@@ -85,11 +76,6 @@ public class DonateController {
         }
     }
 
-    // === DONATION REQUEST ENDPOINTS ===
-
-    /**
-     * ✅ User requests an available donation item
-     */
     @PostMapping("/request")
     public ResponseEntity<?> createRequest(@Valid @RequestBody DonateRequestDTO dto) {
         try {
@@ -99,9 +85,6 @@ public class DonateController {
         }
     }
 
-    /**
-     * ✅ User sees all requests they have made
-     */
     @GetMapping("/my-requests")
     public ResponseEntity<?> getMyRequests() {
         try {

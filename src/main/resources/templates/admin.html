@@ -84,9 +84,777 @@
             border-radius: 4px;
             object-fit: cover;
             border: 1px solid #e2e8f0;
+            cursor: pointer;
         }
         .badge { font-size: 0.8rem; padding: 0.4em 0.7em; }
         .btn-sm { padding: 0.25rem 0.6rem; font-size: 0.8rem; }
+
+        /* Donation Image Carousel Styles */
+        .donation-image-carousel {
+            width: 120px;
+            height: 120px;
+            position: relative;
+        }
+        .donation-image-carousel .carousel-inner {
+            width: 120px;
+            height: 120px;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+        }
+        .donation-image-carousel .carousel-item img {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            cursor: pointer;
+        }
+        .donation-image-carousel .carousel-control-prev,
+        .donation-image-carousel .carousel-control-next {
+            width: 25px;
+            height: 25px;
+            background-color: rgba(0,0,0,0.5);
+            border-radius: 50%;
+            top: 50%;
+            transform: translateY(-50%);
+            opacity: 0.7;
+        }
+        .donation-image-carousel .carousel-control-prev {
+            left: 5px;
+        }
+        .donation-image-carousel .carousel-control-next {
+            right: 5px;
+        }
+        .donation-image-carousel .carousel-control-prev:hover,
+        .donation-image-carousel .carousel-control-next:hover {
+            opacity: 1;
+        }
+        .donation-image-carousel .carousel-indicators {
+            bottom: -20px;
+            margin-bottom: 0;
+        }
+        .donation-image-carousel .carousel-indicators button {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #ccc;
+            margin: 0 3px;
+            border: none;
+        }
+        .donation-image-carousel .carousel-indicators button.active {
+            background-color: var(--primary-color);
+        }
+        .donation-image-count {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            border-radius: 10px;
+            padding: 2px 8px;
+            font-size: 11px;
+            z-index: 10;
+        }
+
+        /* Product Review Card (like screenshot) */
+        .product-review-card {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            border-left: 4px solid var(--primary-color);
+        }
+        .product-review-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        .product-review-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin: 0;
+        }
+        .review-images-section {
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .review-images-title {
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+        .review-images-carousel {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .review-images-carousel .carousel-item img {
+            max-height: 400px;
+            object-fit: contain;
+            border-radius: 8px;
+            background: white;
+            padding: 10px;
+        }
+        .review-images-carousel .carousel-indicators {
+            bottom: -40px;
+        }
+        .review-images-carousel .carousel-indicators button {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin: 0 6px;
+            background-color: #ccc;
+            border: none;
+        }
+        .review-images-carousel .carousel-indicators button.active {
+            background-color: var(--primary-color);
+        }
+        .review-images-carousel .carousel-control-prev,
+        .review-images-carousel .carousel-control-next {
+            width: 50px;
+            height: 50px;
+            background-color: rgba(0,0,0,0.1);
+            border-radius: 50%;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        .product-details-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .detail-item {
+            padding: 12px;
+            background: #f8fafc;
+            border-radius: 6px;
+        }
+        .detail-label {
+            font-weight: 600;
+            color: #64748b;
+            font-size: 0.9rem;
+            display: block;
+            margin-bottom: 5px;
+        }
+        .detail-value {
+            font-weight: 500;
+            color: var(--text-dark);
+            font-size: 1rem;
+        }
+        .review-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid #e2e8f0;
+        }
+        .review-actions .btn {
+            min-width: 120px;
+            padding: 10px 20px;
+        }
+
+        /* DONATION REVIEW CARD STYLES - Added */
+        .donation-review-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            border-left: 4px solid var(--donate-color);
+        }
+        .donation-review-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        .donation-review-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin: 0;
+        }
+        .donation-images-section {
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            text-align: center;
+        }
+        .donation-images-title {
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 10px;
+            font-size: 1rem;
+        }
+        .donation-images-carousel {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .donation-images-carousel .carousel-item img {
+            max-height: 300px;
+            object-fit: contain;
+            border-radius: 8px;
+            background: white;
+            padding: 8px;
+        }
+        .donation-images-carousel .carousel-indicators {
+            bottom: -30px;
+        }
+        .donation-images-carousel .carousel-indicators button {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin: 0 4px;
+            background-color: #ccc;
+            border: none;
+        }
+        .donation-images-carousel .carousel-indicators button.active {
+            background-color: var(--donate-color);
+        }
+        .donation-images-carousel .carousel-control-prev,
+        .donation-images-carousel .carousel-control-next {
+            width: 40px;
+            height: 40px;
+            background-color: rgba(0,0,0,0.1);
+            border-radius: 50%;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        .donation-details-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 12px;
+            margin: 15px 0;
+        }
+        .donation-detail-item {
+            padding: 10px;
+            background: #f8fafc;
+            border-radius: 6px;
+        }
+        .donation-detail-label {
+            font-weight: 600;
+            color: #64748b;
+            font-size: 0.85rem;
+            display: block;
+            margin-bottom: 4px;
+        }
+        .donation-detail-value {
+            font-weight: 500;
+            color: var(--text-dark);
+            font-size: 0.95rem;
+        }
+        .donation-review-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #e2e8f0;
+        }
+        .donation-review-actions .btn {
+            min-width: 100px;
+            padding: 8px 16px;
+            font-size: 0.9rem;
+        }
+
+        /* EXCHANGE REVIEW CARD STYLES - ADDED */
+        .exchange-review-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            border-left: 4px solid var(--exchange-color);
+        }
+        .exchange-review-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        .exchange-review-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin: 0;
+        }
+        .exchange-images-section {
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            text-align: center;
+        }
+        .exchange-images-title {
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 10px;
+            font-size: 1rem;
+        }
+        .exchange-images-carousel {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .exchange-images-carousel .carousel-item img {
+            max-height: 300px;
+            object-fit: contain;
+            border-radius: 8px;
+            background: white;
+            padding: 8px;
+        }
+        .exchange-images-carousel .carousel-indicators {
+            bottom: -30px;
+        }
+        .exchange-images-carousel .carousel-indicators button {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin: 0 4px;
+            background-color: #ccc;
+            border: none;
+        }
+        .exchange-images-carousel .carousel-indicators button.active {
+            background-color: var(--exchange-color);
+        }
+        .exchange-images-carousel .carousel-control-prev,
+        .exchange-images-carousel .carousel-control-next {
+            width: 40px;
+            height: 40px;
+            background-color: rgba(0,0,0,0.1);
+            border-radius: 50%;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        .exchange-details-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 12px;
+            margin: 15px 0;
+        }
+        .exchange-detail-item {
+            padding: 10px;
+            background: #f8fafc;
+            border-radius: 6px;
+        }
+        .exchange-detail-label {
+            font-weight: 600;
+            color: #64748b;
+            font-size: 0.85rem;
+            display: block;
+            margin-bottom: 4px;
+        }
+        .exchange-detail-value {
+            font-weight: 500;
+            color: var(--text-dark);
+            font-size: 0.95rem;
+        }
+        .exchange-review-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #e2e8f0;
+        }
+        .exchange-review-actions .btn {
+            min-width: 100px;
+            padding: 8px 16px;
+            font-size: 0.9rem;
+        }
+
+        /* Image Detail Modal Styles */
+        .detail-carousel .carousel-item img {
+            max-height: 500px;
+            object-fit: contain;
+            margin: 0 auto;
+        }
+        .detail-carousel .carousel-indicators {
+            bottom: -40px;
+        }
+        .detail-carousel .carousel-indicators button {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin: 0 5px;
+        }
+
+        /* Status Badges */
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+        .status-pending {
+            background-color: #ffedd5;
+            color: #9a3412;
+        }
+        .status-approved {
+            background-color: #dcfce7;
+            color: #166534;
+        }
+        .status-rejected {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+
+        /* Debug info */
+        .debug-info {
+            font-size: 12px;
+            color: #666;
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            display: none; /* Hidden by default */
+        }
+
+        /* NEW: Compact Item Card Styles */
+        .compact-item-card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border-left: 4px solid var(--primary-color);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .compact-item-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+        .compact-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .compact-item-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin: 0;
+        }
+        .compact-item-content {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 15px;
+        }
+        .compact-item-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 6px;
+            object-fit: cover;
+            border: 1px solid #e2e8f0;
+            cursor: pointer;
+        }
+        .compact-item-details {
+            flex: 1;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px;
+        }
+        .compact-detail-item {
+            padding: 8px;
+            background: #f8fafc;
+            border-radius: 4px;
+        }
+        .compact-detail-label {
+            font-weight: 600;
+            color: #64748b;
+            font-size: 0.8rem;
+            display: block;
+            margin-bottom: 3px;
+        }
+        .compact-detail-value {
+            font-weight: 500;
+            color: var(--text-dark);
+            font-size: 0.9rem;
+        }
+        .compact-item-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            padding-top: 15px;
+            border-top: 1px solid #e2e8f0;
+        }
+        .compact-item-actions .btn {
+            padding: 8px 16px;
+            font-size: 0.9rem;
+        }
+
+        /* NEW: Detail Modal Styles */
+        .detail-modal .modal-content {
+            border-radius: 12px;
+            border: none;
+        }
+        .detail-modal .modal-header {
+            background: linear-gradient(135deg, var(--primary-color), #0078b5);
+            color: white;
+            border-bottom: none;
+            border-radius: 12px 12px 0 0;
+        }
+        .detail-modal .modal-header .btn-close {
+            filter: invert(1);
+        }
+        .detail-modal .modal-body {
+            padding: 30px;
+        }
+        .detail-modal-images {
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        .detail-modal-carousel {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        .detail-modal-carousel .carousel-item img {
+            max-height: 400px;
+            object-fit: contain;
+            border-radius: 8px;
+            background: white;
+            padding: 15px;
+        }
+        .detail-modal-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .detail-modal-item {
+            padding: 15px;
+            background: #f8fafc;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary-color);
+        }
+        .detail-modal-label {
+            font-weight: 700;
+            color: #64748b;
+            font-size: 0.9rem;
+            display: block;
+            margin-bottom: 5px;
+        }
+        .detail-modal-value {
+            font-weight: 600;
+            color: var(--text-dark);
+            font-size: 1.1rem;
+        }
+        .detail-modal-actions {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e2e8f0;
+        }
+        .detail-modal-actions .btn {
+            min-width: 140px;
+            padding: 12px 24px;
+            font-size: 1rem;
+        }
+
+        /* NEW: Two-column layout for exchange request modal - UPDATED */
+        .exchange-modal-two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 20px 0;
+        }
+        .exchange-column {
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 20px;
+            border: 1px solid #e2e8f0;
+        }
+        .exchange-column-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        .exchange-column-header i {
+            font-size: 1.5rem;
+            margin-right: 10px;
+            color: var(--exchange-color);
+        }
+        .exchange-column-header h5 {
+            margin: 0;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+        .exchange-column-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .exchange-column-item {
+            padding: 12px;
+            background: white;
+            border-radius: 6px;
+            border-left: 3px solid var(--exchange-color);
+        }
+        .exchange-column-label {
+            font-weight: 600;
+            color: #64748b;
+            font-size: 0.85rem;
+            display: block;
+            margin-bottom: 5px;
+        }
+        .exchange-column-value {
+            font-weight: 500;
+            color: var(--text-dark);
+            font-size: 0.95rem;
+        }
+        .user-details-section {
+            background: #f0f9ff;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+            border-left: 4px solid var(--primary-color);
+        }
+        .user-details-title {
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .user-details-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+        }
+        .user-detail-item {
+            padding: 10px;
+            background: white;
+            border-radius: 6px;
+        }
+
+        /* Ensure images are visible in carousels */
+        .detail-modal-carousel .carousel-item img {
+            max-height: 400px !important;
+            min-height: 300px !important;
+            object-fit: contain !important;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 10px;
+        }
+
+        /* Ensure compact card images are visible */
+        .compact-item-image {
+            width: 80px;
+            height: 80px;
+            object-fit: cover !important;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            background-color: #f8f9fa;
+        }
+
+        /* Ensure carousel items have proper dimensions */
+        .carousel-item {
+            min-height: 300px;
+        }
+
+        /* NEW: Exchange Images Section */
+        .exchange-images-container {
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+            border: 1px solid #e2e8f0;
+        }
+        .exchange-images-title {
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 15px;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .exchange-carousel {
+            max-width: 100%;
+            margin: 0 auto;
+        }
+        .exchange-carousel .carousel-item img {
+            max-height: 300px;
+            object-fit: contain;
+            border-radius: 8px;
+            background: white;
+            padding: 8px;
+            margin: 0 auto;
+        }
+        .exchange-carousel .carousel-indicators {
+            bottom: -25px;
+        }
+        .exchange-carousel .carousel-indicators button {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin: 0 4px;
+            background-color: #ccc;
+            border: none;
+        }
+        .exchange-carousel .carousel-indicators button.active {
+            background-color: var(--exchange-color);
+        }
+        .exchange-carousel .carousel-control-prev,
+        .exchange-carousel .carousel-control-next {
+            width: 40px;
+            height: 40px;
+            background-color: rgba(0,0,0,0.1);
+            border-radius: 50%;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        /* NEW: Message Box */
+        .message-box {
+            background: #f0f9ff;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+            border-left: 4px solid var(--primary-color);
+        }
+        .message-box-title {
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 10px;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .message-content {
+            background: white;
+            padding: 15px;
+            border-radius: 6px;
+            border: 1px solid #e2e8f0;
+            white-space: pre-wrap;
+            max-height: 200px;
+            overflow-y: auto;
+        }
     </style>
 </head>
 <body>
@@ -107,11 +875,13 @@
 <div class="admin-header">
     <div class="container">
         <h1><i class="fa-solid fa-shield-halved me-3"></i>Admin Dashboard</h1>
+        <p class="lead">Review and manage platform content</p>
     </div>
 </div>
 
 <div class="container">
 
+    <!-- Platform Statistics -->
     <div class="admin-section">
         <div class="section-header">
             <h3><i class="fa-solid fa-chart-pie me-2"></i>Platform Statistics</h3>
@@ -123,6 +893,7 @@
         </div>
     </div>
 
+    <!-- Donation Management -->
     <div class="admin-section">
         <div class="section-header">
             <h3><i class="fa-solid fa-gift me-2"></i>Donation Management</h3>
@@ -142,66 +913,71 @@
         </ul>
 
         <div class="tab-content" id="donationTabsContent">
+            <!-- Item Approvals Tab -->
             <div class="tab-pane fade show active" id="item-approval" role="tabpanel">
-                <div class="table-responsive">
-                    <table class="table align-middle">
-                        <thead>
-                        <tr>
-                            <th>Image</th><th>Item</th><th>Donor</th><th>Address</th><th>Status</th><th>Actions</th>
-                        </tr>
-                        </thead>
-                        <tbody id="pending-items-table"></tbody>
-                    </table>
+                <!-- Donation Items Review Container - Will show ALL donation items -->
+                <div id="donationItemsReviewContainer">
+                    <div class="text-center p-5">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading donation items...</span>
+                        </div>
+                        <p class="text-muted mt-3">Loading pending donation items for review...</p>
+                    </div>
                 </div>
             </div>
+
+            <!-- Request Approvals Tab -->
             <div class="tab-pane fade" id="request-approval" role="tabpanel">
-                <div class="table-responsive">
-                    <table class="table align-middle">
-                        <thead>
-                        <tr>
-                            <th>Item</th><th>Requester</th><th>Donor</th><th>Status</th><th>Actions</th>
-                        </tr>
-                        </thead>
-                        <tbody id="pending-requests-table"></tbody>
-                    </table>
+                <!-- Donation Requests Review Container - Will show ALL donation requests -->
+                <div id="donationRequestsReviewContainer">
+                    <div class="text-center p-5">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading donation requests...</span>
+                        </div>
+                        <p class="text-muted mt-3">Loading pending donation requests for review...</p>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Exchange Requests Management - REMOVED TABLE VIEW -->
     <div class="admin-section">
         <div class="section-header">
             <h3><i class="fa-solid fa-right-left me-2"></i>Exchange Requests Management</h3>
         </div>
-        <div class="table-responsive">
-            <table class="table align-middle">
-                <thead>
-                <tr>
-                    <th>Target Product</th><th>Exchange Item</th><th>Requester</th><th>Status</th><th>Actions</th>
-                </tr>
-                </thead>
-                <tbody id="exchangeRequestsTableBody">
-                </tbody>
-            </table>
+
+        <!-- Exchange Requests Review Container - ONLY CARD VIEW -->
+        <div id="exchangeRequestsReviewContainer">
+            <div class="text-center p-5">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading exchange requests...</span>
+                </div>
+                <p class="text-muted mt-3">Loading pending exchange requests for review...</p>
+            </div>
         </div>
     </div>
 
+    <!-- Product Listing Approvals (Resell/Exchange) with Product Review -->
     <div class="admin-section">
         <div class="section-header">
             <h3><i class="fa-solid fa-boxes-stacked me-2"></i>Product Listing Approvals (Resell/Exchange)</h3>
         </div>
-        <div class="table-responsive">
-            <table class="table align-middle">
-                <thead>
-                <tr>
-                    <th>Image</th><th>Product</th><th>User</th><th>Type</th><th>Status</th><th>Actions</th>
-                </tr>
-                </thead>
-                <tbody id="pendingProductsTableBody"></tbody>
-            </table>
+
+        <!-- Product Review Container - Will show ALL products -->
+        <div id="productReviewContainer">
+            <!-- Products will be loaded here dynamically -->
+            <div class="text-center p-5">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading products...</span>
+                </div>
+                <p class="text-muted mt-3">Loading pending products for review...</p>
+            </div>
         </div>
+
     </div>
 
+    <!-- User Management -->
     <div class="admin-section">
         <div class="section-header">
             <h3><i class="fa-solid fa-users-gear me-2"></i>User Management</h3>
@@ -210,16 +986,23 @@
             <table class="table align-middle">
                 <thead>
                 <tr>
-                    <th>ID</th><th>Name</th><th>Email</th><th>Role</th><th>Actions</th>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Actions</th>
                 </tr>
                 </thead>
-                <tbody id="usersTableBody"></tbody>
+                <tbody id="usersTableBody">
+                <tr><td colspan="5" class="text-center text-muted p-4">Loading users...</td></tr>
+                </tbody>
             </table>
         </div>
     </div>
 
 </div>
 
+<!-- Rejection Modal -->
 <div class="modal fade" id="rejectionModal" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -241,19 +1024,133 @@
     </div>
 </div>
 
+<!-- Image Detail Modal -->
+<div class="modal fade" id="imageDetailModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="imageDetailTitle">Product Images</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div id="imageDetailCarousel" class="carousel slide detail-carousel" data-bs-ride="carousel">
+                    <div class="carousel-inner" id="imageCarouselInner"></div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#imageDetailCarousel" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#imageDetailCarousel" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                    <div class="carousel-indicators" id="imageCarouselIndicators"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- NEW: Product Detail Modal -->
+<div class="modal fade detail-modal" id="productDetailModal" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="productDetailTitle">
+                    <i class="fa-solid fa-box me-2"></i>Product Details
+                </h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div id="productDetailContent"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- NEW: Donation Item Detail Modal -->
+<div class="modal fade detail-modal" id="donationItemDetailModal" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="donationItemDetailTitle">
+                    <i class="fa-solid fa-gift me-2"></i>Donation Item Details
+                </h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div id="donationItemDetailContent"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- NEW: Donation Request Detail Modal -->
+<div class="modal fade detail-modal" id="donationRequestDetailModal" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="donationRequestDetailTitle">
+                    <i class="fa-solid fa-hand-holding-heart me-2"></i>Donation Request Details
+                </h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div id="donationRequestDetailContent"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- NEW: Exchange Request Detail Modal -->
+<div class="modal fade detail-modal" id="exchangeRequestDetailModal" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="exchangeRequestDetailTitle">
+                    <i class="fa-solid fa-right-left me-2"></i>Exchange Request Details
+                </h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div id="exchangeRequestDetailContent"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 <script>
     const token = localStorage.getItem('jwtToken');
-    let currentExchangeRequests = [];
     let currentRejectId = null;
-    let currentRejectionType = null; // 'PRODUCT' or 'EXCHANGE' or 'DONATION_ITEM' or 'DONATION_REQUEST'
+    let currentRejectionType = null;
+    let pendingProducts = [];
+    let pendingDonationItems = [];
+    let pendingDonationRequests = [];
+    let pendingExchangeRequests = [];
+    let allUsers = []; // Store all users for lookup
 
-    // --- Helper Functions ---
+    // API Headers
     const apiHeaders = {
         'Authorization': 'Bearer ' + token,
         'Content-Type': 'application/json'
     };
 
+    // Helper Functions
     function showNotification(message, type = 'info') {
         alert(`${type.toUpperCase()}: ${message}`);
     }
@@ -271,40 +1168,567 @@
     }
 
     function logout() {
-        localStorage.removeItem('jwtToken');
+        localStorage.clear();
+        sessionStorage.clear();
         window.location.href = '/';
     }
 
-    // --- Core Data Loading Function (Loads all pending views) ---
-    function loadAllData() {
-        if (!token) {
-            window.location.href = '/login';
-            return;
+    // SIMPLIFIED: Get user info from ANY user object structure
+    function getUserInfo(user) {
+        if (!user) return { name: 'Unknown', email: 'No email', id: 'N/A' };
+
+        // Try ALL possible field combinations
+        let name = '';
+        let email = '';
+        let id = '';
+
+        // Name extraction (try all possibilities)
+        if (user.firstName && user.lastName) {
+            name = `${user.firstName} ${user.lastName}`.trim();
+        } else if (user.firstName) {
+            name = user.firstName;
+        } else if (user.lastName) {
+            name = user.lastName;
+        } else if (user.name) {
+            name = user.name;
+        } else if (user.username) {
+            name = user.username;
+        } else if (user.email) {
+            name = user.email.split('@')[0];
         }
-        loadStats();
-        loadPendingDonationItems();
-        loadPendingDonationRequests();
-        loadPendingProducts();
-        loadExchangeRequests();
-        loadUsers();
+
+        // Email extraction
+        if (user.email) {
+            email = user.email;
+        } else if (user.username && user.username.includes('@')) {
+            email = user.username;
+        }
+
+        // ID extraction
+        if (user.id) {
+            id = user.id;
+        } else if (user.userId) {
+            id = user.userId;
+        }
+
+        return {
+            name: name || 'Unknown',
+            email: email || 'No email',
+            id: id || 'N/A'
+        };
     }
 
-    // --- 1. Platform Stats ---
+    // SIMPLIFIED: Get owner info from ANY object
+    function getOwnerFromObject(obj) {
+        if (!obj) return { name: 'Unknown', email: 'No email', id: 'N/A' };
+
+        // Check ALL possible owner fields
+        const possibleOwnerFields = [
+            'owner', 'user', 'listedBy', 'listedByUser', 'ownerUser',
+            'donor', 'requester', 'receiver', 'createdBy', 'postedBy'
+        ];
+
+        for (const field of possibleOwnerFields) {
+            if (obj[field]) {
+                const ownerInfo = getUserInfo(obj[field]);
+                if (ownerInfo.name !== 'Unknown') {
+                    return ownerInfo;
+                }
+            }
+        }
+
+        // Check for owner ID fields and find in allUsers
+        const possibleIdFields = ['ownerId', 'userId', 'listedById', 'donorId', 'requesterId', 'createdById'];
+        for (const field of possibleIdFields) {
+            if (obj[field] && allUsers.length > 0) {
+                const user = allUsers.find(u => u.id == obj[field]);
+                if (user) {
+                    return getUserInfo(user);
+                }
+            }
+        }
+
+        return { name: 'Unknown', email: 'No email', id: 'N/A' };
+    }
+
+    // SIMPLIFIED: Get product owner
+    function getProductOwner(product) {
+        return getOwnerFromObject(product);
+    }
+
+    // SIMPLIFIED: Get donation owner
+    function getDonationOwner(item) {
+        return getOwnerFromObject(item);
+    }
+
+    // SIMPLIFIED: Get donation requester
+    function getDonationRequester(req) {
+        return getOwnerFromObject(req);
+    }
+
+    // SIMPLIFIED: Get exchange requester
+    function getExchangeRequester(req) {
+        return getOwnerFromObject(req);
+    }
+
+    // SIMPLIFIED: Fetch target product owner details - DIRECT APPROACH
+    async function fetchTargetProductOwnerDetails(productId) {
+        console.log("🔄 DIRECT: Fetching owner for product ID:", productId);
+
+        // METHOD 1: Try to find in pendingProducts
+        const productInMemory = pendingProducts.find(p => p.id == productId);
+        if (productInMemory) {
+            console.log("✅ Found product in memory:", productInMemory);
+            const ownerInfo = getOwnerFromObject(productInMemory);
+            if (ownerInfo.name !== 'Unknown') {
+                console.log("✅ Got owner from memory:", ownerInfo);
+                return ownerInfo;
+            }
+        }
+
+        // METHOD 2: Try API endpoints (try ALL possible endpoints)
+        const apiEndpoints = [
+            `/api/admin/products/${productId}/owner`,
+            `/api/admin/products/${productId}/details`,
+            `/api/admin/products/${productId}`,
+            `/api/products/${productId}`,
+            `/api/admin/get-product-owner/${productId}`
+        ];
+
+        for (const endpoint of apiEndpoints) {
+            try {
+                console.log(`🔄 Trying endpoint: ${endpoint}`);
+                const res = await fetch(endpoint, { headers: apiHeaders });
+
+                if (res.ok) {
+                    const data = await res.json();
+                    console.log(`✅ Response from ${endpoint}:`, data);
+
+                    // Try to extract owner info from response
+                    const ownerInfo = getOwnerFromObject(data);
+                    if (ownerInfo.name !== 'Unknown') {
+                        console.log("✅ Got owner from API:", ownerInfo);
+                        return ownerInfo;
+                    }
+
+                    // If response is the owner object itself
+                    const directOwnerInfo = getUserInfo(data);
+                    if (directOwnerInfo.name !== 'Unknown') {
+                        console.log("✅ Response IS owner object:", directOwnerInfo);
+                        return directOwnerInfo;
+                    }
+                }
+            } catch (err) {
+                console.log(`❌ Endpoint ${endpoint} failed:`, err.message);
+                continue;
+            }
+        }
+
+        // METHOD 3: Try to find owner via exchange requests
+        for (const exchangeReq of pendingExchangeRequests) {
+            if (exchangeReq.targetProduct && exchangeReq.targetProduct.id == productId) {
+                console.log("✅ Found product in exchange request");
+                const ownerInfo = getOwnerFromObject(exchangeReq.targetProduct);
+                if (ownerInfo.name !== 'Unknown') {
+                    return ownerInfo;
+                }
+            }
+        }
+
+        // METHOD 4: Last resort - search allUsers by scanning all data
+        console.log("🔄 Last resort: Scanning all data for owner...");
+
+        // Scan pendingProducts
+        for (const product of pendingProducts) {
+            if (product.id == productId) {
+                const ownerId = product.ownerId || product.userId || product.listedById;
+                if (ownerId && allUsers.length > 0) {
+                    const user = allUsers.find(u => u.id == ownerId);
+                    if (user) {
+                        return getUserInfo(user);
+                    }
+                }
+            }
+        }
+
+        console.log("❌ Could not find owner for product:", productId);
+        return { name: 'Unknown', email: 'No email', id: 'N/A' };
+    }
+
+    // Helper function to ensure images are loaded correctly
+    function getImagesFromProduct(product) {
+        if (!product) return [];
+
+        let images = [];
+
+        // Check all possible image fields
+        if (Array.isArray(product.imagePaths) && product.imagePaths.length > 0) {
+            images = product.imagePaths;
+        } else if (Array.isArray(product.images) && product.images.length > 0) {
+            images = product.images;
+        } else if (Array.isArray(product.imageUrls) && product.imageUrls.length > 0) {
+            images = product.imageUrls;
+        } else if (product.imagePath) {
+            images = [product.imagePath];
+        } else if (product.imageUrl) {
+            images = [product.imageUrl];
+        } else if (product.image) {
+            images = [product.image];
+        }
+
+        // Convert to proper URLs
+        return images.map(img => {
+            if (!img) return '';
+            if (img.startsWith('http') || img.startsWith('data:')) {
+                return img;
+            }
+            if (img.startsWith('/')) {
+                return img;
+            }
+            return '/' + img;
+        }).filter(img => img !== '');
+    }
+
+    // SIMPLIFIED: Show Exchange Request Detail Modal
+    async function showExchangeRequestDetail(requestId) {
+        try {
+            console.log("=== EXCHANGE REQUEST DETAIL START ===");
+
+            // Find exchange request
+            let exchangeDetails = pendingExchangeRequests.find(r => r.id == requestId);
+
+            if (!exchangeDetails) {
+                // Try to fetch from API
+                const res = await fetch(`/api/admin/exchange-requests/${requestId}`, {
+                    headers: apiHeaders
+                });
+
+                if (res.ok) {
+                    exchangeDetails = await res.json();
+                } else {
+                    showNotification('Exchange request not found', 'error');
+                    return;
+                }
+            }
+
+            console.log("Exchange details:", exchangeDetails);
+
+            // Get target product ID
+            const targetProductId = exchangeDetails.targetProductId ||
+                                   exchangeDetails.targetProduct?.id;
+
+            console.log("Target product ID:", targetProductId);
+
+            // Get target product owner info
+            let targetProductOwnerInfo = { name: 'Unknown', email: 'No email', id: 'N/A' };
+
+            if (targetProductId) {
+                targetProductOwnerInfo = await fetchTargetProductOwnerDetails(targetProductId);
+                console.log("Target product owner info:", targetProductOwnerInfo);
+            }
+
+            // Get requester info
+            const requesterInfo = getOwnerFromObject(exchangeDetails);
+            console.log("Requester info:", requesterInfo);
+
+            // Get target product details
+            let targetProductDetails = null;
+            if (targetProductId) {
+                // Try to find in pendingProducts
+                targetProductDetails = pendingProducts.find(p => p.id == targetProductId);
+
+                if (!targetProductDetails) {
+                    // Try API
+                    const res = await fetch(`/api/admin/products/${targetProductId}`, {
+                        headers: apiHeaders
+                    });
+
+                    if (res.ok) {
+                        targetProductDetails = await res.json();
+                    }
+                }
+            }
+
+            console.log("Target product details:", targetProductDetails);
+
+            // Prepare images
+            const targetImages = getImagesFromProduct(targetProductDetails || exchangeDetails.targetProduct);
+            let exchangeImages = [];
+
+            if (exchangeDetails.exchangeItemImages) {
+                exchangeImages = exchangeDetails.exchangeItemImages;
+            } else if (exchangeDetails.exchangeItemImage) {
+                exchangeImages = [exchangeDetails.exchangeItemImage];
+            } else if (exchangeDetails.images) {
+                exchangeImages = exchangeDetails.images;
+            } else if (exchangeDetails.image) {
+                exchangeImages = [exchangeDetails.image];
+            }
+
+            console.log("=== EXCHANGE REQUEST DETAIL END ===");
+
+            // Create HTML content
+            let html = `
+                <!-- Exchange Request Info -->
+                <div class="user-details-section">
+                    <h5 class="user-details-title">
+                        <i class="fa-solid fa-info-circle"></i>
+                        Exchange Request Information
+                    </h5>
+                    <div class="user-details-grid">
+                        <div class="user-detail-item">
+                            <span class="exchange-column-label">Exchange Request ID</span>
+                            <span class="exchange-column-value">${exchangeDetails.id}</span>
+                        </div>
+                        <div class="user-detail-item">
+                            <span class="exchange-column-label">Status</span>
+                            <span class="exchange-column-value status-badge status-pending">${exchangeDetails.status || 'PENDING'}</span>
+                        </div>
+                        <div class="user-detail-item">
+                            <span class="exchange-column-label">Requested On</span>
+                            <span class="exchange-column-value">${new Date().toLocaleDateString()}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Two Column Layout -->
+                <div class="exchange-modal-two-column">
+                    <!-- Left Column: Exchange Product -->
+                    <div class="exchange-column">
+                        <div class="exchange-column-header">
+                            <i class="fa-solid fa-arrow-right-arrow-left"></i>
+                            <h5>Exchange Product (Offered by Requester)</h5>
+                        </div>
+
+                        ${exchangeImages.length > 0 ? `
+                        <div class="exchange-images-container">
+                            <div class="exchange-images-title">
+                                <i class="fa-solid fa-images"></i>
+                                Exchange Item Images
+                            </div>
+                            <div id="exchangeCarousel-${exchangeDetails.id}" class="carousel slide exchange-carousel">
+                                <div class="carousel-inner">
+                                    ${exchangeImages.map((img, idx) => `
+                                        <div class="carousel-item ${idx === 0 ? 'active' : ''}">
+                                            <img src="${img}" class="d-block mx-auto" alt="Exchange Item"
+                                                 style="max-height: 300px; object-fit: contain; min-height: 250px;"
+                                                 onerror="this.src='https://via.placeholder.com/400x300?text=No+Image'">
+                                        </div>
+                                    `).join('')}
+                                </div>
+                                ${exchangeImages.length > 1 ? `
+                                <button class="carousel-control-prev" type="button" data-bs-target="#exchangeCarousel-${exchangeDetails.id}" data-bs-slide="prev">
+                                    <span class="carousel-control-prev-icon"></span>
+                                </button>
+                                <button class="carousel-control-next" type="button" data-bs-target="#exchangeCarousel-${exchangeDetails.id}" data-bs-slide="next">
+                                    <span class="carousel-control-next-icon"></span>
+                                </button>
+                                ` : ''}
+                            </div>
+                        </div>
+                        ` : '<p class="text-muted text-center p-3">No images for exchange item</p>'}
+
+                        <div class="exchange-column-grid">
+                            <div class="exchange-column-item">
+                                <span class="exchange-column-label">Product Name</span>
+                                <span class="exchange-column-value">${exchangeDetails.exchangeItemName || 'Not specified'}</span>
+                            </div>
+                            <div class="exchange-column-item">
+                                <span class="exchange-column-label">Category</span>
+                                <span class="exchange-column-value">${exchangeDetails.exchangeItemCategory || 'Not specified'}</span>
+                            </div>
+                            <div class="exchange-column-item">
+                                <span class="exchange-column-label">Condition</span>
+                                <span class="exchange-column-value">${exchangeDetails.exchangeItemCondition || 'Not specified'}</span>
+                            </div>
+                            ${exchangeDetails.exchangeItemDescription ? `
+                            <div class="exchange-column-item" style="grid-column: span 2;">
+                                <span class="exchange-column-label">Description</span>
+                                <span class="exchange-column-value" style="white-space: pre-wrap;">${exchangeDetails.exchangeItemDescription}</span>
+                            </div>
+                            ` : ''}
+                        </div>
+
+                        <!-- Requester Details -->
+                        <div class="user-details-section" style="margin-top: 20px;">
+                            <h5 class="user-details-title">
+                                <i class="fa-solid fa-user-tag"></i>
+                                Requester Details
+                            </h5>
+                            <div class="user-details-grid">
+                                <div class="user-detail-item">
+                                    <span class="exchange-column-label">Requester Name</span>
+                                    <span class="exchange-column-value">${requesterInfo.name}</span>
+                                </div>
+                                <div class="user-detail-item">
+                                    <span class="exchange-column-label">Requester Email</span>
+                                    <span class="exchange-column-value">${requesterInfo.email}</span>
+                                </div>
+                                <div class="user-detail-item">
+                                    <span class="exchange-column-label">Requester ID</span>
+                                    <span class="exchange-column-value">${requesterInfo.id}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column: Target Product -->
+                    <div class="exchange-column">
+                        <div class="exchange-column-header">
+                            <i class="fa-solid fa-bullseye"></i>
+                            <h5>Target Product (Requested from Owner)</h5>
+                        </div>
+
+                        ${targetImages.length > 0 ? `
+                        <div class="exchange-images-container">
+                            <div class="exchange-images-title">
+                                <i class="fa-solid fa-images"></i>
+                                Target Product Images
+                            </div>
+                            <div id="targetCarousel-${exchangeDetails.id}" class="carousel slide exchange-carousel">
+                                <div class="carousel-inner">
+                                    ${targetImages.map((img, idx) => `
+                                        <div class="carousel-item ${idx === 0 ? 'active' : ''}">
+                                            <img src="${img}" class="d-block mx-auto" alt="Target Product"
+                                                 style="max-height: 300px; object-fit: contain; min-height: 250px;"
+                                                 onerror="this.src='https://via.placeholder.com/400x300?text=No+Image'">
+                                        </div>
+                                    `).join('')}
+                                </div>
+                                ${targetImages.length > 1 ? `
+                                <button class="carousel-control-prev" type="button" data-bs-target="#targetCarousel-${exchangeDetails.id}" data-bs-slide="prev">
+                                    <span class="carousel-control-prev-icon"></span>
+                                </button>
+                                <button class="carousel-control-next" type="button" data-bs-target="#targetCarousel-${exchangeDetails.id}" data-bs-slide="next">
+                                    <span class="carousel-control-next-icon"></span>
+                                </button>
+                                ` : ''}
+                            </div>
+                        </div>
+                        ` : '<p class="text-muted text-center p-3">No images for target product</p>'}
+
+                        <div class="exchange-column-grid">
+                            <div class="exchange-column-item">
+                                <span class="exchange-column-label">Product ID</span>
+                                <span class="exchange-column-value">${targetProductId || 'N/A'}</span>
+                            </div>
+                            <div class="exchange-column-item">
+                                <span class="exchange-column-label">Product Name</span>
+                                <span class="exchange-column-value">${targetProductDetails?.name || exchangeDetails.targetProduct?.name || 'Not specified'}</span>
+                            </div>
+                            <div class="exchange-column-item">
+                                <span class="exchange-column-label">Category</span>
+                                <span class="exchange-column-value">${targetProductDetails?.category || exchangeDetails.targetProduct?.category || 'Not specified'}</span>
+                            </div>
+                            <div class="exchange-column-item">
+                                <span class="exchange-column-label">Type</span>
+                                <span class="exchange-column-value">${targetProductDetails?.type || exchangeDetails.targetProduct?.type || 'Not specified'}</span>
+                            </div>
+                            <div class="exchange-column-item">
+                                <span class="exchange-column-label">Price</span>
+                                <span class="exchange-column-value">
+                                    ${(targetProductDetails?.price || exchangeDetails.targetProduct?.price) ?
+                                      `₹${targetProductDetails?.price || exchangeDetails.targetProduct?.price}` :
+                                      'Not specified'}
+                                </span>
+                            </div>
+                            <div class="exchange-column-item">
+                                <span class="exchange-column-label">Condition</span>
+                                <span class="exchange-column-value">
+                                    ${targetProductDetails?.condition ||
+                                      targetProductDetails?.productCondition ||
+                                      targetProductDetails?.itemCondition ||
+                                      exchangeDetails.targetProduct?.condition ||
+                                      exchangeDetails.targetProduct?.productCondition ||
+                                      exchangeDetails.targetProduct?.itemCondition ||
+                                      'Not specified'}
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- TARGET PRODUCT OWNER DETAILS - THIS IS THE FIX -->
+                        <div class="user-details-section" style="margin-top: 20px; background: #e6f7ff; border-left: 4px solid #0066cc;">
+                            <h5 class="user-details-title">
+                                <i class="fa-solid fa-user-shield"></i>
+                                Target Product Owner Details
+                            </h5>
+                            <div class="user-details-grid">
+                                <div class="user-detail-item">
+                                    <span class="exchange-column-label">Owner Name</span>
+                                    <span class="exchange-column-value">${targetProductOwnerInfo.name}</span>
+                                </div>
+                                <div class="user-detail-item">
+                                    <span class="exchange-column-label">Owner Email</span>
+                                    <span class="exchange-column-value">${targetProductOwnerInfo.email}</span>
+                                </div>
+                                <div class="user-detail-item">
+                                    <span class="exchange-column-label">Owner ID</span>
+                                    <span class="exchange-column-value">${targetProductOwnerInfo.id}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                ${exchangeDetails.message ? `
+                <div class="message-box">
+                    <h5 class="message-box-title">
+                        <i class="fa-solid fa-comment-dots"></i>
+                        Message from Requester
+                    </h5>
+                    <div class="message-content">${exchangeDetails.message}</div>
+                </div>
+                ` : ''}
+
+                <div class="detail-modal-actions">
+                    <button class="btn btn-success" onclick="approveExchangeRequest(${exchangeDetails.id})">
+                        <i class="fa-solid fa-check me-2"></i>Approve Exchange
+                    </button>
+                    <button class="btn btn-danger" onclick="showRejectionModal(${exchangeDetails.id}, 'EXCHANGE')">
+                        <i class="fa-solid fa-xmark me-2"></i>Reject Exchange
+                    </button>
+                </div>
+            `;
+
+            document.getElementById('exchangeRequestDetailContent').innerHTML = html;
+            document.getElementById('exchangeRequestDetailTitle').innerHTML = `
+                <i class="fa-solid fa-right-left me-2"></i>Exchange Request Details - ID: ${exchangeDetails.id}
+            `;
+
+            // Initialize carousels
+            if (exchangeImages.length > 1) {
+                new bootstrap.Carousel(document.getElementById(`exchangeCarousel-${exchangeDetails.id}`));
+            }
+            if (targetImages.length > 1) {
+                new bootstrap.Carousel(document.getElementById(`targetCarousel-${exchangeDetails.id}`));
+            }
+
+            const modal = new bootstrap.Modal(document.getElementById('exchangeRequestDetailModal'));
+            modal.show();
+
+        } catch (err) {
+            console.error("Error showing exchange request detail:", err);
+            showNotification('Error loading exchange request details', 'error');
+        }
+    }
+
+    // [KEEP ALL OTHER FUNCTIONS EXACTLY AS THEY WERE - NO CHANGES BELOW THIS LINE]
+    // Platform Stats
     async function loadStats() {
         const statsGrid = document.getElementById('stats-grid');
-        statsGrid.innerHTML = '';
         try {
-            const [donateRes, productRes, userRes] = await Promise.all([
+            const [donateRes, productRes, userRes, exchangeRes] = await Promise.all([
                 fetch('/api/admin/donations/stats', { headers: apiHeaders }).then(res => res.json()),
                 fetch('/api/admin/products/stats', { headers: apiHeaders }).then(res => res.json()),
-                fetch('/api/admin/stats', { headers: apiHeaders }).then(res => res.json())
+                fetch('/api/admin/stats', { headers: apiHeaders }).then(res => res.json()),
+                fetch('/api/admin/exchange-requests/stats', { headers: apiHeaders }).then(res => res.json())
             ]);
 
             statsGrid.innerHTML = `
                 <div class="col-md-3"><div class="stat-card"><div class="stat-number">${userRes.totalUsers || 0}</div><div class="stat-label">Total Users</div></div></div>
                 <div class="col-md-3"><div class="stat-card"><div class="stat-number">${productRes.pendingProducts || 0}</div><div class="stat-label">Pending Products</div></div></div>
                 <div class="col-md-3"><div class="stat-card"><div class="stat-number">${donateRes.pendingItems || 0}</div><div class="stat-label">Pending Donations</div></div></div>
-                <div class="col-md-3"><div class="stat-card"><div class="stat-number">${donateRes.pendingRequests || 0}</div><div class="stat-label">Pending Don. Requests</div></div></div>
+                <div class="col-md-3"><div class="stat-card"><div class="stat-number">${exchangeRes.pendingRequests || 0}</div><div class="stat-label">Pending Exchanges</div></div></div>
             `;
 
             document.getElementById('pendingItemsBadge').textContent = donateRes.pendingItems || 0;
@@ -312,145 +1736,978 @@
 
         } catch (err) {
             console.error("Error loading stats:", err);
-            statsGrid.innerHTML = '<div class="col-12"><div class="alert alert-danger">Failed to load platform stats. Check console.</div></div>';
+            statsGrid.innerHTML = '<div class="col-12"><div class="alert alert-danger">Failed to load stats.</div></div>';
         }
     }
 
-    // --- 2. Donation Item Approvals ---
-    async function loadPendingDonationItems() {
-        const tableBody = document.getElementById('pending-items-table');
-        try {
-            const res = await fetch('/api/admin/donations/items/pending', { headers: apiHeaders });
-            if (!res.ok) throw new Error('Failed to fetch pending items');
-            const items = await res.json();
-
-            tableBody.innerHTML = items.length === 0 ? '<tr><td colspan="6" class="text-center text-muted p-4">No pending donation items to approve.</td></tr>' :
-                items.map(item => `
-                <tr>
-                    <td><img src="${item.imageUrl || ''}" alt="${item.itemName}" class="product-image" onerror="this.src='https://via.placeholder.com/50'"></td>
-                    <td><strong>${item.itemName}</strong><br><small class="text-muted">${item.itemType} (${item.itemCondition})</small></td>
-                    <td>${item.donor?.firstName || 'N/A'} ${item.donor?.lastName || ''}<br><small class="text-muted">${item.donor?.email || ''}</small></td>
-                    <td>${item.pickupAddress}</td>
-                    <td>${getStatusBadge(item.status)}</td>
-                    <td>
-                        <button class="btn btn-success btn-sm" onclick="approveDonationItem(${item.id})">Approve</button>
-                        <button class="btn btn-danger btn-sm ms-1" onclick="showRejectionModal(${item.id}, 'DONATION_ITEM')">Reject</button>
-                    </td>
-                </tr>
-            `).join('');
-        } catch (err) {
-            console.error("Error loading pending donation items:", err);
-            tableBody.innerHTML = '<tr><td colspan="6" class="text-center text-danger p-4">Error loading data.</td></tr>';
-        }
-    }
-
-    // --- 3. Donation Request Approvals ---
-    async function loadPendingDonationRequests() {
-        const tableBody = document.getElementById('pending-requests-table');
-        try {
-            const res = await fetch('/api/admin/donations/requests/pending', { headers: apiHeaders });
-            if (!res.ok) throw new Error('Failed to fetch pending requests');
-            const requests = await res.json();
-
-            tableBody.innerHTML = requests.length === 0 ? '<tr><td colspan="5" class="text-center text-muted p-4">No pending donation requests to approve.</td></tr>' :
-                requests.map(req => `
-                <tr>
-                    <td><strong>${req.donateItem?.itemName || 'N/A'}</strong><br><small class="text-muted">Item ID: ${req.donateItem?.id || 'N/A'}</small></td>
-                    <td>${req.receiver?.firstName || 'N/A'} ${req.receiver?.lastName || ''}<br><small class="text-muted">${req.receiver?.email || ''}</small></td>
-                    <td>${req.donateItem?.donor?.firstName || 'N/A'} ${req.donateItem?.donor?.lastName || ''}<br><small class="text-muted">${req.donateItem?.donor?.email || ''}</small></td>
-                    <td>${getStatusBadge(req.status)}</td>
-                    <td>
-                        <button class="btn btn-success btn-sm" onclick="approveDonationRequest(${req.id})">Approve</button>
-                        <button class="btn btn-danger btn-sm ms-1" onclick="showRejectionModal(${req.id}, 'DONATION_REQUEST')">Reject</button>
-                    </td>
-                </tr>
-            `).join('');
-        } catch (err) {
-            console.error("Error loading pending requests:", err);
-            tableBody.innerHTML = '<tr><td colspan="5" class="text-center text-danger p-4">Error loading data.</td></tr>';
-        }
-    }
-
-    // --- 4. Exchange Request Approvals ---
-    async function loadExchangeRequests() {
-        const tableBody = document.getElementById('exchangeRequestsTableBody');
-        try {
-            const res = await fetch('/api/admin/exchange-requests?status=PENDING', { headers: apiHeaders });
-            if (!res.ok) throw new Error('Failed to fetch exchange requests');
-            const requests = await res.json();
-            currentExchangeRequests = requests;
-
-            tableBody.innerHTML = requests.length === 0 ? '<tr><td colspan="5" class="text-center text-muted p-4">No pending exchange requests to approve.</td></tr>' :
-                requests.map(req => `
-                <tr>
-                    <td><strong>${req.targetProduct?.name || 'N/A'}</strong><br><small class="text-muted">Owner: ${req.targetProduct?.user?.firstName || 'N/A'}</small></td>
-                    <td><strong>${req.exchangeItemName}</strong><br><small class="text-muted">${req.exchangeItemCategory}</small></td>
-                    <td>${req.requester?.firstName || 'N/A'} ${req.requester?.lastName || ''}<br><small class="text-muted">${req.requester?.email || ''}</small></td>
-                    <td>${getStatusBadge(req.status)}</td>
-                    <td>
-                        <button class="btn btn-success btn-sm" onclick="approveExchangeRequest(${req.id})">Approve</button>
-                        <button class="btn btn-danger btn-sm ms-1" onclick="showRejectionModal(${req.id}, 'EXCHANGE')">Reject</button>
-                    </td>
-                </tr>
-            `).join('');
-        } catch (err) {
-            console.error("Error loading exchange requests:", err);
-            tableBody.innerHTML = '<tr><td colspan="5" class="text-center text-danger p-4">Error loading exchange requests.</td></tr>';
-        }
-    }
-
-    // --- 5. Product Listing Approvals ---
-    async function loadPendingProducts() {
-        const tableBody = document.getElementById('pendingProductsTableBody');
+    // Product Review Functions
+    async function loadProductForReview() {
         try {
             const res = await fetch('/api/admin/products/pending', { headers: apiHeaders });
             if (!res.ok) throw new Error('Failed to fetch pending products');
-            const products = await res.json();
+            pendingProducts = await res.json();
 
-            if (products.length === 0) {
-                tableBody.innerHTML = '<tr><td colspan="6" class="text-center text-muted p-4">No pending product listings to approve.</td></tr>';
+            if (pendingProducts.length === 0) {
+                showNoProductsForReview();
                 return;
             }
 
-            tableBody.innerHTML = products.map(product => {
-                const userFirst = product.userFirstName || (product.user ? product.user.firstName : 'N/A');
-                const userLast = product.userLastName || (product.user ? product.user.lastName : '');
-                const userEmail = product.userEmail || (product.user ? product.user.email : 'N/A');
-                const img = product.imagePath || 'https://via.placeholder.com/50';
+            displayAllProductsForReview(pendingProducts);
 
-                return `
-                <tr>
-                    <td><img src="${img}" alt="${product.name}" class="product-image" onerror="this.src='https://via.placeholder.com/50'"></td>
-                    <td><strong>${product.name}</strong><br><small class="text-muted">${product.category}</small></td>
-                    <td>${userFirst} ${userLast}<br><small class="text-muted">${userEmail}</small></td>
-                    <td><span class="badge bg-info">${product.type}</span></td>
-                    <td>${getStatusBadge(product.status)}</td>
-                    <td>
-                        <button class="btn btn-success btn-sm" onclick="approveProduct(${product.id})">Approve</button>
-                        <button class="btn btn-danger btn-sm ms-1" onclick="showRejectionModal(${product.id}, 'PRODUCT')">Reject</button>
-                    </td>
-                </tr>
-            `}).join('');
         } catch (err) {
-            console.error("Error loading pending products:", err);
-            tableBody.innerHTML = '<tr><td colspan="6" class="text-center text-danger p-4">Error loading product listings.</td></tr>';
+            console.error("Error loading product for review:", err);
+            showNoProductsForReview();
         }
     }
 
-    // --- 6. User Management ---
+    function showNoProductsForReview() {
+        const container = document.getElementById('productReviewContainer');
+        container.innerHTML = `
+            <div class="compact-item-card">
+                <div class="compact-item-header">
+                    <h4 class="compact-item-title">No Products Pending Review</h4>
+                </div>
+                <div class="text-center p-4">
+                    <i class="fa-solid fa-check-circle fa-3x text-success mb-3"></i>
+                    <p class="text-muted">All products have been reviewed!</p>
+                </div>
+            </div>
+        `;
+    }
+
+    function displayAllProductsForReview(products) {
+        const container = document.getElementById('productReviewContainer');
+
+        if (products.length === 0) {
+            showNoProductsForReview();
+            return;
+        }
+
+        container.innerHTML = '';
+        products.forEach((product, index) => {
+            const productCard = createCompactProductCard(product, index);
+            container.appendChild(productCard);
+        });
+    }
+
+    function createCompactProductCard(product, index) {
+        const cardDiv = document.createElement('div');
+        cardDiv.className = 'compact-item-card';
+        cardDiv.id = `product-card-${product.id}`;
+
+        const ownerInfo = getProductOwner(product);
+        const imagePaths = getImagesFromProduct(product);
+        const thumbnail = imagePaths.length > 0 ? imagePaths[0] : 'https://via.placeholder.com/80?text=No+Image';
+        const condition = product.condition || product.productCondition || product.itemCondition || 'Not specified';
+
+        cardDiv.innerHTML = `
+            <div class="compact-item-header">
+                <h4 class="compact-item-title">${product.name || 'Unnamed Product'} #${product.id}</h4>
+                <span class="status-badge status-pending">${product.status || 'PENDING'}</span>
+            </div>
+
+            <div class="compact-item-content">
+                <img src="${thumbnail}"
+                     class="compact-item-image"
+                     alt="${product.name}"
+                     onerror="this.src='https://via.placeholder.com/80?text=Image+Error'"
+                     onclick="showProductDetail(${product.id})">
+                <div class="compact-item-details">
+                    <div class="compact-detail-item">
+                        <span class="compact-detail-label">Category</span>
+                        <span class="compact-detail-value">${product.category || 'Not specified'}</span>
+                    </div>
+                    <div class="compact-detail-item">
+                        <span class="compact-detail-label">Type</span>
+                        <span class="compact-detail-value">${product.type || 'Not specified'}</span>
+                    </div>
+                    <div class="compact-detail-item">
+                        <span class="compact-detail-label">Condition</span>
+                        <span class="compact-detail-value">${condition}</span>
+                    </div>
+                    <div class="compact-detail-item">
+                        <span class="compact-detail-label">Price</span>
+                        <span class="compact-detail-value">
+                            ${product.type === 'Exchange' || product.type === 'Donate' ?
+                              'Not for sale' :
+                              (product.price ? `₹${product.price}` : 'Not specified')}
+                        </span>
+                    </div>
+                    <div class="compact-detail-item">
+                        <span class="compact-detail-label">Owner</span>
+                        <span class="compact-detail-value">${ownerInfo.name}</span>
+                    </div>
+                    <div class="compact-detail-item">
+                        <span class="compact-detail-label">Owner ID</span>
+                        <span class="compact-detail-value">${ownerInfo.id}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="compact-item-actions">
+                <button class="btn btn-outline-primary" onclick="showProductDetail(${product.id})">
+                    <i class="fa-solid fa-eye me-2"></i>View Details
+                </button>
+                <button class="btn btn-success" onclick="approveProduct(${product.id})">
+                    <i class="fa-solid fa-check me-2"></i>Approve
+                </button>
+                <button class="btn btn-danger" onclick="showRejectionModal(${product.id}, 'PRODUCT')">
+                    <i class="fa-solid fa-xmark me-2"></i>Reject
+                </button>
+            </div>
+        `;
+
+        return cardDiv;
+    }
+
+    // Show Product Detail Modal
+    async function showProductDetail(productId) {
+        try {
+            const product = pendingProducts.find(p => p.id === productId);
+            if (!product) {
+                showNotification('Product not found', 'error');
+                return;
+            }
+
+            const ownerInfo = getProductOwner(product);
+            const imagePaths = getImagesFromProduct(product);
+            const carouselId = `productDetailCarousel-${product.id}`;
+            const condition = product.condition || product.productCondition || product.itemCondition || 'Not specified';
+
+            let carouselHTML = '';
+            if (imagePaths.length > 0) {
+                carouselHTML = `
+                    <div id="${carouselId}" class="carousel slide detail-modal-carousel" data-bs-ride="carousel">
+                        <div class="carousel-inner">
+                            ${imagePaths.map((img, imgIndex) => `
+                                <div class="carousel-item ${imgIndex === 0 ? 'active' : ''}">
+                                    <img src="${img}"
+                                         class="d-block mx-auto"
+                                         alt="${product.name} - Image ${imgIndex + 1}"
+                                         style="max-height: 400px; object-fit: contain; min-height: 300px;"
+                                         onerror="this.src='https://via.placeholder.com/500x400?text=Image+Not+Found'">
+                                </div>
+                            `).join('')}
+                        </div>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#${carouselId}" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#${carouselId}" data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
+                        <div class="carousel-indicators">
+                            ${imagePaths.map((_, imgIndex) => `
+                                <button type="button"
+                                        data-bs-target="#${carouselId}"
+                                        data-bs-slide-to="${imgIndex}"
+                                        class="${imgIndex === 0 ? 'active' : ''}"
+                                        aria-label="Slide ${imgIndex + 1}">
+                                </button>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            } else {
+                carouselHTML = `
+                    <div class="text-center p-5">
+                        <i class="fa-solid fa-image fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">No images available for this product</p>
+                    </div>
+                `;
+            }
+
+            document.getElementById('productDetailContent').innerHTML = `
+                <div class="detail-modal-images">
+                    <div class="review-images-title">
+                        <i class="fa-solid fa-images me-2"></i>
+                        Product Images
+                    </div>
+                    ${carouselHTML}
+                </div>
+
+                <div class="detail-modal-grid">
+                    <div class="detail-modal-item">
+                        <span class="detail-modal-label">Product ID</span>
+                        <span class="detail-modal-value">${product.id}</span>
+                    </div>
+                    <div class="detail-modal-item">
+                        <span class="detail-modal-label">Product Name</span>
+                        <span class="detail-modal-value">${product.name || 'Not specified'}</span>
+                    </div>
+                    <div class="detail-modal-item">
+                        <span class="detail-modal-label">Category</span>
+                        <span class="detail-modal-value">${product.category || 'Not specified'}</span>
+                    </div>
+                    <div class="detail-modal-item">
+                        <span class="detail-modal-label">Type</span>
+                        <span class="detail-modal-value">${product.type || 'Not specified'}</span>
+                    </div>
+                    <div class="detail-modal-item">
+                        <span class="detail-modal-label">Product Condition</span>
+                        <span class="detail-modal-value">${condition}</span>
+                    </div>
+                    <div class="detail-modal-item">
+                        <span class="detail-modal-label">Price</span>
+                        <span class="detail-modal-value">
+                            ${product.type === 'Exchange' || product.type === 'Donate' ?
+                              'Not applicable for ' + product.type :
+                              (product.price ? `₹${product.price}` : 'Not specified')}
+                        </span>
+                    </div>
+                    <div class="detail-modal-item">
+                        <span class="detail-modal-label">Status</span>
+                        <span class="detail-modal-value status-badge status-pending">${product.status || 'PENDING'}</span>
+                    </div>
+                    <div class="detail-modal-item">
+                        <span class="detail-modal-label">Owner Name</span>
+                        <span class="detail-modal-value">${ownerInfo.name}</span>
+                    </div>
+                    <div class="detail-modal-item">
+                        <span class="detail-modal-label">Owner Email</span>
+                        <span class="detail-modal-value">${ownerInfo.email}</span>
+                    </div>
+                    <div class="detail-modal-item">
+                        <span class="detail-modal-label">Owner ID</span>
+                        <span class="detail-modal-value">${ownerInfo.id}</span>
+                    </div>
+                    <div class="detail-modal-item">
+                        <span class="detail-modal-label">Listed On</span>
+                        <span class="detail-modal-value">${product.createdAt ? new Date(product.createdAt).toLocaleDateString() + ' ' + new Date(product.createdAt).toLocaleTimeString() : 'Not specified'}</span>
+                    </div>
+                    ${product.updatedAt ? `
+                    <div class="detail-modal-item">
+                        <span class="detail-modal-label">Last Updated</span>
+                        <span class="detail-modal-value">${new Date(product.updatedAt).toLocaleDateString() + ' ' + new Date(product.updatedAt).toLocaleTimeString()}</span>
+                    </div>
+                    ` : ''}
+                    ${product.description ? `
+                    <div class="detail-modal-item" style="grid-column: span 2;">
+                        <span class="detail-modal-label">Description</span>
+                        <div class="detail-modal-value" style="white-space: pre-wrap; max-height: 200px; overflow-y: auto; padding: 10px; background: #f8f9fa; border-radius: 4px;">
+                            ${product.description}
+                        </div>
+                    </div>
+                    ` : ''}
+                </div>
+
+                <div class="detail-modal-actions">
+                    <button class="btn btn-success" onclick="approveProduct(${product.id})">
+                        <i class="fa-solid fa-check me-2"></i>Approve Product
+                    </button>
+                    <button class="btn btn-danger" onclick="showRejectionModal(${product.id}, 'PRODUCT')">
+                        <i class="fa-solid fa-xmark me-2"></i>Reject Product
+                    </button>
+                </div>
+            `;
+
+            document.getElementById('productDetailTitle').innerHTML = `
+                <i class="fa-solid fa-box me-2"></i>Product Details - ${product.name || 'Unnamed Product'} (ID: ${product.id})
+            `;
+
+            const modal = new bootstrap.Modal(document.getElementById('productDetailModal'));
+            modal.show();
+
+        } catch (err) {
+            console.error("Error showing product detail:", err);
+            showNotification('Error loading product details', 'error');
+        }
+    }
+
+    // Donation Item Review Functions
+    async function loadDonationItemsForReview() {
+        try {
+            const res = await fetch('/api/admin/donations/items/pending', { headers: apiHeaders });
+            if (!res.ok) throw new Error('Failed to fetch pending donation items');
+            pendingDonationItems = await res.json();
+
+            if (pendingDonationItems.length === 0) {
+                showNoDonationItemsForReview();
+                return;
+            }
+
+            displayAllDonationItemsForReview(pendingDonationItems);
+
+        } catch (err) {
+            console.error("Error loading donation items for review:", err);
+            showNoDonationItemsForReview();
+        }
+    }
+
+    function showNoDonationItemsForReview() {
+        const container = document.getElementById('donationItemsReviewContainer');
+        container.innerHTML = `
+            <div class="compact-item-card">
+                <div class="compact-item-header">
+                    <h4 class="compact-item-title">No Donation Items Pending Review</h4>
+                </div>
+                <div class="text-center p-4">
+                    <i class="fa-solid fa-check-circle fa-3x text-success mb-3"></i>
+                    <p class="text-muted">All donation items have been reviewed!</p>
+                </div>
+            </div>
+        `;
+    }
+
+    function displayAllDonationItemsForReview(donationItems) {
+        const container = document.getElementById('donationItemsReviewContainer');
+
+        if (donationItems.length === 0) {
+            showNoDonationItemsForReview();
+            return;
+        }
+
+        container.innerHTML = '';
+        donationItems.forEach((item, index) => {
+            const donationCard = createCompactDonationItemCard(item, index);
+            container.appendChild(donationCard);
+        });
+    }
+
+    function createCompactDonationItemCard(item, index) {
+        const cardDiv = document.createElement('div');
+        cardDiv.className = 'compact-item-card';
+        cardDiv.id = `donation-item-card-${item.id}`;
+        cardDiv.style.borderLeftColor = 'var(--donate-color)';
+
+        const donorInfo = getDonationOwner(item);
+        const imagePaths = getImagesFromProduct(item);
+        const thumbnail = imagePaths.length > 0 ? imagePaths[0] : 'https://via.placeholder.com/80?text=No+Image';
+
+        cardDiv.innerHTML = `
+            <div class="compact-item-header">
+                <h4 class="compact-item-title">${item.itemName || 'Unnamed Donation Item'} #${item.id}</h4>
+                <span class="status-badge status-pending">${item.status || 'PENDING'}</span>
+            </div>
+
+            <div class="compact-item-content">
+                <img src="${thumbnail}"
+                     class="compact-item-image"
+                     alt="${item.itemName}"
+                     onerror="this.src='https://via.placeholder.com/80?text=Image+Error'"
+                     onclick="showDonationItemDetail(${item.id})">
+                <div class="compact-item-details">
+                    <div class="compact-detail-item">
+                        <span class="compact-detail-label">Category</span>
+                        <span class="compact-detail-value">${item.category || item.itemType || 'Not specified'}</span>
+                    </div>
+                    <div class="compact-detail-item">
+                        <span class="compact-detail-label">Type</span>
+                        <span class="compact-detail-value">Donation</span>
+                    </div>
+                    <div class="compact-detail-item">
+                        <span class="compact-detail-label">Condition</span>
+                        <span class="compact-detail-value">${item.itemCondition || 'Not specified'}</span>
+                    </div>
+                    <div class="compact-detail-item">
+                        <span class="compact-detail-label">Donor</span>
+                        <span class="compact-detail-value">${donorInfo.name}</span>
+                    </div>
+                    <div class="compact-detail-item">
+                        <span class="compact-detail-label">Donor Email</span>
+                        <span class="compact-detail-value">${donorInfo.email}</span>
+                    </div>
+                    <div class="compact-detail-item">
+                        <span class="compact-detail-label">Donor ID</span>
+                        <span class="compact-detail-value">${donorInfo.id}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="compact-item-actions">
+                <button class="btn btn-outline-primary" onclick="showDonationItemDetail(${item.id})">
+                    <i class="fa-solid fa-eye me-2"></i>View Details
+                </button>
+                <button class="btn btn-success" onclick="approveDonationItem(${item.id})">
+                    <i class="fa-solid fa-check me-2"></i>Approve
+                </button>
+                <button class="btn btn-danger" onclick="showRejectionModal(${item.id}, 'DONATION_ITEM')">
+                    <i class="fa-solid fa-xmark me-2"></i>Reject
+                </button>
+            </div>
+        `;
+
+        return cardDiv;
+    }
+
+    // Show Donation Item Detail Modal
+    async function showDonationItemDetail(itemId) {
+        try {
+            const item = pendingDonationItems.find(d => d.id === itemId);
+            if (!item) {
+                showNotification('Donation item not found', 'error');
+                return;
+            }
+
+            const donorInfo = getDonationOwner(item);
+            const imagePaths = getImagesFromProduct(item);
+            const carouselId = `donationItemDetailCarousel-${item.id}`;
+
+            let carouselHTML = '';
+            if (imagePaths.length > 0) {
+                carouselHTML = `
+                    <div id="${carouselId}" class="carousel slide detail-modal-carousel" data-bs-ride="carousel">
+                        <div class="carousel-inner">
+                            ${imagePaths.map((img, imgIndex) => `
+                                <div class="carousel-item ${imgIndex === 0 ? 'active' : ''}">
+                                    <img src="${img}"
+                                         class="d-block mx-auto"
+                                         alt="${item.itemName} - Image ${imgIndex + 1}"
+                                         style="max-height: 400px; object-fit: contain; min-height: 300px;"
+                                         onerror="this.src='https://via.placeholder.com/500x400?text=Image+Not+Found'">
+                                </div>
+                            `).join('')}
+                        </div>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#${carouselId}" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#${carouselId}" data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
+                        <div class="carousel-indicators">
+                            ${imagePaths.map((_, imgIndex) => `
+                                <button type="button"
+                                        data-bs-target="#${carouselId}"
+                                        data-bs-slide-to="${imgIndex}"
+                                        class="${imgIndex === 0 ? 'active' : ''}"
+                                        aria-label="Slide ${imgIndex + 1}">
+                                </button>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            } else {
+                carouselHTML = `
+                    <div class="text-center p-5">
+                        <i class="fa-solid fa-image fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">No images available for this donation item</p>
+                    </div>
+                `;
+            }
+
+            document.getElementById('donationItemDetailContent').innerHTML = `
+                <div class="detail-modal-images">
+                    <div class="review-images-title">
+                        <i class="fa-solid fa-images me-2"></i>
+                        Donation Item Images
+                    </div>
+                    ${carouselHTML}
+                </div>
+
+                <div class="detail-modal-grid">
+                    <div class="detail-modal-item">
+                        <span class="detail-modal-label">Item ID</span>
+                        <span class="detail-modal-value">${item.id}</span>
+                    </div>
+                    <div class="detail-modal-item">
+                        <span class="detail-modal-label">Item Name</span>
+                        <span class="detail-modal-value">${item.itemName || 'Not specified'}</span>
+                    </div>
+                    <div class="detail-modal-item">
+                        <span class="detail-modal-label">Category</span>
+                        <span class="detail-modal-value">${item.category || item.itemType || 'Not specified'}</span>
+                    </div>
+                    <div class="detail-modal-item">
+                        <span class="detail-modal-label">Type</span>
+                        <span class="detail-modal-value">Donation</span>
+                    </div>
+                    <div class="detail-modal-item">
+                        <span class="detail-modal-label">Condition</span>
+                        <span class="detail-modal-value">${item.itemCondition || 'Not specified'}</span>
+                    </div>
+                    <div class="detail-modal-item">
+                        <span class="detail-modal-label">Status</span>
+                        <span class="detail-modal-value status-badge status-pending">${item.status || 'PENDING'}</span>
+                    </div>
+                    <div class="detail-modal-item">
+                        <span class="detail-modal-label">Donor Name</span>
+                        <span class="detail-modal-value">${donorInfo.name}</span>
+                    </div>
+                    <div class="detail-modal-item">
+                        <span class="detail-modal-label">Donor Email</span>
+                        <span class="detail-modal-value">${donorInfo.email}</span>
+                    </div>
+                    <div class="detail-modal-item">
+                        <span class="detail-modal-label">Donor ID</span>
+                        <span class="detail-modal-value">${donorInfo.id}</span>
+                    </div>
+                    <div class="detail-modal-item">
+                        <span class="detail-modal-label">Address</span>
+                        <span class="detail-modal-value">${item.pickupAddress || 'Not specified'}</span>
+                    </div>
+                    <div class="detail-modal-item">
+                        <span class="detail-modal-label">Listed On</span>
+                        <span class="detail-modal-value">${item.createdAt ? new Date(item.createdAt).toLocaleDateString() : 'Not specified'}</span>
+                    </div>
+                    ${item.description ? `
+                    <div class="detail-modal-item" style="grid-column: span 2;">
+                        <span class="detail-modal-label">Description</span>
+                        <div class="detail-modal-value" style="white-space: pre-wrap; max-height: 200px; overflow-y: auto; padding: 10px; background: #f8f9fa; border-radius: 4px;">
+                            ${item.description}
+                        </div>
+                    </div>
+                    ` : ''}
+                </div>
+
+                <div class="detail-modal-actions">
+                    <button class="btn btn-success" onclick="approveDonationItem(${item.id})">
+                        <i class="fa-solid fa-check me-2"></i>Approve Donation
+                    </button>
+                    <button class="btn btn-danger" onclick="showRejectionModal(${item.id}, 'DONATION_ITEM')">
+                        <i class="fa-solid fa-xmark me-2"></i>Reject Donation
+                    </button>
+                </div>
+            `;
+
+            document.getElementById('donationItemDetailTitle').innerHTML = `
+                <i class="fa-solid fa-gift me-2"></i>Donation Item Details - ${item.itemName || 'Unnamed Item'} (ID: ${item.id})
+            `;
+
+            const modal = new bootstrap.Modal(document.getElementById('donationItemDetailModal'));
+            modal.show();
+
+        } catch (err) {
+            console.error("Error showing donation item detail:", err);
+            showNotification('Error loading donation item details', 'error');
+        }
+    }
+
+    // Donation Request Review Functions
+    async function loadDonationRequestsForReview() {
+        try {
+            const res = await fetch('/api/admin/donations/requests/pending', { headers: apiHeaders });
+            if (!res.ok) {
+                console.error("API Error:", res.status, res.statusText);
+                throw new Error('Failed to fetch pending donation requests');
+            }
+
+            pendingDonationRequests = await res.json();
+
+            if (pendingDonationRequests.length === 0) {
+                showNoDonationRequestsForReview();
+                return;
+            }
+
+            displayAllDonationRequestsForReview(pendingDonationRequests);
+
+        } catch (err) {
+            console.error("Error loading donation requests for review:", err);
+            showNoDonationRequestsForReview();
+        }
+    }
+
+    function showNoDonationRequestsForReview() {
+        const container = document.getElementById('donationRequestsReviewContainer');
+        container.innerHTML = `
+            <div class="compact-item-card">
+                <div class="compact-item-header">
+                    <h4 class="compact-item-title">No Donation Requests Pending Review</h4>
+                </div>
+                <div class="text-center p-4">
+                    <i class="fa-solid fa-check-circle fa-3x text-success mb-3"></i>
+                    <p class="text-muted">All donation requests have been reviewed!</p>
+                </div>
+            </div>
+        `;
+    }
+
+    function displayAllDonationRequestsForReview(donationRequests) {
+        const container = document.getElementById('donationRequestsReviewContainer');
+
+        if (donationRequests.length === 0) {
+            showNoDonationRequestsForReview();
+            return;
+        }
+
+        container.innerHTML = '';
+        donationRequests.forEach((req, index) => {
+            const requestCard = createCompactDonationRequestCard(req, index);
+            container.appendChild(requestCard);
+        });
+    }
+
+    function createCompactDonationRequestCard(req, index) {
+        const cardDiv = document.createElement('div');
+        cardDiv.className = 'compact-item-card';
+        cardDiv.id = `donation-request-card-${req.id}`;
+        cardDiv.style.borderLeftColor = 'var(--donate-color)';
+
+        const requesterInfo = getDonationRequester(req);
+        const donorInfo = getDonationOwner(req.donateItem);
+        const imagePaths = getImagesFromProduct(req.donateItem);
+        const thumbnail = imagePaths.length > 0 ? imagePaths[0] : 'https://via.placeholder.com/80?text=No+Image';
+
+        cardDiv.innerHTML = `
+            <div class="compact-item-header">
+                <h4 class="compact-item-title">Donation Request #${req.id}</h4>
+                <span class="status-badge status-pending">${req.status || 'PENDING'}</span>
+            </div>
+
+            <div class="compact-item-content">
+                <img src="${thumbnail}"
+                     class="compact-item-image"
+                     alt="${req.donateItem?.itemName || 'Item'}"
+                     onerror="this.src='https://via.placeholder.com/80?text=Image+Error'"
+                     onclick="showDonationRequestDetail(${req.id})">
+                <div class="compact-item-details">
+                    <div class="compact-detail-item">
+                        <span class="compact-detail-label">Requested Item</span>
+                        <span class="compact-detail-value">${req.donateItem?.itemName || 'Not specified'}</span>
+                    </div>
+                    <div class="compact-detail-item">
+                        <span class="compact-detail-label">Category</span>
+                        <span class="compact-detail-value">${req.donateItem?.category || req.donateItem?.itemType || 'Not specified'}</span>
+                    </div>
+                    <div class="compact-detail-item">
+                        <span class="compact-detail-label">Type</span>
+                        <span class="compact-detail-value">Donation Request</span>
+                    </div>
+                    <div class="compact-detail-item">
+                        <span class="compact-detail-label">Requester</span>
+                        <span class="compact-detail-value">${requesterInfo.name}</span>
+                    </div>
+                    <div class="compact-detail-item">
+                        <span class="compact-detail-label">Donor</span>
+                        <span class="compact-detail-value">${donorInfo.name}</span>
+                    </div>
+                    <div class="compact-detail-item">
+                        <span class="compact-detail-label">Donor ID</span>
+                        <span class="compact-detail-value">${donorInfo.id}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="compact-item-actions">
+                <button class="btn btn-outline-primary" onclick="showDonationRequestDetail(${req.id})">
+                    <i class="fa-solid fa-eye me-2"></i>View Details
+                </button>
+                <button class="btn btn-success" onclick="approveDonationRequest(${req.id})">
+                    <i class="fa-solid fa-check me-2"></i>Approve
+                </button>
+                <button class="btn btn-danger" onclick="showRejectionModal(${req.id}, 'DONATION_REQUEST')">
+                    <i class="fa-solid fa-xmark me-2"></i>Reject
+                </button>
+            </div>
+        `;
+
+        return cardDiv;
+    }
+
+    // Show Donation Request Detail Modal
+    async function showDonationRequestDetail(requestId) {
+        try {
+            const req = pendingDonationRequests.find(r => r.id === requestId);
+            if (!req) {
+                showNotification('Donation request not found', 'error');
+                return;
+            }
+
+            const requesterInfo = getDonationRequester(req);
+            const donorInfo = getDonationOwner(req.donateItem);
+            const itemImages = getImagesFromProduct(req.donateItem);
+            const carouselId = `donationRequestDetailCarousel-${req.id}`;
+
+            let carouselHTML = '';
+            if (itemImages.length > 0) {
+                carouselHTML = `
+                    <div id="${carouselId}" class="carousel slide detail-modal-carousel" data-bs-ride="carousel">
+                        <div class="carousel-inner">
+                            ${itemImages.map((img, imgIndex) => `
+                                <div class="carousel-item ${imgIndex === 0 ? 'active' : ''}">
+                                    <img src="${img}"
+                                         class="d-block mx-auto"
+                                         alt="${req.donateItem?.itemName || 'Item'} - Image ${imgIndex + 1}"
+                                         style="max-height: 400px; object-fit: contain; min-height: 300px;"
+                                         onerror="this.src='https://via.placeholder.com/500x400?text=Image+Not+Found'">
+                                </div>
+                            `).join('')}
+                        </div>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#${carouselId}" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#${carouselId}" data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
+                        <div class="carousel-indicators">
+                            ${itemImages.map((_, imgIndex) => `
+                                <button type="button"
+                                        data-bs-target="#${carouselId}"
+                                        data-bs-slide-to="${imgIndex}"
+                                        class="${imgIndex === 0 ? 'active' : ''}"
+                                        aria-label="Slide ${imgIndex + 1}">
+                                </button>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            } else {
+                carouselHTML = `
+                    <div class="text-center p-5">
+                        <i class="fa-solid fa-image fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">No images available for this item</p>
+                    </div>
+                `;
+            }
+
+            const today = new Date();
+            const formattedDate = today.toLocaleDateString();
+
+            document.getElementById('donationRequestDetailContent').innerHTML = `
+                <div class="detail-modal-images">
+                    <div class="review-images-title">
+                        <i class="fa-solid fa-images me-2"></i>
+                        Requested Item Images
+                    </div>
+                    ${carouselHTML}
+                </div>
+
+                <div class="detail-modal-grid">
+                    <div class="detail-modal-item">
+                        <span class="detail-modal-label">Request ID</span>
+                        <span class="detail-modal-value">${req.id}</span>
+                    </div>
+                    <div class="detail-modal-item">
+                        <span class="detail-modal-label">Requested Item</span>
+                        <span class="detail-modal-value">${req.donateItem?.itemName || 'Not specified'}</span>
+                    </div>
+                    <div class="detail-modal-item">
+                        <span class="detail-modal-label">Item ID</span>
+                        <span class="detail-modal-value">${req.donateItem?.id || 'N/A'}</span>
+                    </div>
+                    <div class="detail-modal-item">
+                        <span class="detail-modal-label">Category</span>
+                        <span class="detail-modal-value">${req.donateItem?.category || req.donateItem?.itemType || 'Not specified'}</span>
+                    </div>
+                    <div class="detail-modal-item">
+                        <span class="detail-modal-label">Item Condition</span>
+                        <span class="detail-modal-value">${req.donateItem?.itemCondition || 'Not specified'}</span>
+                    </div>
+                    <div class="detail-modal-item">
+                        <span class="detail-modal-label">Status</span>
+                        <span class="detail-modal-value status-badge status-pending">${req.status || 'PENDING'}</span>
+                    </div>
+                    <div class="detail-modal-item">
+                        <span class="detail-modal-label">Requester Name</span>
+                        <span class="detail-modal-value">${requesterInfo.name}</span>
+                    </div>
+                    <div class="detail-modal-item">
+                        <span class="detail-modal-label">Requester Email</span>
+                        <span class="detail-modal-value">${requesterInfo.email}</span>
+                    </div>
+                    <div class="detail-modal-item">
+                        <span class="detail-modal-label">Requester ID</span>
+                        <span class="detail-modal-value">${requesterInfo.id}</span>
+                    </div>
+                    <div class="detail-modal-item">
+                        <span class="detail-modal-label">Donor Name</span>
+                        <span class="detail-modal-value">${donorInfo.name}</span>
+                    </div>
+                    <div class="detail-modal-item">
+                        <span class="detail-modal-label">Donor Email</span>
+                        <span class="detail-modal-value">${donorInfo.email}</span>
+                    </div>
+                    <div class="detail-modal-item">
+                        <span class="detail-modal-label">Donor ID</span>
+                        <span class="detail-modal-value">${donorInfo.id}</span>
+                    </div>
+                    <div class="detail-modal-item">
+                        <span class="detail-modal-label">Donor Address</span>
+                        <span class="detail-modal-value">${req.donateItem?.pickupAddress || 'Not specified'}</span>
+                    </div>
+                    <div class="detail-modal-item">
+                        <span class="detail-modal-label">Requested On</span>
+                        <span class="detail-modal-value">${formattedDate}</span>
+                    </div>
+                </div>
+
+                <div class="detail-modal-actions">
+                    <button class="btn btn-success" onclick="approveDonationRequest(${req.id})">
+                        <i class="fa-solid fa-check me-2"></i>Approve Request
+                    </button>
+                    <button class="btn btn-danger" onclick="showRejectionModal(${req.id}, 'DONATION_REQUEST')">
+                        <i class="fa-solid fa-xmark me-2"></i>Reject Request
+                    </button>
+                </div>
+            `;
+
+            document.getElementById('donationRequestDetailTitle').innerHTML = `
+                <i class="fa-solid fa-hand-holding-heart me-2"></i>Donation Request Details - ID: ${req.id}
+            `;
+
+            const modal = new bootstrap.Modal(document.getElementById('donationRequestDetailModal'));
+            modal.show();
+
+        } catch (err) {
+            console.error("Error showing donation request detail:", err);
+            showNotification('Error loading donation request details', 'error');
+        }
+    }
+
+    // Exchange Request Review Functions
+    async function loadExchangeRequestsForReview() {
+        try {
+            const res = await fetch('/api/admin/exchange-requests/pending', { headers: apiHeaders });
+            if (!res.ok) {
+                console.error("API Error:", res.status, res.statusText);
+                throw new Error('Failed to fetch pending exchange requests');
+            }
+
+            pendingExchangeRequests = await res.json();
+
+            if (pendingExchangeRequests.length === 0) {
+                showNoExchangeRequestsForReview();
+                return;
+            }
+
+            displayAllExchangeRequestsForReview(pendingExchangeRequests);
+
+        } catch (err) {
+            console.error("Error loading exchange requests for review:", err);
+            showNoExchangeRequestsForReview();
+        }
+    }
+
+    function showNoExchangeRequestsForReview() {
+        const container = document.getElementById('exchangeRequestsReviewContainer');
+        container.innerHTML = `
+            <div class="compact-item-card">
+                <div class="compact-item-header">
+                    <h4 class="compact-item-title">No Exchange Requests Pending Review</h4>
+                </div>
+                <div class="text-center p-4">
+                    <i class="fa-solid fa-check-circle fa-3x text-success mb-3"></i>
+                    <p class="text-muted">All exchange requests have been reviewed!</p>
+                </div>
+            </div>
+        `;
+    }
+
+    function displayAllExchangeRequestsForReview(exchangeRequests) {
+        const container = document.getElementById('exchangeRequestsReviewContainer');
+
+        if (exchangeRequests.length === 0) {
+            showNoExchangeRequestsForReview();
+            return;
+        }
+
+        container.innerHTML = '';
+        exchangeRequests.forEach((req, index) => {
+            const requestCard = createCompactExchangeRequestCard(req, index);
+            container.appendChild(requestCard);
+        });
+    }
+
+    function createCompactExchangeRequestCard(req, index) {
+        const cardDiv = document.createElement('div');
+        cardDiv.className = 'compact-item-card';
+        cardDiv.id = `exchange-request-card-${req.id}`;
+        cardDiv.style.borderLeftColor = 'var(--exchange-color)';
+
+        const requesterInfo = getExchangeRequester(req);
+        const targetImages = getImagesFromProduct(req.targetProduct);
+        const thumbnail = targetImages.length > 0 ? targetImages[0] : 'https://via.placeholder.com/80?text=No+Image';
+
+        cardDiv.innerHTML = `
+            <div class="compact-item-header">
+                <h4 class="compact-item-title">Exchange Request #${req.id}</h4>
+                <span class="status-badge status-pending">${req.status || 'PENDING'}</span>
+            </div>
+
+            <div class="compact-item-content">
+                <img src="${thumbnail}"
+                     class="compact-item-image"
+                     alt="${req.targetProduct?.name || 'Product'}"
+                     onerror="this.src='https://via.placeholder.com/80?text=Image+Error'"
+                     onclick="showExchangeRequestDetail(${req.id})">
+                <div class="compact-item-details">
+                    <div class="compact-detail-item">
+                        <span class="compact-detail-label">Target Product</span>
+                        <span class="compact-detail-value">${req.targetProduct?.name || 'Not specified'}</span>
+                    </div>
+                    <div class="compact-detail-item">
+                        <span class="compact-detail-label">Target Product ID</span>
+                        <span class="compact-detail-value">${req.targetProduct?.id || 'N/A'}</span>
+                    </div>
+                    <div class="compact-detail-item">
+                        <span class="compact-detail-label">Exchange Item</span>
+                        <span class="compact-detail-value">${req.exchangeItemName || 'Not specified'}</span>
+                    </div>
+                    <div class="compact-detail-item">
+                        <span class="compact-detail-label">Requester</span>
+                        <span class="compact-detail-value">${requesterInfo.name}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="compact-item-actions">
+                <button class="btn btn-outline-primary" onclick="showExchangeRequestDetail(${req.id})">
+                    <i class="fa-solid fa-eye me-2"></i>View Details
+                </button>
+                <button class="btn btn-success" onclick="approveExchangeRequest(${req.id})">
+                    <i class="fa-solid fa-check me-2"></i>Approve
+                </button>
+                <button class="btn btn-danger" onclick="showRejectionModal(${req.id}, 'EXCHANGE')">
+                    <i class="fa-solid fa-xmark me-2"></i>Reject
+                </button>
+            </div>
+        `;
+
+        return cardDiv;
+    }
+
+    // Show Image Detail Modal
+    function showImageDetail(itemId, itemName, imagePaths) {
+        if (!imagePaths || imagePaths.length === 0) return;
+
+        document.getElementById('imageDetailTitle').textContent = `${itemName} - Images`;
+        const carouselInner = document.getElementById('imageCarouselInner');
+        const indicators = document.getElementById('imageCarouselIndicators');
+
+        carouselInner.innerHTML = imagePaths.map((img, index) => `
+            <div class="carousel-item ${index === 0 ? 'active' : ''}">
+                <img src="${img}"
+                     class="d-block w-100"
+                     alt="${itemName} - Image ${index + 1}"
+                     onerror="this.src='https://via.placeholder.com/500'">
+            </div>
+        `).join('');
+
+        indicators.innerHTML = imagePaths.map((_, index) => `
+            <button type="button"
+                    data-bs-target="#imageDetailCarousel"
+                    data-bs-slide-to="${index}"
+                    class="${index === 0 ? 'active' : ''}"
+                    aria-label="Slide ${index + 1}">
+            </button>
+        `).join('');
+
+        new bootstrap.Carousel(document.getElementById('imageDetailCarousel'));
+        new bootstrap.Modal(document.getElementById('imageDetailModal')).show();
+    }
+
+    // User Management - also store users for lookup
     async function loadUsers() {
         const tableBody = document.getElementById('usersTableBody');
         try {
             const res = await fetch('/api/admin/users', { headers: apiHeaders });
             if (!res.ok) throw new Error('Failed to fetch users');
-            const users = await res.json();
+            allUsers = await res.json();
 
-            tableBody.innerHTML = users.length === 0 ? '<tr><td colspan="5" class="text-center text-muted p-4">No users found.</td></tr>' :
-                users.map(user => `
+            if (allUsers.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="5" class="text-center text-muted p-4">No users found.</td></tr>';
+                return;
+            }
+
+            tableBody.innerHTML = allUsers.map(user => `
                 <tr>
                     <td>${user.id}</td>
-                    <td>${user.firstName} ${user.lastName}</td>
-                    <td>${user.email}</td>
+                    <td>${user.firstName || ''} ${user.lastName || ''}</td>
+                    <td>${user.email || 'No email'}</td>
                     <td>${user.admin ? '<span class="badge bg-primary">ADMIN</span>' : '<span class="badge bg-secondary">USER</span>'}</td>
                     <td>
                         <button class="btn btn-sm btn-outline-primary" onclick="toggleAdmin(${user.id}, ${!user.admin})">
@@ -465,9 +2722,8 @@
         }
     }
 
-    // --- ACTIONS: Common Rejection Handler (Modal Logic) ---
+    // Rejection Modal
     const rejectionModal = new bootstrap.Modal(document.getElementById('rejectionModal'));
-
     function showRejectionModal(id, type) {
         currentRejectId = id;
         currentRejectionType = type;
@@ -479,141 +2735,244 @@
     function handleConfirmRejection() {
         const reason = document.getElementById('rejectionReason').value.trim();
         if (!reason) {
-            showNotification('Rejection requires a reason.', 'warning');
+            showNotification('Please enter a rejection reason.', 'warning');
             return;
         }
         rejectionModal.hide();
 
-        if (currentRejectionType === 'PRODUCT') {
-            rejectProduct(currentRejectId, reason);
-        } else if (currentRejectionType === 'EXCHANGE') {
-            rejectExchangeRequest(currentRejectId, reason);
-        } else if (currentRejectionType === 'DONATION_ITEM') {
-            rejectDonationItem(currentRejectId, reason);
-        } else if (currentRejectionType === 'DONATION_REQUEST') {
-            rejectDonationRequest(currentRejectId, reason);
+        switch(currentRejectionType) {
+            case 'PRODUCT':
+                rejectProduct(currentRejectId, reason);
+                break;
+            case 'EXCHANGE':
+                rejectExchangeRequest(currentRejectId, reason);
+                break;
+            case 'DONATION_ITEM':
+                rejectDonationItem(currentRejectId, reason);
+                break;
+            case 'DONATION_REQUEST':
+                rejectDonationRequest(currentRejectId, reason);
+                break;
         }
     }
 
-    // --- ACTIONS: DONATION ITEMS ---
+    // Action Functions
     async function approveDonationItem(id) {
-        if (!confirm('Approve this donation item? It will become available for request.')) return;
+        if (!confirm('Approve this donation item?')) return;
         try {
-            await fetch(`/api/admin/donations/items/${id}/approve`, { method: 'POST', headers: apiHeaders });
-            showNotification('Item approved!', 'success');
-            loadAllData();
+            const res = await fetch(`/api/admin/donations/items/${id}/approve`, {
+                method: 'POST',
+                headers: apiHeaders
+            });
+            if (res.ok) {
+                showNotification('Donation item approved!', 'success');
+                const donationCard = document.getElementById(`donation-item-card-${id}`);
+                if (donationCard) donationCard.remove();
+                pendingDonationItems = pendingDonationItems.filter(item => item.id !== id);
+                loadAllData();
+            } else {
+                showNotification('Failed to approve donation item.', 'danger');
+            }
         } catch (err) {
-            showNotification('Error approving item.', 'danger');
+            showNotification('Error approving donation item.', 'danger');
         }
     }
+
     async function rejectDonationItem(id, reason) {
         try {
-            await fetch(`/api/admin/donations/items/${id}/reject`, {
+            const res = await fetch(`/api/admin/donations/items/${id}/reject`, {
                 method: 'POST',
                 headers: apiHeaders,
-                body: JSON.stringify({ reason: reason })
+                body: JSON.stringify({ reason })
             });
-            showNotification('Item rejected.', 'success');
-            loadAllData();
+            if (res.ok) {
+                showNotification('Donation item rejected.', 'success');
+                const donationCard = document.getElementById(`donation-item-card-${id}`);
+                if (donationCard) donationCard.remove();
+                pendingDonationItems = pendingDonationItems.filter(item => item.id !== id);
+                loadAllData();
+            } else {
+                showNotification('Failed to reject donation item.', 'danger');
+            }
         } catch (err) {
-            showNotification('Error rejecting item.', 'danger');
+            showNotification('Error rejecting donation item.', 'danger');
         }
     }
 
-    // --- ACTIONS: DONATION REQUESTS ---
     async function approveDonationRequest(id) {
-        if (!confirm('Approve this donation request? This will mark the item as CLAIMED.')) return;
+        if (!confirm('Approve this donation request?')) return;
         try {
-            await fetch(`/api/admin/donations/requests/${id}/approve`, { method: 'POST', headers: apiHeaders });
-            showNotification('Request approved!', 'success');
-            loadAllData();
+            const res = await fetch(`/api/admin/donations/requests/${id}/approve`, {
+                method: 'POST',
+                headers: apiHeaders
+            });
+            if (res.ok) {
+                showNotification('Donation request approved!', 'success');
+                const requestCard = document.getElementById(`donation-request-card-${id}`);
+                if (requestCard) requestCard.remove();
+                pendingDonationRequests = pendingDonationRequests.filter(req => req.id !== id);
+                loadAllData();
+            } else {
+                showNotification('Failed to approve donation request.', 'danger');
+            }
         } catch (err) {
-            showNotification('Error approving request.', 'danger');
+            showNotification('Error approving donation request.', 'danger');
         }
     }
+
     async function rejectDonationRequest(id, reason) {
         try {
-            await fetch(`/api/admin/donations/requests/${id}/reject`, {
+            const res = await fetch(`/api/admin/donations/requests/${id}/reject`, {
                 method: 'POST',
                 headers: apiHeaders,
-                body: JSON.stringify({ reason: reason })
+                body: JSON.stringify({ reason })
             });
-            showNotification('Request rejected.', 'success');
-            loadAllData();
+            if (res.ok) {
+                showNotification('Donation request rejected.', 'success');
+                const requestCard = document.getElementById(`donation-request-card-${id}`);
+                if (requestCard) requestCard.remove();
+                pendingDonationRequests = pendingDonationRequests.filter(req => req.id !== id);
+                loadAllData();
+            } else {
+                showNotification('Failed to reject donation request.', 'danger');
+            }
         } catch (err) {
-            showNotification('Error rejecting request.', 'danger');
+            showNotification('Error rejecting donation request.', 'danger');
         }
     }
 
-    // --- ACTIONS: EXCHANGE REQUESTS ---
     async function approveExchangeRequest(id) {
         if (!confirm('Approve this exchange request?')) return;
         try {
-            await fetch(`/api/admin/exchange-requests/${id}/approve`, { method: 'PUT', headers: apiHeaders });
-            showNotification('Exchange request approved!', 'success');
-            loadAllData();
+            const res = await fetch(`/api/admin/exchange-requests/${id}/approve`, {
+                method: 'PUT',
+                headers: apiHeaders
+            });
+            if (res.ok) {
+                showNotification('Exchange request approved!', 'success');
+                const exchangeCard = document.getElementById(`exchange-request-card-${id}`);
+                if (exchangeCard) exchangeCard.remove();
+                pendingExchangeRequests = pendingExchangeRequests.filter(req => req.id !== id);
+                loadAllData();
+            } else {
+                showNotification('Failed to approve exchange request.', 'danger');
+            }
         } catch (err) {
-            showNotification('Error approving request. Check API status.', 'danger');
+            showNotification('Error approving exchange request.', 'danger');
         }
     }
+
     async function rejectExchangeRequest(id, reason) {
         try {
-            await fetch(`/api/admin/exchange-requests/${id}/reject`, {
+            const res = await fetch(`/api/admin/exchange-requests/${id}/reject`, {
                 method: 'PUT',
                 headers: apiHeaders,
                 body: JSON.stringify({ rejectionReason: reason })
             });
-            showNotification('Exchange request rejected.', 'success');
-            loadAllData();
+            if (res.ok) {
+                showNotification('Exchange request rejected.', 'success');
+                const exchangeCard = document.getElementById(`exchange-request-card-${id}`);
+                if (exchangeCard) exchangeCard.remove();
+                pendingExchangeRequests = pendingExchangeRequests.filter(req => req.id !== id);
+                loadAllData();
+            } else {
+                showNotification('Failed to reject exchange request.', 'danger');
+            }
         } catch (err) {
-            showNotification('Error rejecting request.', 'danger');
+            showNotification('Error rejecting exchange request.', 'danger');
         }
     }
 
-
-    // --- ACTIONS: PRODUCT LISTINGS (Resell/Exchange Item Approval) ---
     async function approveProduct(id) {
-        if (!confirm('Approve this product listing?')) return;
+        if (!confirm(`Approve this product listing?`)) return;
         try {
-            await fetch(`/api/admin/products/${id}/approve`, { method: 'POST', headers: apiHeaders });
-            showNotification('Product approved!', 'success');
-            loadAllData();
+            const res = await fetch(`/api/admin/products/${id}/approve`, {
+                method: 'POST',
+                headers: apiHeaders
+            });
+            if (res.ok) {
+                showNotification('Product approved!', 'success');
+                const productCard = document.getElementById(`product-card-${id}`);
+                if (productCard) productCard.remove();
+                pendingProducts = pendingProducts.filter(p => p.id !== id);
+                loadAllData();
+            } else {
+                showNotification('Failed to approve product.', 'danger');
+            }
         } catch (err) {
             showNotification('Error approving product.', 'danger');
         }
     }
+
     async function rejectProduct(id, reason) {
         try {
-            await fetch(`/api/admin/products/${id}/reject`, {
+            const res = await fetch(`/api/admin/products/${id}/reject`, {
                 method: 'POST',
                 headers: apiHeaders,
                 body: JSON.stringify({ rejectionReason: reason })
             });
-            showNotification('Product rejected.', 'success');
-            loadAllData();
+            if (res.ok) {
+                showNotification('Product rejected.', 'success');
+                const productCard = document.getElementById(`product-card-${id}`);
+                if (productCard) productCard.remove();
+                pendingProducts = pendingProducts.filter(p => p.id !== id);
+                loadAllData();
+            } else {
+                showNotification('Failed to reject product.', 'danger');
+            }
         } catch (err) {
             showNotification('Error rejecting product.', 'danger');
         }
     }
 
-    // --- ACTIONS: USERS ---
     async function toggleAdmin(userId, makeAdmin) {
-        if (!confirm(`Are you sure?`)) return;
+        if (!confirm(`Change user admin status?`)) return;
         try {
-            await fetch(`/api/admin/users/${userId}/role`, {
+            const res = await fetch(`/api/admin/users/${userId}/role`, {
                 method: 'PUT',
                 headers: apiHeaders,
                 body: JSON.stringify({ isAdmin: makeAdmin })
             });
-            showNotification('User role updated!', 'success');
-            loadAllData();
+            if (res.ok) {
+                showNotification('User role updated!', 'success');
+                loadAllData();
+            } else {
+                showNotification('Failed to update user role.', 'danger');
+            }
         } catch (err) {
             showNotification('Error updating user role.', 'danger');
         }
     }
 
-    // --- INITIAL LOAD ---
-    document.addEventListener('DOMContentLoaded', loadAllData);
+    // Load All Data
+    async function loadAllData() {
+        if (!token) {
+            window.location.href = '/login';
+            return;
+        }
+
+        loadStats();
+        await loadUsers();
+        await loadDonationItemsForReview();
+        await loadDonationRequestsForReview();
+        await loadExchangeRequestsForReview();
+        await loadProductForReview();
+    }
+
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', async function() {
+        if (!token) {
+            window.location.href = '/login';
+            return;
+        }
+
+        console.log("JWT Token exists:", token ? "Yes" : "No");
+        console.log("Starting to load all data...");
+
+        await loadAllData();
+
+        setInterval(loadAllData, 30000);
+    });
 </script>
 </body>
 </html>

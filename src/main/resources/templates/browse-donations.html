@@ -64,10 +64,93 @@
             transform: translateY(-5px);
             box-shadow: 0 15px 30px rgba(0,0,0,0.1);
         }
-        .card-img-top {
+
+        /* Image Carousel Styles */
+        .image-carousel-container {
+            position: relative;
             height: 200px;
+            overflow: hidden;
+            background-color: #f8f9fa;
+        }
+
+        .image-carousel {
+            display: flex;
+            transition: transform 0.5s ease;
+            height: 100%;
+        }
+
+        .carousel-image {
+            flex: 0 0 100%;
+            height: 100%;
             object-fit: cover;
         }
+
+        .carousel-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 10;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .item-card:hover .carousel-nav {
+            opacity: 1;
+        }
+
+        .carousel-prev {
+            left: 10px;
+        }
+
+        .carousel-next {
+            right: 10px;
+        }
+
+        .carousel-dots {
+            position: absolute;
+            bottom: 10px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+        }
+
+        .carousel-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            border: none;
+            padding: 0;
+            cursor: pointer;
+        }
+
+        .carousel-dot.active {
+            background: white;
+        }
+
+        .image-counter {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+        }
+
         .card-body {
             padding: 20px;
             display: flex;
@@ -108,9 +191,27 @@
             text-transform: uppercase;
             letter-spacing: 0.5px;
             transition: background 0.3s;
+            margin-top: 10px;
         }
         .btn-request:hover {
             background: #146c43;
+            color: white;
+        }
+
+        .btn-view-details {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: background 0.3s;
+            margin-top: 10px;
+        }
+        .btn-view-details:hover {
+            background: #0088cc;
             color: white;
         }
 
@@ -120,6 +221,97 @@
             top: 100px;
             right: 20px;
             z-index: 9999;
+        }
+
+        /* Details Modal Styles */
+        .modal-image-carousel {
+            height: 300px;
+            position: relative;
+            overflow: hidden;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .modal-carousel-image {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            background-color: #f8f9fa;
+        }
+
+        .modal-carousel-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .modal-carousel-prev {
+            left: 15px;
+        }
+
+        .modal-carousel-next {
+            right: 15px;
+        }
+
+        .modal-image-thumbnails {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+        }
+
+        .modal-thumbnail {
+            width: 80px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 4px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: border 0.3s;
+        }
+
+        .modal-thumbnail.active {
+            border: 2px solid var(--donate-color);
+        }
+
+        .donor-details {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+
+        .product-details {
+            margin: 15px 0;
+        }
+
+        .detail-item {
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            color: #666;
+        }
+
+        .detail-value {
+            color: #333;
         }
     </style>
 </head>
@@ -147,7 +339,6 @@
 </div>
 
 <div class="container">
-
     <div class="filter-section">
         <div class="row align-items-center">
             <div class="col-md-4">
@@ -176,6 +367,7 @@
     </div>
 </div>
 
+<!-- Request Modal -->
 <div class="modal fade" id="requestModal" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -203,13 +395,85 @@
     </div>
 </div>
 
+<!-- Details Modal -->
+<div class="modal fade" id="detailsModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title"><i class="fa-solid fa-info-circle me-2"></i>Product Details</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <!-- Image Carousel in Modal -->
+                        <div class="modal-image-carousel" id="modalImageCarousel">
+                            <!-- Main image will be inserted here -->
+                        </div>
+                        <div class="modal-image-thumbnails" id="modalThumbnails">
+                            <!-- Thumbnails will be inserted here -->
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <h4 id="detailItemName" class="fw-bold mb-3"></h4>
+
+                        <div class="product-details">
+                            <div class="detail-item">
+                                <span class="detail-label">Category:</span>
+                                <span class="detail-value" id="detailCategory"></span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Condition:</span>
+                                <span class="detail-value" id="detailCondition"></span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Quantity:</span>
+                                <span class="detail-value" id="detailQuantity"></span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Pickup Address:</span>
+                                <span class="detail-value" id="detailAddress"></span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Listed Date:</span>
+                                <span class="detail-value" id="detailDate"></span>
+                            </div>
+                        </div>
+
+                        <div class="donor-details">
+                            <h6 class="fw-bold mb-3">Donor Information</h6>
+                            <div class="detail-item">
+                                <span class="detail-label">Name:</span>
+                                <span class="detail-value" id="detailDonorName"></span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Email:</span>
+                                <span class="detail-value" id="detailDonorEmail"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-success" onclick="requestFromDetails()">Request This Item</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 <script>
     const token = localStorage.getItem('jwtToken');
-    let requestModal;
+    let requestModal, detailsModal;
+    let currentItemForRequest = null;
+    let currentModalImageIndex = 0;
+    let currentModalImages = [];
+    let autoSlideIntervals = {}; // Store interval IDs for each carousel
 
     document.addEventListener('DOMContentLoaded', () => {
         requestModal = new bootstrap.Modal(document.getElementById('requestModal'));
+        detailsModal = new bootstrap.Modal(document.getElementById('detailsModal'));
         loadDonations();
     });
 
@@ -220,6 +484,250 @@
         notification.innerHTML = `${message} <button type="button" class="btn-close" data-bs-dismiss="alert"></button>`;
         container.appendChild(notification);
         setTimeout(() => notification.remove(), 4000);
+    }
+
+    // Carousel functions
+    function initCarousel(carouselId, images) {
+        const container = document.getElementById(carouselId);
+        if (!container) return;
+
+        container.innerHTML = '';
+
+        // Create carousel wrapper
+        const carousel = document.createElement('div');
+        carousel.className = 'image-carousel';
+        carousel.id = `${carouselId}-carousel`;
+
+        // Add images
+        images.forEach((img, index) => {
+            const imgElement = document.createElement('img');
+            imgElement.className = 'carousel-image';
+            imgElement.src = img || 'https://via.placeholder.com/300x200?text=No+Image';
+            imgElement.alt = `Image ${index + 1}`;
+            carousel.appendChild(imgElement);
+        });
+
+        container.appendChild(carousel);
+
+        // Add navigation arrows if more than 1 image
+        if (images.length > 1) {
+            const prevBtn = document.createElement('button');
+            prevBtn.className = 'carousel-nav carousel-prev';
+            prevBtn.innerHTML = '<i class="fas fa-chevron-left"></i>';
+            prevBtn.onclick = () => {
+                navigateCarousel(carouselId, -1);
+                resetAutoSlide(carouselId, images); // Reset timer on manual navigation
+            };
+
+            const nextBtn = document.createElement('button');
+            nextBtn.className = 'carousel-nav carousel-next';
+            nextBtn.innerHTML = '<i class="fas fa-chevron-right"></i>';
+            nextBtn.onclick = () => {
+                navigateCarousel(carouselId, 1);
+                resetAutoSlide(carouselId, images); // Reset timer on manual navigation
+            };
+
+            container.appendChild(prevBtn);
+            container.appendChild(nextBtn);
+
+            // Add dots
+            const dotsContainer = document.createElement('div');
+            dotsContainer.className = 'carousel-dots';
+            dotsContainer.id = `${carouselId}-dots`;
+
+            images.forEach((_, index) => {
+                const dot = document.createElement('button');
+                dot.className = `carousel-dot ${index === 0 ? 'active' : ''}`;
+                dot.onclick = () => {
+                    jumpToImage(carouselId, index);
+                    resetAutoSlide(carouselId, images); // Reset timer on manual navigation
+                };
+                dotsContainer.appendChild(dot);
+            });
+
+            container.appendChild(dotsContainer);
+
+            // Add image counter
+            const counter = document.createElement('div');
+            counter.className = 'image-counter';
+            counter.textContent = `1 / ${images.length}`;
+            counter.id = `${carouselId}-counter`;
+            container.appendChild(counter);
+
+            // Start auto-slide if more than 1 image
+            startAutoSlide(carouselId, images);
+        }
+    }
+
+    // Auto-slide functionality (5 seconds interval)
+    function startAutoSlide(carouselId, images) {
+        if (images.length <= 1) return;
+
+        // Clear any existing interval
+        if (autoSlideIntervals[carouselId]) {
+            clearInterval(autoSlideIntervals[carouselId]);
+        }
+
+        let currentIndex = 0;
+        autoSlideIntervals[carouselId] = setInterval(() => {
+            currentIndex = (currentIndex + 1) % images.length;
+            jumpToImage(carouselId, currentIndex);
+        }, 5000); // Change every 5 seconds (5000 milliseconds)
+
+        // Pause on hover
+        const container = document.getElementById(carouselId);
+        container.addEventListener('mouseenter', () => {
+            clearInterval(autoSlideIntervals[carouselId]);
+        });
+
+        // Resume when mouse leaves
+        container.addEventListener('mouseleave', () => {
+            if (autoSlideIntervals[carouselId]) {
+                clearInterval(autoSlideIntervals[carouselId]);
+            }
+            let newIndex = currentIndex;
+            autoSlideIntervals[carouselId] = setInterval(() => {
+                newIndex = (newIndex + 1) % images.length;
+                jumpToImage(carouselId, newIndex);
+                currentIndex = newIndex;
+            }, 5000);
+        });
+    }
+
+    // Reset auto-slide timer (when user interacts manually)
+    function resetAutoSlide(carouselId, images) {
+        if (images.length <= 1) return;
+
+        // Clear existing interval
+        if (autoSlideIntervals[carouselId]) {
+            clearInterval(autoSlideIntervals[carouselId]);
+        }
+
+        // Start new interval
+        const container = document.getElementById(carouselId);
+        const carousel = document.getElementById(`${carouselId}-carousel`);
+        if (!carousel) return;
+
+        const currentIndex = Math.round(-carousel.style.transform.replace('translateX(', '').replace('%)', '') / 100) || 0;
+        let newIndex = currentIndex;
+
+        autoSlideIntervals[carouselId] = setInterval(() => {
+            newIndex = (newIndex + 1) % images.length;
+            jumpToImage(carouselId, newIndex);
+        }, 5000);
+    }
+
+    function navigateCarousel(carouselId, direction) {
+        const carousel = document.getElementById(`${carouselId}-carousel`);
+        const dots = document.querySelectorAll(`#${carouselId}-dots .carousel-dot`);
+        const counter = document.getElementById(`${carouselId}-counter`);
+
+        if (!carousel) return;
+
+        const images = carousel.children;
+        const totalImages = images.length;
+        const currentIndex = Math.round(-carousel.style.transform.replace('translateX(', '').replace('%)', '') / 100) || 0;
+        let newIndex = (currentIndex + direction + totalImages) % totalImages;
+
+        carousel.style.transform = `translateX(-${newIndex * 100}%)`;
+
+        // Update dots
+        dots.forEach((dot, index) => {
+            dot.classList.toggle('active', index === newIndex);
+        });
+
+        // Update counter
+        if (counter) {
+            counter.textContent = `${newIndex + 1} / ${totalImages}`;
+        }
+    }
+
+    function jumpToImage(carouselId, index) {
+        const carousel = document.getElementById(`${carouselId}-carousel`);
+        const dots = document.querySelectorAll(`#${carouselId}-dots .carousel-dot`);
+        const counter = document.getElementById(`${carouselId}-counter`);
+
+        if (!carousel) return;
+
+        carousel.style.transform = `translateX(-${index * 100}%)`;
+
+        // Update dots
+        dots.forEach((dot, i) => {
+            dot.classList.toggle('active', i === index);
+        });
+
+        // Update counter
+        if (counter) {
+            counter.textContent = `${index + 1} / ${dots.length}`;
+        }
+    }
+
+    // Modal carousel functions (NO auto-slide in modal)
+    function initModalCarousel(images) {
+        currentModalImages = images;
+        currentModalImageIndex = 0;
+
+        const container = document.getElementById('modalImageCarousel');
+        const thumbnails = document.getElementById('modalThumbnails');
+
+        container.innerHTML = '';
+        thumbnails.innerHTML = '';
+
+        // Create main image
+        const imgElement = document.createElement('img');
+        imgElement.className = 'modal-carousel-image';
+        imgElement.id = 'modalMainImage';
+        imgElement.src = images[0] || 'https://via.placeholder.com/500x300?text=No+Image';
+        imgElement.alt = 'Product Image';
+        container.appendChild(imgElement);
+
+        // Add navigation arrows if more than 1 image
+        if (images.length > 1) {
+            const prevBtn = document.createElement('button');
+            prevBtn.className = 'modal-carousel-nav modal-carousel-prev';
+            prevBtn.innerHTML = '<i class="fas fa-chevron-left"></i>';
+            prevBtn.onclick = () => navigateModalCarousel(-1);
+
+            const nextBtn = document.createElement('button');
+            nextBtn.className = 'modal-carousel-nav modal-carousel-next';
+            nextBtn.innerHTML = '<i class="fas fa-chevron-right"></i>';
+            nextBtn.onclick = () => navigateModalCarousel(1);
+
+            container.appendChild(prevBtn);
+            container.appendChild(nextBtn);
+        }
+
+        // Create thumbnails
+        images.forEach((img, index) => {
+            const thumbnail = document.createElement('img');
+            thumbnail.className = `modal-thumbnail ${index === 0 ? 'active' : ''}`;
+            thumbnail.src = img || 'https://via.placeholder.com/80x60?text=No+Image';
+            thumbnail.alt = `Thumbnail ${index + 1}`;
+            thumbnail.onclick = () => {
+                currentModalImageIndex = index;
+                updateModalCarousel();
+            };
+            thumbnails.appendChild(thumbnail);
+        });
+    }
+
+    function navigateModalCarousel(direction) {
+        const totalImages = currentModalImages.length;
+        currentModalImageIndex = (currentModalImageIndex + direction + totalImages) % totalImages;
+        updateModalCarousel();
+    }
+
+    function updateModalCarousel() {
+        const mainImage = document.getElementById('modalMainImage');
+        const thumbnails = document.querySelectorAll('.modal-thumbnail');
+
+        if (mainImage && currentModalImages[currentModalImageIndex]) {
+            mainImage.src = currentModalImages[currentModalImageIndex];
+        }
+
+        thumbnails.forEach((thumb, index) => {
+            thumb.classList.toggle('active', index === currentModalImageIndex);
+        });
     }
 
     async function loadDonations() {
@@ -259,10 +767,19 @@
                 const donorName = item.donor ? `${item.donor.firstName} ${item.donor.lastName || ''}` : 'Anonymous';
                 const donorInitial = donorName.charAt(0).toUpperCase();
 
+                // Get images - fallback to mainImageUrl or imageUrl if imageUrls is empty
+                const images = item.imageUrls && item.imageUrls.length > 0
+                    ? item.imageUrls
+                    : (item.mainImageUrl ? [item.mainImageUrl] : (item.imageUrl ? [item.imageUrl] : []));
+
+                const carouselId = `carousel-${item.id}`;
+
                 return `
                 <div class="col-md-6 col-lg-4 col-xl-3">
                     <div class="card item-card">
-                        <img src="${item.imageUrl || 'https://via.placeholder.com/300x200?text=No+Image'}" class="card-img-top" alt="${item.itemName}">
+                        <div class="image-carousel-container" id="${carouselId}">
+                            <!-- Carousel will be initialized by JavaScript -->
+                        </div>
                         <div class="card-body">
                             <h5 class="card-title">${item.itemName}</h5>
 
@@ -275,19 +792,33 @@
                             </div>
 
                             <p class="card-text small text-muted">
+                                <strong>Category:</strong> ${item.itemType}<br>
                                 <strong>Condition:</strong> ${item.itemCondition}<br>
-                                <strong>Location:</strong> ${item.pickupAddress}
+                                <strong>Quantity:</strong> ${item.quantity}
                             </p>
 
-                            <button class="btn btn-request mt-auto"
-                                onclick="openRequestModal(${item.id}, '${item.itemName}', '${donorName}')">
-                                Request This
+                            <button class="btn btn-view-details"
+                                onclick="viewDetails(${item.id})">
+                                <i class="fa-solid fa-eye me-1"></i> View Details
+                            </button>
+
+                            <button class="btn btn-request"
+                                onclick="openRequestModal(${item.id}, '${item.itemName.replace(/'/g, "\\'")}', '${donorName.replace(/'/g, "\\'")}')">
+                                <i class="fa-solid fa-hand-holding-heart me-1"></i> Request
                             </button>
                         </div>
                     </div>
                 </div>
                 `;
             }).join('');
+
+            // Initialize carousels after DOM is updated
+            items.forEach(item => {
+                const images = item.imageUrls && item.imageUrls.length > 0
+                    ? item.imageUrls
+                    : (item.mainImageUrl ? [item.mainImageUrl] : (item.imageUrl ? [item.imageUrl] : []));
+                initCarousel(`carousel-${item.id}`, images);
+            });
 
         } catch (err) {
             console.error(err);
@@ -307,9 +838,75 @@
         requestModal.show();
     }
 
+    async function viewDetails(itemId) {
+        try {
+            const res = await fetch(`/api/donate/${itemId}`, {
+                headers: {
+                    'Authorization': 'Bearer ' + token,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (!res.ok) throw new Error("Failed to load item details");
+            const item = await res.json();
+
+            // Store item for request
+            currentItemForRequest = item;
+
+            // Get donor info
+            const donorName = item.donor ? `${item.donor.firstName} ${item.donor.lastName || ''}` : 'Anonymous';
+            const donorEmail = item.donor ? item.donor.email : 'Not available';
+
+            // Get images
+            const images = item.imageUrls && item.imageUrls.length > 0
+                ? item.imageUrls
+                : (item.mainImageUrl ? [item.mainImageUrl] : (item.imageUrl ? [item.imageUrl] : []));
+
+            // Update modal content
+            document.getElementById('detailItemName').textContent = item.itemName;
+            document.getElementById('detailCategory').textContent = item.itemType;
+            document.getElementById('detailCondition').textContent = item.itemCondition;
+            document.getElementById('detailQuantity').textContent = item.quantity;
+            document.getElementById('detailAddress').textContent = item.pickupAddress;
+            document.getElementById('detailDate').textContent = new Date(item.createdAt).toLocaleDateString();
+            document.getElementById('detailDonorName').textContent = donorName;
+            document.getElementById('detailDonorEmail').textContent = donorEmail;
+
+            // Initialize carousel with images
+            initModalCarousel(images);
+
+            // Show modal
+            detailsModal.show();
+
+        } catch (err) {
+            console.error(err);
+            showNotification("Failed to load item details", "danger");
+        }
+    }
+
+    function requestFromDetails() {
+        if (!currentItemForRequest) return;
+
+        if (!token) {
+            showNotification("Please login to request items", "warning");
+            setTimeout(() => window.location.href = '/login', 1500);
+            return;
+        }
+
+        // Close details modal
+        detailsModal.hide();
+
+        // Open request modal
+        const donorName = currentItemForRequest.donor
+            ? `${currentItemForRequest.donor.firstName} ${currentItemForRequest.donor.lastName || ''}`
+            : 'Anonymous';
+
+        openRequestModal(currentItemForRequest.id, currentItemForRequest.itemName, donorName);
+    }
+
     async function submitRequest() {
         const id = document.getElementById('modalItemId').value;
-        const btn = document.querySelector('.modal-footer .btn-success');
+        const btn = document.querySelector('#requestModal .modal-footer .btn-success');
         const originalText = btn.innerHTML;
 
         btn.disabled = true;
@@ -330,8 +927,6 @@
             if (res.ok) {
                 showNotification("Request sent successfully! Admin will review it.", "success");
                 requestModal.hide();
-                // Optional: Reload to remove the item if you want to hide it immediately,
-                // though usually it stays visible until claimed
             } else {
                 showNotification(data.message || "Error sending request", "danger");
             }

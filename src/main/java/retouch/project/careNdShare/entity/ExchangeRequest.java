@@ -3,6 +3,8 @@ package retouch.project.careNdShare.entity;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "exchange_requests")
@@ -11,9 +13,9 @@ public class ExchangeRequest {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.EAGER) // Changed from LAZY to EAGER
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "target_product_id", nullable = false)
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "user"}) // Prevent circular reference
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "user"})
     private Product targetProduct;
 
     @Column(name = "exchange_item_name", nullable = false)
@@ -25,15 +27,18 @@ public class ExchangeRequest {
     @Column(name = "exchange_item_description", columnDefinition = "TEXT")
     private String exchangeItemDescription;
 
-    @Column(name = "exchange_item_image")
-    private String exchangeItemImage;
+    @ElementCollection
+    @CollectionTable(name = "exchange_request_images",
+            joinColumns = @JoinColumn(name = "exchange_request_id"))
+    @Column(name = "image_url")
+    private List<String> exchangeItemImages = new ArrayList<>();
 
     @Column(name = "additional_message", columnDefinition = "TEXT")
     private String additionalMessage;
 
-    @ManyToOne(fetch = FetchType.EAGER) // Changed from LAZY to EAGER
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "requester_id", nullable = false)
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "password", "resetToken", "resetTokenExpiry"}) // Exclude sensitive data
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "password", "resetToken", "resetTokenExpiry"})
     private User requester;
 
     @Column(nullable = false)
@@ -51,13 +56,13 @@ public class ExchangeRequest {
 
     // Parameterized constructor
     public ExchangeRequest(Product targetProduct, String exchangeItemName, String exchangeItemCategory,
-                           String exchangeItemDescription, String exchangeItemImage, String additionalMessage,
+                           String exchangeItemDescription, List<String> exchangeItemImages, String additionalMessage,
                            User requester, String status) {
         this.targetProduct = targetProduct;
         this.exchangeItemName = exchangeItemName;
         this.exchangeItemCategory = exchangeItemCategory;
         this.exchangeItemDescription = exchangeItemDescription;
-        this.exchangeItemImage = exchangeItemImage;
+        this.exchangeItemImages = exchangeItemImages;
         this.additionalMessage = additionalMessage;
         this.requester = requester;
         this.status = status;
@@ -105,12 +110,36 @@ public class ExchangeRequest {
         this.exchangeItemDescription = exchangeItemDescription;
     }
 
+    public List<String> getExchangeItemImages() {
+        return exchangeItemImages;
+    }
+
+    public void setExchangeItemImages(List<String> exchangeItemImages) {
+        this.exchangeItemImages = exchangeItemImages;
+    }
+
+    // Helper method to add single image
+    public void addExchangeItemImage(String imageUrl) {
+        if (this.exchangeItemImages == null) {
+            this.exchangeItemImages = new ArrayList<>();
+        }
+        this.exchangeItemImages.add(imageUrl);
+    }
+
+    // Backward compatibility method
     public String getExchangeItemImage() {
-        return exchangeItemImage;
+        return !exchangeItemImages.isEmpty() ? exchangeItemImages.get(0) : null;
     }
 
     public void setExchangeItemImage(String exchangeItemImage) {
-        this.exchangeItemImage = exchangeItemImage;
+        if (this.exchangeItemImages == null) {
+            this.exchangeItemImages = new ArrayList<>();
+        }
+        if (!this.exchangeItemImages.isEmpty()) {
+            this.exchangeItemImages.set(0, exchangeItemImage);
+        } else {
+            this.exchangeItemImages.add(exchangeItemImage);
+        }
     }
 
     public String getAdditionalMessage() {
@@ -153,17 +182,14 @@ public class ExchangeRequest {
         this.createdAt = createdAt;
     }
 
-    // Add this method to fix the error in AdminController
     public Product getRequestedProduct() {
         return this.targetProduct;
     }
 
-    // Optional: Add setter for consistency
     public void setRequestedProduct(Product requestedProduct) {
         this.targetProduct = requestedProduct;
     }
 
-    // toString method for debugging
     @Override
     public String toString() {
         return "ExchangeRequest{" +
@@ -172,7 +198,7 @@ public class ExchangeRequest {
                 ", exchangeItemName='" + exchangeItemName + '\'' +
                 ", exchangeItemCategory='" + exchangeItemCategory + '\'' +
                 ", exchangeItemDescription='" + exchangeItemDescription + '\'' +
-                ", exchangeItemImage='" + exchangeItemImage + '\'' +
+                ", exchangeItemImages=" + exchangeItemImages +
                 ", additionalMessage='" + additionalMessage + '\'' +
                 ", requester=" + (requester != null ? requester.getId() : "null") +
                 ", status='" + status + '\'' +

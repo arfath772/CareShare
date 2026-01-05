@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,11 +32,16 @@ public class ExchangeRequestService {
 
     public ExchangeRequest submitExchangeRequest(Long targetProductId, String itemName, String category,
                                                  String description, String additionalMessage,
-                                                 MultipartFile image, User user) throws IOException {
+                                                 List<MultipartFile> images, User user) throws IOException {
 
         // Validate target product exists
         var targetProduct = productRepository.findById(targetProductId)
                 .orElseThrow(() -> new RuntimeException("Target product not found"));
+
+        // Check if user is trying to exchange with their own product
+        if (targetProduct.getUser().getId().equals(user.getId())) {
+            throw new RuntimeException("You cannot exchange with your own product");
+        }
 
         // Create upload directory if it doesn't exist
         Path uploadPath = Paths.get(UPLOAD_DIR);
@@ -43,12 +49,14 @@ public class ExchangeRequestService {
             Files.createDirectories(uploadPath);
         }
 
-        // Generate unique filename
-        String fileName = UUID.randomUUID().toString() + "_" + image.getOriginalFilename();
-        Path filePath = uploadPath.resolve(fileName);
-
-        // Save image file
-        Files.copy(image.getInputStream(), filePath);
+        // Save all images
+        List<String> savedImageUrls = new ArrayList<>();
+        for (MultipartFile image : images) {
+            if (!image.isEmpty()) {
+                String imageUrl = saveImage(image);
+                savedImageUrls.add(imageUrl);
+            }
+        }
 
         // Create exchange request
         ExchangeRequest exchangeRequest = new ExchangeRequest();
@@ -56,7 +64,7 @@ public class ExchangeRequestService {
         exchangeRequest.setExchangeItemName(itemName);
         exchangeRequest.setExchangeItemCategory(category);
         exchangeRequest.setExchangeItemDescription(description);
-        exchangeRequest.setExchangeItemImage("/" + UPLOAD_DIR + fileName);
+        exchangeRequest.setExchangeItemImages(savedImageUrls);
         exchangeRequest.setAdditionalMessage(additionalMessage);
         exchangeRequest.setRequester(user);
         exchangeRequest.setStatus("PENDING");
@@ -64,24 +72,47 @@ public class ExchangeRequestService {
         return exchangeRequestRepository.save(exchangeRequest);
     }
 
+    private String saveImage(MultipartFile image) throws IOException {
+        // Generate unique filename with original extension
+        String originalFilename = image.getOriginalFilename();
+        String fileExtension = "";
+        if (originalFilename != null && originalFilename.contains(".")) {
+            fileExtension = originalFilename.substring(originalFilename.lastIndexOf("."));
+        }
+        String fileName = UUID.randomUUID().toString() + fileExtension;
+        Path filePath = Paths.get(UPLOAD_DIR).resolve(fileName);
+
+        // Save image file
+        Files.copy(image.getInputStream(), filePath);
+
+        // Return relative path for web access
+        return "exchange-items/" + fileName;
+    }
+
     public List<ExchangeRequest> getUserExchangeRequests(Long userId, String status) {
-        if (status != null && !status.equals("all")) {
-            return exchangeRequestRepository.findByRequesterIdAndStatus(userId, status);
+        if (status != null && !status.trim().isEmpty() && !status.equalsIgnoreCase("all")) {
+            return exchangeRequestRepository.findByRequesterIdAndStatus(userId, status.toUpperCase());
         }
         return exchangeRequestRepository.findByRequesterId(userId);
     }
 
+    public List<ExchangeRequest> getReceivedExchangeRequests(Long ownerId, String status) {
+        if (status != null && !status.trim().isEmpty() && !status.equalsIgnoreCase("all")) {
+            return exchangeRequestRepository.findByTargetProductUserIdAndStatus(ownerId, status.toUpperCase());
+        }
+        return exchangeRequestRepository.findByTargetProductUserId(ownerId);
+    }
+
     public List<ExchangeRequest> getAllExchangeRequests(String status) {
-        // Use the repository method that already handles eager loading
-        if (status != null && !status.equals("all")) {
-            return exchangeRequestRepository.findAllWithUsersAndProducts(status);
+        if (status != null && !status.trim().isEmpty() && !status.equalsIgnoreCase("all")) {
+            return exchangeRequestRepository.findAllWithUsersAndProducts(status.toUpperCase());
         }
         return exchangeRequestRepository.findAllWithUsersAndProducts(null);
     }
 
     public long getExchangeRequestCount(String status) {
-        if (status != null && !status.equals("all")) {
-            return exchangeRequestRepository.countByStatus(status);
+        if (status != null && !status.trim().isEmpty() && !status.equalsIgnoreCase("all")) {
+            return exchangeRequestRepository.countByStatus(status.toUpperCase());
         }
         return exchangeRequestRepository.count();
     }
@@ -104,6 +135,21 @@ public class ExchangeRequestService {
     public void deleteExchangeRequest(Long id) {
         ExchangeRequest request = exchangeRequestRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Exchange request not found"));
+
+        // Delete associated image files
+        if (request.getExchangeItemImages() != null) {
+            for (String imageUrl : request.getExchangeItemImages()) {
+                try {
+                    String fileName = imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
+                    Path filePath = Paths.get(UPLOAD_DIR).resolve(fileName);
+                    Files.deleteIfExists(filePath);
+                } catch (IOException e) {
+                    // Log error but continue with deletion
+                    System.err.println("Failed to delete image file: " + imageUrl);
+                }
+            }
+        }
+
         exchangeRequestRepository.delete(request);
     }
 
@@ -120,12 +166,10 @@ public class ExchangeRequestService {
         return exchangeRequestRepository.findByStatus("PENDING");
     }
 
-    // Add the missing findById method
     public Optional<ExchangeRequest> findById(Long id) {
         return exchangeRequestRepository.findById(id);
     }
 
-    // Add save method if not already present (it seems to be used in your controller)
     public ExchangeRequest save(ExchangeRequest exchangeRequest) {
         return exchangeRequestRepository.save(exchangeRequest);
     }
