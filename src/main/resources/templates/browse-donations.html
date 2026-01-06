@@ -313,6 +313,16 @@
         .detail-value {
             color: #333;
         }
+
+        /* Modal Image Preview Styles */
+        #modalItemImagePreview {
+            background-color: #f8f9fa;
+            transition: transform 0.3s ease;
+        }
+
+        #modalItemImagePreview:hover {
+            transform: scale(1.02);
+        }
     </style>
 </head>
 <body>
@@ -367,29 +377,105 @@
     </div>
 </div>
 
-<!-- Request Modal -->
+<!-- Updated Request Modal -->
 <div class="modal fade" id="requestModal" tabindex="-1">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header bg-success text-white">
                 <h5 class="modal-title"><i class="fa-solid fa-hand-holding-heart me-2"></i>Request Donation</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
-                <p>You are requesting:</p>
-                <div class="alert alert-light border">
-                    <h5 id="modalItemName" class="mb-1 fw-bold"></h5>
-                    <small class="text-muted">Donated by: <span id="modalDonorName"></span></small>
+                <p>You are requesting the following item:</p>
+
+                <!-- Product Details Section -->
+                <div class="card mb-4 border-success">
+                    <div class="card-header bg-success bg-opacity-10 text-success fw-bold">
+                        <i class="fa-solid fa-box me-2"></i>Product Details
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <h5 id="modalItemName" class="text-success fw-bold mb-3"></h5>
+                                <div class="row">
+                                    <div class="col-6 mb-2">
+                                        <small class="text-muted d-block">Category</small>
+                                        <strong id="modalItemCategory" class="text-dark"></strong>
+                                    </div>
+                                    <div class="col-6 mb-2">
+                                        <small class="text-muted d-block">Condition</small>
+                                        <strong id="modalItemCondition" class="text-dark"></strong>
+                                    </div>
+                                    <div class="col-6 mb-2">
+                                        <small class="text-muted d-block">Quantity</small>
+                                        <strong id="modalItemQuantity" class="text-dark"></strong>
+                                    </div>
+                                    <div class="col-6 mb-2">
+                                        <small class="text-muted d-block">Pickup Address</small>
+                                        <strong id="modalItemAddress" class="text-dark"></strong>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 text-center">
+                                <div id="modalItemImagePreview" class="border rounded p-2" style="height: 120px; overflow: hidden;">
+                                    <img id="modalItemImage" src="" alt="Item Image" class="img-fluid h-100" style="object-fit: cover;">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <p class="small text-muted">
+
+                <!-- Donor Details Section -->
+                <div class="card mb-4 border-primary">
+                    <div class="card-header bg-primary bg-opacity-10 text-primary fw-bold">
+                        <i class="fa-solid fa-user me-2"></i>Donor Information
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6 mb-2">
+                                <small class="text-muted d-block">Donor Name</small>
+                                <strong id="modalDonorName" class="text-dark"></strong>
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <small class="text-muted d-block">Contact Email</small>
+                                <strong id="modalDonorEmail" class="text-dark"></strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Description Text Box (Mandatory) -->
+                <div class="mb-4">
+                    <label for="requestDescription" class="form-label fw-bold">
+                        <i class="fa-solid fa-comment me-1"></i>Request Description *
+                        <span class="text-muted small fw-normal">(Please explain why you need this item)</span>
+                    </label>
+                    <textarea
+                            class="form-control"
+                            id="requestDescription"
+                            rows="4"
+                            placeholder="Please describe why you need this item, how it will help you, and any other relevant information..."
+                            required
+                    ></textarea>
+                    <div class="form-text">This description will help the administrator understand your needs better.</div>
+                    <div id="descriptionError" class="text-danger small mt-1" style="display: none;">
+                        <i class="fa-solid fa-exclamation-circle me-1"></i>Please provide a description before submitting.
+                    </div>
+                </div>
+
+                <p class="small text-muted mb-0">
+                    <i class="fa-solid fa-info-circle me-1"></i>
                     By confirming, a request will be sent to the administrator.
                     If approved, you will receive the donor's pickup details via email.
                 </p>
+
                 <input type="hidden" id="modalItemId">
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-success" onclick="submitRequest()">Confirm Request</button>
+                <button type="button" class="btn btn-success" onclick="submitRequest()">
+                    <i class="fa-solid fa-paper-plane me-1"></i>Submit Request
+                </button>
             </div>
         </div>
     </div>
@@ -826,16 +912,66 @@
         }
     }
 
-    function openRequestModal(id, name, donor) {
+    // Updated openRequestModal function with more details
+    async function openRequestModal(id, name, donor) {
         if (!token) {
             showNotification("Please login to request items", "warning");
             setTimeout(() => window.location.href = '/login', 1500);
             return;
         }
-        document.getElementById('modalItemId').value = id;
-        document.getElementById('modalItemName').textContent = name;
-        document.getElementById('modalDonorName').textContent = donor;
-        requestModal.show();
+
+        try {
+            // Fetch complete item details for the modal
+            const res = await fetch(`/api/donate/${id}`, {
+                headers: {
+                    'Authorization': 'Bearer ' + token,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (!res.ok) throw new Error("Failed to load item details");
+            const item = await res.json();
+
+            // Store item for request
+            currentItemForRequest = item;
+
+            // Get donor info
+            const donorName = item.donor ? `${item.donor.firstName} ${item.donor.lastName || ''}` : 'Anonymous';
+            const donorEmail = item.donor ? item.donor.email : 'Not available';
+
+            // Get first image for preview
+            const firstImage = item.imageUrls && item.imageUrls.length > 0
+                ? item.imageUrls[0]
+                : (item.mainImageUrl || item.imageUrl || 'https://via.placeholder.com/300x200?text=No+Image');
+
+            // Populate modal fields
+            document.getElementById('modalItemId').value = id;
+            document.getElementById('modalItemName').textContent = item.itemName;
+            document.getElementById('modalItemCategory').textContent = item.itemType;
+            document.getElementById('modalItemCondition').textContent = item.itemCondition;
+            document.getElementById('modalItemQuantity').textContent = item.quantity;
+            document.getElementById('modalItemAddress').textContent = item.pickupAddress || 'Not specified';
+            document.getElementById('modalDonorName').textContent = donorName;
+            document.getElementById('modalDonorEmail').textContent = donorEmail;
+
+            // Set image preview
+            const imgElement = document.getElementById('modalItemImage');
+            if (imgElement) {
+                imgElement.src = firstImage;
+                imgElement.alt = item.itemName;
+            }
+
+            // Reset description field and error
+            document.getElementById('requestDescription').value = '';
+            document.getElementById('descriptionError').style.display = 'none';
+
+            // Show modal
+            requestModal.show();
+
+        } catch (err) {
+            console.error(err);
+            showNotification("Failed to load item details", "danger");
+        }
     }
 
     async function viewDetails(itemId) {
@@ -896,18 +1032,57 @@
         // Close details modal
         detailsModal.hide();
 
-        // Open request modal
-        const donorName = currentItemForRequest.donor
-            ? `${currentItemForRequest.donor.firstName} ${currentItemForRequest.donor.lastName || ''}`
-            : 'Anonymous';
+        // Clear any existing description and error
+        document.getElementById('requestDescription').value = '';
+        document.getElementById('descriptionError').style.display = 'none';
 
-        openRequestModal(currentItemForRequest.id, currentItemForRequest.itemName, donorName);
+        // Open request modal with the current item details
+        setTimeout(() => {
+            const donorName = currentItemForRequest.donor
+                ? `${currentItemForRequest.donor.firstName} ${currentItemForRequest.donor.lastName || ''}`
+                : 'Anonymous';
+
+            // Populate modal fields directly since we already have the data
+            document.getElementById('modalItemId').value = currentItemForRequest.id;
+            document.getElementById('modalItemName').textContent = currentItemForRequest.itemName;
+            document.getElementById('modalItemCategory').textContent = currentItemForRequest.itemType;
+            document.getElementById('modalItemCondition').textContent = currentItemForRequest.itemCondition;
+            document.getElementById('modalItemQuantity').textContent = currentItemForRequest.quantity;
+            document.getElementById('modalItemAddress').textContent = currentItemForRequest.pickupAddress || 'Not specified';
+            document.getElementById('modalDonorName').textContent = donorName;
+            document.getElementById('modalDonorEmail').textContent = currentItemForRequest.donor ? currentItemForRequest.donor.email : 'Not available';
+
+            // Set image preview
+            const firstImage = currentItemForRequest.imageUrls && currentItemForRequest.imageUrls.length > 0
+                ? currentItemForRequest.imageUrls[0]
+                : (currentItemForRequest.mainImageUrl || currentItemForRequest.imageUrl || 'https://via.placeholder.com/300x200?text=No+Image');
+
+            const imgElement = document.getElementById('modalItemImage');
+            if (imgElement) {
+                imgElement.src = firstImage;
+                imgElement.alt = currentItemForRequest.itemName;
+            }
+
+            requestModal.show();
+        }, 300); // Small delay to ensure modal transition completes
     }
 
+    // Updated submitRequest function to include description validation and sending
     async function submitRequest() {
         const id = document.getElementById('modalItemId').value;
+        const description = document.getElementById('requestDescription').value.trim();
         const btn = document.querySelector('#requestModal .modal-footer .btn-success');
         const originalText = btn.innerHTML;
+        const errorElement = document.getElementById('descriptionError');
+
+        // Validate description
+        if (!description) {
+            errorElement.style.display = 'block';
+            btn.disabled = false;
+            return;
+        } else {
+            errorElement.style.display = 'none';
+        }
 
         btn.disabled = true;
         btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Sending...';
@@ -919,7 +1094,10 @@
                     'Authorization': 'Bearer ' + token,
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ donationId: id })
+                body: JSON.stringify({
+                    donationId: id,
+                    description: description  // This will be sent to backend
+                })
             });
 
             const data = await res.json();

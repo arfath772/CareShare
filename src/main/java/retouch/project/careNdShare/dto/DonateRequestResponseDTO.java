@@ -17,6 +17,7 @@ public class DonateRequestResponseDTO {
     private LocalDateTime requestedDate;
     private String formattedRequestDate; // Add formatted date
     private String rejectionReason;
+    private String description; // Add this field for description
 
     @Data
     private static class UserInfo {
@@ -37,6 +38,7 @@ public class DonateRequestResponseDTO {
         this.id = request.getId();
         this.status = request.getStatus();
         this.requestedDate = request.getRequestedDate();
+        this.description = request.getDescription(); // Add this line
 
         // Format the date for display
         if (request.getRequestedDate() != null) {
