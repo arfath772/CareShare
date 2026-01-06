@@ -27,11 +27,17 @@ public class DonateRequest {
     @Column(nullable = false, updatable = false)
     private LocalDateTime requestedDate;
 
+    @Column(columnDefinition = "TEXT")
+    private String description;
+
     private String rejectionReason;
 
     @PrePersist
     protected void onCreate() {
         requestedDate = LocalDateTime.now();
+        if (status == null) {
+            status = DonateRequestStatus.PENDING;
+        }
     }
 
     // Constructors
@@ -50,4 +56,6 @@ public class DonateRequest {
     public void setRequestedDate(LocalDateTime requestedDate) { this.requestedDate = requestedDate; }
     public String getRejectionReason() { return rejectionReason; }
     public void setRejectionReason(String rejectionReason) { this.rejectionReason = rejectionReason; }
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
 }

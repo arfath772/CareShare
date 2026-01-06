@@ -31,6 +31,9 @@ public class DonateRequestService {
     @Autowired
     private AuthService authService;
 
+    @Autowired
+    private EmailService emailService; // Add this line
+
     // ✅ Create a new donation request
     @Transactional
     public DonateRequestResponseDTO createRequest(DonateRequestDTO dto) {
@@ -51,6 +54,9 @@ public class DonateRequestService {
         request.setDonateItem(item);
         request.setReceiver(currentUser);
         request.setStatus(DonateRequestStatus.PENDING); // Default status
+
+        // ⚠️ CRITICAL FIX: Set the description from DTO
+        request.setDescription(dto.getDescription()); // Add this line
 
         DonateRequest savedRequest = donateRequestRepository.save(request);
         return new DonateRequestResponseDTO(savedRequest);
@@ -84,7 +90,7 @@ public class DonateRequestService {
                 .collect(Collectors.toList());
     }
 
-    // ✅ Approve a request (for admin)
+    // ✅ Approve a request (for admin) - UPDATED VERSION
     @Transactional
     public DonateRequestResponseDTO approveRequest(Long requestId) {
         DonateRequest request = donateRequestRepository.findById(requestId)
@@ -110,12 +116,30 @@ public class DonateRequestService {
             otherReq.setStatus(DonateRequestStatus.REJECTED);
             otherReq.setRejectionReason("Item has been claimed by another user.");
             donateRequestRepository.save(otherReq);
+
+            // ✅ ADDED: Send rejection email to the receiver
+            try {
+                emailService.sendDonationRejectionNotifications(otherReq);
+                System.out.println("✅ Rejection email sent for request ID: " + otherReq.getId());
+            } catch (Exception e) {
+                System.err.println("⚠️ Failed to send rejection email for request ID " + otherReq.getId() + ": " + e.getMessage());
+            }
+        }
+
+        // 4. Send approval emails to donor and receiver
+        try {
+            emailService.sendDonationApprovalNotifications(savedRequest);
+            System.out.println("✅ Donation approval emails sent successfully!");
+        } catch (Exception e) {
+            System.err.println("⚠️ Failed to send donation approval emails: " + e.getMessage());
+            // Don't throw the exception - allow the approval to succeed even if email fails
+            e.printStackTrace();
         }
 
         return new DonateRequestResponseDTO(savedRequest);
     }
 
-    // ✅ Reject a request (for admin)
+    // ✅ Reject a request (for admin) - UPDATED VERSION
     @Transactional
     public DonateRequestResponseDTO rejectRequest(Long requestId, String reason) {
         DonateRequest request = donateRequestRepository.findById(requestId)
@@ -132,6 +156,15 @@ public class DonateRequestService {
         request.setStatus(DonateRequestStatus.REJECTED);
         request.setRejectionReason(reason);
         DonateRequest savedRequest = donateRequestRepository.save(request);
+
+        // ✅ ADDED: Send rejection emails
+        try {
+            emailService.sendDonationRejectionNotifications(savedRequest);
+            System.out.println("✅ Rejection emails sent for request ID: " + savedRequest.getId());
+        } catch (Exception e) {
+            System.err.println("⚠️ Failed to send rejection emails: " + e.getMessage());
+        }
+
         return new DonateRequestResponseDTO(savedRequest);
     }
 

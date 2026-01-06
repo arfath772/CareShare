@@ -12,6 +12,8 @@ import retouch.project.careNdShare.entity.ExchangeRequest;
 import retouch.project.careNdShare.entity.Product;
 import retouch.project.careNdShare.entity.PurchaseRequest;
 import retouch.project.careNdShare.entity.User;
+import retouch.project.careNdShare.entity.DonateRequest;
+import retouch.project.careNdShare.entity.DonateItem;
 
 @Service
 public class EmailService {
@@ -133,8 +135,6 @@ public class EmailService {
         }
     }
 
-    // ADDED METHODS START HERE
-
     /**
      * Simple email sending method for plain text emails
      */
@@ -179,7 +179,7 @@ public class EmailService {
         }
     }
 
-    // PRODUCT APPROVAL EMAIL METHODS START HERE
+    // PRODUCT APPROVAL EMAIL METHODS
 
     /**
      * Send product approval notification to user
@@ -250,9 +250,161 @@ public class EmailService {
         }
     }
 
-    // PRODUCT APPROVAL EMAIL METHODS END HERE
+    // COMPLETE DONATION EMAIL METHODS (UPGRADED VERSION)
 
-    // EXCHANGE REQUEST METHODS START HERE
+    /**
+     * Send donation request approval notifications to both donor and receiver
+     */
+    public void sendDonationApprovalNotifications(DonateRequest donateRequest) {
+        try {
+            DonateItem donateItem = donateRequest.getDonateItem();
+            User donor = donateItem.getUser();
+            User receiver = donateRequest.getReceiver();
+
+            if (donateItem == null || donor == null || receiver == null) {
+                System.err.println("❌ Cannot send donation emails: DonateItem, Donor, or Receiver is null");
+                return;
+            }
+
+            // Send email to donor (using enhanced template)
+            sendDonorApprovalNotification(donateRequest, donateItem, donor, receiver);
+
+            // Send email to receiver (using enhanced template)
+            sendReceiverApprovalNotification(donateRequest, donateItem, donor, receiver);
+
+            System.out.println("✅ Donation approval email notifications sent successfully!");
+
+        } catch (Exception e) {
+            System.err.println("❌ Failed to send donation approval notifications: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Send donation request notification to admin (when user submits request)
+     * NEW METHOD
+     */
+    public void sendDonationRequestNotificationToAdmin(DonateRequest donateRequest, String adminEmail) {
+        try {
+            DonateItem donateItem = donateRequest.getDonateItem();
+            User donor = donateItem != null ? donateItem.getUser() : null;
+            User receiver = donateRequest.getReceiver();
+
+            if (donateItem == null || donor == null || receiver == null) {
+                System.err.println("❌ Cannot send admin notification: Missing required data");
+                return;
+            }
+
+            String subject = "📋 New Donation Request Requires Approval";
+            String htmlContent = buildAdminNotificationEmail(donateRequest, donateItem, donor, receiver);
+
+            sendHtmlEmail(adminEmail, subject, htmlContent);
+            System.out.println("✅ Donation request notification sent to admin: " + adminEmail);
+
+        } catch (Exception e) {
+            System.err.println("❌ Failed to send admin notification: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Send donation rejection notifications
+     * NEW METHOD
+     */
+    public void sendDonationRejectionNotifications(DonateRequest donateRequest) {
+        try {
+            DonateItem donateItem = donateRequest.getDonateItem();
+            User donor = donateItem != null ? donateItem.getUser() : null;
+            User receiver = donateRequest.getReceiver();
+
+            if (donateItem == null || donor == null || receiver == null) {
+                System.err.println("❌ Cannot send rejection emails: Missing required data");
+                return;
+            }
+
+            // Send rejection email to donor
+            sendDonorRejectionEmail(donateRequest, donateItem, donor, receiver);
+
+            // Send rejection email to receiver
+            sendReceiverRejectionEmail(donateRequest, donateItem, donor, receiver);
+
+            System.out.println("✅ Donation rejection email notifications sent successfully!");
+
+        } catch (Exception e) {
+            System.err.println("❌ Failed to send donation rejection notifications: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Send donation approval notification to donor (enhanced)
+     */
+    private void sendDonorApprovalNotification(DonateRequest donateRequest, DonateItem donateItem,
+                                               User donor, User receiver) {
+        try {
+            String subject = "🎉 Your Donation Has Been Approved!";
+            String htmlContent = buildEnhancedDonorApprovalEmail(donateRequest, donateItem, donor, receiver);
+
+            sendHtmlEmail(donor.getEmail(), subject, htmlContent);
+            System.out.println("✅ Donation approval email sent to donor: " + donor.getEmail());
+
+        } catch (Exception e) {
+            System.err.println("❌ Failed to send donor approval email: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Send donation approval notification to receiver (enhanced)
+     */
+    private void sendReceiverApprovalNotification(DonateRequest donateRequest, DonateItem donateItem,
+                                                  User donor, User receiver) {
+        try {
+            String subject = "✅ Your Donation Request Has Been Approved!";
+            String htmlContent = buildEnhancedReceiverApprovalEmail(donateRequest, donateItem, donor, receiver);
+
+            sendHtmlEmail(receiver.getEmail(), subject, htmlContent);
+            System.out.println("✅ Donation approval email sent to receiver: " + receiver.getEmail());
+
+        } catch (Exception e) {
+            System.err.println("❌ Failed to send receiver approval email: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Send rejection email to donor
+     * NEW METHOD
+     */
+    private void sendDonorRejectionEmail(DonateRequest donateRequest, DonateItem donateItem,
+                                         User donor, User receiver) {
+        try {
+            String subject = "⚠️ Donation Request Declined";
+            String htmlContent = buildDonorRejectionEmail(donateRequest, donateItem, donor, receiver);
+
+            sendHtmlEmail(donor.getEmail(), subject, htmlContent);
+            System.out.println("✅ Donor rejection email sent to: " + donor.getEmail());
+
+        } catch (Exception e) {
+            System.err.println("❌ Failed to send donor rejection email: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Send rejection email to receiver
+     * NEW METHOD
+     */
+    private void sendReceiverRejectionEmail(DonateRequest donateRequest, DonateItem donateItem,
+                                            User donor, User receiver) {
+        try {
+            String subject = "⚠️ Your Donation Request Was Declined";
+            String htmlContent = buildReceiverRejectionEmail(donateRequest, donateItem, donor, receiver);
+
+            sendHtmlEmail(receiver.getEmail(), subject, htmlContent);
+            System.out.println("✅ Receiver rejection email sent to: " + receiver.getEmail());
+
+        } catch (Exception e) {
+            System.err.println("❌ Failed to send receiver rejection email: " + e.getMessage());
+        }
+    }
+
+    // EXCHANGE REQUEST METHODS
 
     /**
      * Send exchange request notifications to both item owner and requester
@@ -373,7 +525,7 @@ public class EmailService {
         }
     }
 
-    // EXCHANGE REQUEST METHODS END HERE
+    // EMAIL TEMPLATE BUILDERS
 
     /**
      * Build status update email HTML content
@@ -428,7 +580,7 @@ public class EmailService {
         html.append("            <p>Thank you for choosing <strong>Care & Share</strong>!</p>");
         html.append("        </div>");
         html.append("        <div class=\"footer\">");
-        html.append("            <p>&copy; 2025 Care & Share. All rights reserved.</p>");
+        html.append("            <p>&copy; ").append(java.time.Year.now().getValue()).append(" Care & Share. All rights reserved.</p>");
         html.append("            <p>This is an automated email, please do not reply.</p>");
         html.append("        </div>");
         html.append("    </div>");
@@ -438,7 +590,7 @@ public class EmailService {
         return html.toString();
     }
 
-    // PRODUCT APPROVAL EMAIL TEMPLATES START HERE
+    // PRODUCT APPROVAL EMAIL TEMPLATES
 
     /**
      * Build product approval email HTML content
@@ -509,7 +661,7 @@ public class EmailService {
         html.append("            <p>Thank you for contributing to the <strong>Care & Share</strong> community!</p>");
         html.append("        </div>");
         html.append("        <div class=\"footer\">");
-        html.append("            <p>&copy; 2025 Care & Share. All rights reserved.</p>");
+        html.append("            <p>&copy; ").append(java.time.Year.now().getValue()).append(" Care & Share. All rights reserved.</p>");
         html.append("            <p>This is an automated email, please do not reply.</p>");
         html.append("        </div>");
         html.append("    </div>");
@@ -566,17 +718,14 @@ public class EmailService {
         html.append("                <div class=\"info-item\"><span class=\"info-label\">Reviewed On:</span> ").append("Now").append("</div>");
         html.append("            </div>");
         html.append("            ");
-        // Check if adminReviewNotes exists using reflection or try-catch
         String adminReviewNotes = null;
         try {
-            // Try to get adminReviewNotes if the method exists
             java.lang.reflect.Method method = product.getClass().getMethod("getAdminReviewNotes");
             Object result = method.invoke(product);
             if (result instanceof String) {
                 adminReviewNotes = (String) result;
             }
         } catch (Exception e) {
-            // Method doesn't exist or failed to invoke
             adminReviewNotes = null;
         }
 
@@ -609,7 +758,7 @@ public class EmailService {
         html.append("            <p>Thank you for your understanding and cooperation!</p>");
         html.append("        </div>");
         html.append("        <div class=\"footer\">");
-        html.append("            <p>&copy; 2025 Care & Share. All rights reserved.</p>");
+        html.append("            <p>&copy; ").append(java.time.Year.now().getValue()).append(" Care & Share. All rights reserved.</p>");
         html.append("            <p>This is an automated email, please do not reply.</p>");
         html.append("        </div>");
         html.append("    </div>");
@@ -685,7 +834,7 @@ public class EmailService {
         html.append("            <p>If you have any questions, please contact our support team.</p>");
         html.append("        </div>");
         html.append("        <div class=\"footer\">");
-        html.append("            <p>&copy; 2025 Care & Share. All rights reserved.</p>");
+        html.append("            <p>&copy; ").append(java.time.Year.now().getValue()).append(" Care & Share. All rights reserved.</p>");
         html.append("            <p>This is an automated email, please do not reply.</p>");
         html.append("        </div>");
         html.append("    </div>");
@@ -695,9 +844,510 @@ public class EmailService {
         return html.toString();
     }
 
-    // PRODUCT APPROVAL EMAIL TEMPLATES END HERE
+    // COMPLETE DONATION EMAIL TEMPLATES (ENHANCED VERSION)
 
-    // EXCHANGE EMAIL TEMPLATES START HERE
+    /**
+     * Enhanced donor approval email HTML content
+     */
+    private String buildEnhancedDonorApprovalEmail(DonateRequest donateRequest, DonateItem donateItem,
+                                                   User donor, User receiver) {
+        StringBuilder html = new StringBuilder();
+        html.append("<!DOCTYPE html>");
+        html.append("<html>");
+        html.append("<head>");
+        html.append("    <meta charset=\"UTF-8\">");
+        html.append("    <style>");
+        html.append("        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; }");
+        html.append("        .container { max-width: 600px; margin: 0 auto; background: #ffffff; }");
+        html.append("        .header { background: linear-gradient(135deg, #28a745, #218838); padding: 30px; text-align: center; color: white; }");
+        html.append("        .content { padding: 30px; }");
+        html.append("        .section { margin-bottom: 25px; }");
+        html.append("        .section-title { font-size: 18px; font-weight: bold; color: #28a745; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 2px solid #e0e0e0; }");
+        html.append("        .info-item { margin: 10px 0; }");
+        html.append("        .info-label { font-weight: bold; color: #555; }");
+        html.append("        .info-value { color: #333; }");
+        html.append("        .footer { text-align: center; padding: 20px; background: #343a40; color: white; font-size: 12px; }");
+        html.append("        .status-badge { display: inline-block; padding: 5px 15px; background: #28a745; color: white; border-radius: 20px; font-weight: bold; }");
+        html.append("    </style>");
+        html.append("</head>");
+        html.append("<body>");
+        html.append("    <div class=\"container\">");
+        html.append("        <div class=\"header\">");
+        html.append("            <h1>🎉 Your Donation Has Been Approved!</h1>");
+        html.append("            <p>Thank you for your generosity!</p>");
+        html.append("        </div>");
+        html.append("        <div class=\"content\">");
+        html.append("            <h2>Hello, ").append(donor.getFirstName()).append("!</h2>");
+        html.append("            <p>Great news! Your donation request has been approved by our admin team.</p>");
+        html.append("            ");
+        html.append("            <div class=\"section\">");
+        html.append("                <h3 class=\"section-title\">Donation Details</h3>");
+        html.append("                <div class=\"info-item\"><span class=\"info-label\">Request ID:</span> #").append(donateRequest.getId()).append("</div>");
+        html.append("                <div class=\"info-item\"><span class=\"info-label\">Status:</span> <span class=\"status-badge\">APPROVED</span></div>");
+        html.append("                <div class=\"info-item\"><span class=\"info-label\">Item:</span> ").append(donateItem.getItemName()).append("</div>");
+        html.append("                <div class=\"info-item\"><span class=\"info-label\">Category:</span> ").append(donateItem.getItemType()).append("</div>");
+        html.append("                <div class=\"info-item\"><span class=\"info-label\">Condition:</span> ").append(donateItem.getItemCondition()).append("</div>");
+        html.append("                <div class=\"info-item\"><span class=\"info-label\">Quantity:</span> ").append(donateItem.getQuantity()).append("</div>");
+        html.append("                <div class=\"info-item\"><span class=\"info-label\">Approval Date:</span> ").append(java.time.LocalDateTime.now()).append("</div>");
+        html.append("            </div>");
+        html.append("            ");
+        html.append("            <div class=\"section\">");
+        html.append("                <h3 class=\"section-title\">Recipient Information</h3>");
+        html.append("                <div class=\"info-item\"><span class=\"info-label\">Name:</span> ").append(receiver.getFirstName()).append(" ").append(receiver.getLastName()).append("</div>");
+        html.append("                <div class=\"info-item\"><span class=\"info-label\">Email:</span> ").append(receiver.getEmail()).append("</div>");
+        html.append("            </div>");
+        html.append("            ");
+        html.append("            <div style=\"background: #d4edda; padding: 20px; border-radius: 10px; margin: 20px 0;\">");
+        html.append("                <h3>📞 Next Steps</h3>");
+        html.append("                <p>The recipient will contact you shortly to arrange pickup/delivery details.</p>");
+        html.append("                <p>Please respond to their communication within 48 hours.</p>");
+        html.append("                <p><strong>Pickup Address:</strong> ").append(donateItem.getPickupAddress()).append("</p>");
+        html.append("            </div>");
+        html.append("            ");
+        html.append("            <p>Thank you for making a difference in someone's life through <strong>Care & Share</strong>!</p>");
+        html.append("        </div>");
+        html.append("        <div class=\"footer\">");
+        html.append("            <p>&copy; ").append(java.time.Year.now().getValue()).append(" Care & Share. All rights reserved.</p>");
+        html.append("            <p>This is an automated email, please do not reply.</p>");
+        html.append("        </div>");
+        html.append("    </div>");
+        html.append("</body>");
+        html.append("</html>");
+
+        return html.toString();
+    }
+
+    /**
+     * Enhanced receiver approval email HTML content
+     */
+    private String buildEnhancedReceiverApprovalEmail(DonateRequest donateRequest, DonateItem donateItem,
+                                                      User donor, User receiver) {
+        StringBuilder html = new StringBuilder();
+        html.append("<!DOCTYPE html>");
+        html.append("<html>");
+        html.append("<head>");
+        html.append("    <meta charset=\"UTF-8\">");
+        html.append("    <style>");
+        html.append("        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; }");
+        html.append("        .container { max-width: 600px; margin: 0 auto; background: #ffffff; }");
+        html.append("        .header { background: linear-gradient(135deg, #2196F3, #0D47A1); padding: 30px; text-align: center; color: white; }");
+        html.append("        .content { padding: 30px; }");
+        html.append("        .section { margin-bottom: 25px; }");
+        html.append("        .section-title { font-size: 18px; font-weight: bold; color: #2196F3; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 2px solid #e0e0e0; }");
+        html.append("        .info-item { margin: 10px 0; }");
+        html.append("        .info-label { font-weight: bold; color: #555; }");
+        html.append("        .info-value { color: #333; }");
+        html.append("        .footer { text-align: center; padding: 20px; background: #343a40; color: white; font-size: 12px; }");
+        html.append("        .status-badge { display: inline-block; padding: 5px 15px; background: #28a745; color: white; border-radius: 20px; font-weight: bold; }");
+        html.append("    </style>");
+        html.append("</head>");
+        html.append("<body>");
+        html.append("    <div class=\"container\">");
+        html.append("        <div class=\"header\">");
+        html.append("            <h1>✅ Your Donation Request Has Been Approved!</h1>");
+        html.append("            <p>Congratulations! Your request has been approved</p>");
+        html.append("        </div>");
+        html.append("        <div class=\"content\">");
+        html.append("            <h2>Hello, ").append(receiver.getFirstName()).append("!</h2>");
+        html.append("            <p>Great news! Your donation request has been approved by our admin team.</p>");
+        html.append("            ");
+        html.append("            <div class=\"section\">");
+        html.append("                <h3 class=\"section-title\">Request Details</h3>");
+        html.append("                <div class=\"info-item\"><span class=\"info-label\">Request ID:</span> #").append(donateRequest.getId()).append("</div>");
+        html.append("                <div class=\"info-item\"><span class=\"info-label\">Status:</span> <span class=\"status-badge\">APPROVED</span></div>");
+        html.append("                <div class=\"info-item\"><span class=\"info-label\">Item:</span> ").append(donateItem.getItemName()).append("</div>");
+        html.append("                <div class=\"info-item\"><span class=\"info-label\">Category:</span> ").append(donateItem.getItemType()).append("</div>");
+        html.append("                <div class=\"info-item\"><span class=\"info-label\">Condition:</span> ").append(donateItem.getItemCondition()).append("</div>");
+        html.append("                <div class=\"info-item\"><span class=\"info-label\">Quantity:</span> ").append(donateItem.getQuantity()).append("</div>");
+        html.append("                <div class=\"info-item\"><span class=\"info-label\">Approval Date:</span> ").append(java.time.LocalDateTime.now()).append("</div>");
+        html.append("            </div>");
+        html.append("            ");
+        html.append("            <div class=\"section\">");
+        html.append("                <h3 class=\"section-title\">Donor Information</h3>");
+        html.append("                <div class=\"info-item\"><span class=\"info-label\">Name:</span> ").append(donor.getFirstName()).append(" ").append(donor.getLastName()).append("</div>");
+        html.append("                <div class=\"info-item\"><span class=\"info-label\">Email:</span> ").append(donor.getEmail()).append("</div>");
+        html.append("            </div>");
+        html.append("            ");
+        html.append("            <div style=\"background: #e7f3ff; padding: 20px; border-radius: 10px; margin: 20px 0;\">");
+        html.append("                <h3>📞 Next Steps</h3>");
+        html.append("                <p>Please contact the donor within 48 hours to arrange pickup/delivery details.</p>");
+        html.append("                <p>You can use our chat feature or contact them directly using the information above.</p>");
+        html.append("                <p><strong>Pickup Address:</strong> ").append(donateItem.getPickupAddress()).append("</p>");
+        html.append("            </div>");
+        html.append("            ");
+        html.append("            <p>We're excited for you to receive your item through <strong>Care & Share</strong>!</p>");
+        html.append("        </div>");
+        html.append("        <div class=\"footer\">");
+        html.append("            <p>&copy; ").append(java.time.Year.now().getValue()).append(" Care & Share. All rights reserved.</p>");
+        html.append("            <p>This is an automated email, please do not reply.</p>");
+        html.append("</div>");
+        html.append("    </div>");
+        html.append("</body>");
+        html.append("</html>");
+
+        return html.toString();
+    }
+
+    /**
+     * Build donor rejection email HTML content
+     * NEW TEMPLATE
+     */
+    private String buildDonorRejectionEmail(DonateRequest donateRequest, DonateItem donateItem, User donor, User receiver) {
+        StringBuilder html = new StringBuilder();
+        html.append("<!DOCTYPE html>");
+        html.append("<html>");
+        html.append("<head>");
+        html.append("    <meta charset=\"UTF-8\">");
+        html.append("    <style>");
+        html.append("        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; }");
+        html.append("        .container { max-width: 600px; margin: 0 auto; background: #ffffff; }");
+        html.append("        .header { background: linear-gradient(135deg, #dc3545, #c82333); padding: 30px; text-align: center; color: white; }");
+        html.append("        .content { padding: 30px; }");
+        html.append("        .section { margin-bottom: 25px; }");
+        html.append("        .section-title { font-size: 18px; font-weight: bold; color: #dc3545; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 2px solid #e0e0e0; }");
+        html.append("        .info-item { margin: 10px 0; }");
+        html.append("        .info-label { font-weight: bold; color: #555; }");
+        html.append("        .info-value { color: #333; }");
+        html.append("        .footer { text-align: center; padding: 20px; background: #343a40; color: white; font-size: 12px; }");
+        html.append("    </style>");
+        html.append("</head>");
+        html.append("<body>");
+        html.append("    <div class=\"container\">");
+        html.append("        <div class=\"header\">");
+        html.append("            <h1>⚠️ Donation Request Declined</h1>");
+        html.append("            <p>Important Update</p>");
+        html.append("        </div>");
+        html.append("        <div class=\"content\">");
+        html.append("            <h2>Hello, ").append(donor.getFirstName()).append("!</h2>");
+        html.append("            <p>We regret to inform you that your donation request has been declined by our admin team.</p>");
+        html.append("            ");
+        html.append("            <div class=\"section\">");
+        html.append("                <h3 class=\"section-title\">Request Details</h3>");
+        html.append("                <div class=\"info-item\"><span class=\"info-label\">Request ID:</span> #").append(donateRequest.getId()).append("</div>");
+        html.append("                <div class=\"info-item\"><span class=\"info-label\">Item:</span> ").append(donateItem.getItemName()).append("</div>");
+        html.append("                <div class=\"info-item\"><span class=\"info-label\">Status:</span> DECLINED</div>");
+        if (donateRequest.getRejectionReason() != null && !donateRequest.getRejectionReason().isEmpty()) {
+            html.append("                <div class=\"info-item\"><span class=\"info-label\">Reason:</span> ").append(donateRequest.getRejectionReason()).append("</div>");
+        }
+        html.append("            </div>");
+        html.append("            ");
+        html.append("            <div style=\"background: #f8d7da; padding: 20px; border-radius: 10px; margin: 20px 0;\">");
+        html.append("                <h3>ℹ️ What This Means</h3>");
+        html.append("                <p>Your item will remain available for other donation requests or you can list it for sale/exchange.</p>");
+        html.append("                <p>You can submit a new donation request for a different item at any time.</p>");
+        html.append("            </div>");
+        html.append("            ");
+        html.append("            <p>Thank you for your understanding and for being part of <strong>Care & Share</strong>!</p>");
+        html.append("        </div>");
+        html.append("        <div class=\"footer\">");
+        html.append("            <p>&copy; ").append(java.time.Year.now().getValue()).append(" Care & Share. All rights reserved.</p>");
+        html.append("            <p>This is an automated email, please do not reply.</p>");
+        html.append("        </div>");
+        html.append("    </div>");
+        html.append("</body>");
+        html.append("</html>");
+
+        return html.toString();
+    }
+
+    /**
+     * Build receiver rejection email HTML content
+     * NEW TEMPLATE
+     */
+    private String buildReceiverRejectionEmail(DonateRequest donateRequest, DonateItem donateItem, User donor, User receiver) {
+        StringBuilder html = new StringBuilder();
+        html.append("<!DOCTYPE html>");
+        html.append("<html>");
+        html.append("<head>");
+        html.append("    <meta charset=\"UTF-8\">");
+        html.append("    <style>");
+        html.append("        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; }");
+        html.append("        .container { max-width: 600px; margin: 0 auto; background: #ffffff; }");
+        html.append("        .header { background: linear-gradient(135deg, #dc3545, #c82333); padding: 30px; text-align: center; color: white; }");
+        html.append("        .content { padding: 30px; }");
+        html.append("        .section { margin-bottom: 25px; }");
+        html.append("        .section-title { font-size: 18px; font-weight: bold; color: #dc3545; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 2px solid #e0e0e0; }");
+        html.append("        .info-item { margin: 10px 0; }");
+        html.append("        .info-label { font-weight: bold; color: #555; }");
+        html.append("        .info-value { color: #333; }");
+        html.append("        .footer { text-align: center; padding: 20px; background: #343a40; color: white; font-size: 12px; }");
+        html.append("    </style>");
+        html.append("</head>");
+        html.append("<body>");
+        html.append("    <div class=\"container\">");
+        html.append("        <div class=\"header\">");
+        html.append("            <h1>⚠️ Your Donation Request Was Declined</h1>");
+        html.append("            <p>Important Update</p>");
+        html.append("        </div>");
+        html.append("        <div class=\"content\">");
+        html.append("            <h2>Hello, ").append(receiver.getFirstName()).append("!</h2>");
+        html.append("            <p>We regret to inform you that your donation request has been declined by our admin team.</p>");
+        html.append("            ");
+        html.append("            <div class=\"section\">");
+        html.append("                <h3 class=\"section-title\">Request Details</h3>");
+        html.append("                <div class=\"info-item\"><span class=\"info-label\">Request ID:</span> #").append(donateRequest.getId()).append("</div>");
+        html.append("                <div class=\"info-item\"><span class=\"info-label\">Item:</span> ").append(donateItem.getItemName()).append("</div>");
+        html.append("                <div class=\"info-item\"><span class=\"info-label\">Status:</span> DECLINED</div>");
+        if (donateRequest.getRejectionReason() != null && !donateRequest.getRejectionReason().isEmpty()) {
+            html.append("                <div class=\"info-item\"><span class=\"info-label\">Reason:</span> ").append(donateRequest.getRejectionReason()).append("</div>");
+        }
+        html.append("            </div>");
+        html.append("            ");
+        html.append("            <div style=\"background: #f8d7da; padding: 20px; border-radius: 10px; margin: 20px 0;\">");
+        html.append("                <h3>🔍 Other Options</h3>");
+        html.append("                <p>Don't worry! There are plenty of other items available for donation.</p>");
+        html.append("                <p>You can browse our donation listings and submit new requests for other items.</p>");
+        html.append("            </div>");
+        html.append("            ");
+        html.append("            <p>Thank you for using <strong>Care & Share</strong>!</p>");
+        html.append("        </div>");
+        html.append("        <div class=\"footer\">");
+        html.append("            <p>&copy; ").append(java.time.Year.now().getValue()).append(" Care & Share. All rights reserved.</p>");
+        html.append("            <p>This is an automated email, please do not reply.</p>");
+        html.append("        </div>");
+        html.append("</body>");
+        html.append("</html>");
+
+        return html.toString();
+    }
+
+    /**
+     * Build admin notification email HTML content
+     * NEW TEMPLATE
+     */
+    private String buildAdminNotificationEmail(DonateRequest donateRequest, DonateItem donateItem, User donor, User receiver) {
+        String approveLink = baseUrl + "/api/admin/donate-requests/" + donateRequest.getId() + "/approve";
+        String rejectLink = baseUrl + "/api/admin/donate-requests/" + donateRequest.getId() + "/reject";
+
+        StringBuilder html = new StringBuilder();
+        html.append("<!DOCTYPE html>");
+        html.append("<html>");
+        html.append("<head>");
+        html.append("    <meta charset=\"UTF-8\">");
+        html.append("    <style>");
+        html.append("        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; }");
+        html.append("        .container { max-width: 600px; margin: 0 auto; background: #ffffff; }");
+        html.append("        .header { background: linear-gradient(135deg, #FF9800, #F57C00); padding: 30px; text-align: center; color: white; }");
+        html.append("        .content { padding: 30px; }");
+        html.append("        .section { margin-bottom: 25px; }");
+        html.append("        .section-title { font-size: 18px; font-weight: bold; color: #FF9800; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 2px solid #e0e0e0; }");
+        html.append("        .info-item { margin: 10px 0; }");
+        html.append("        .info-label { font-weight: bold; color: #555; }");
+        html.append("        .info-value { color: #333; }");
+        html.append("        .footer { text-align: center; padding: 20px; background: #343a40; color: white; font-size: 12px; }");
+        html.append("        .button-container { text-align: center; margin: 30px 0; }");
+        html.append("        .button { display: inline-block; padding: 12px 30px; margin: 0 10px; color: white; text-decoration: none; border-radius: 5px; font-weight: bold; }");
+        html.append("        .approve-btn { background: #28a745; }");
+        html.append("        .reject-btn { background: #dc3545; }");
+        html.append("    </style>");
+        html.append("</head>");
+        html.append("<body>");
+        html.append("    <div class=\"container\">");
+        html.append("        <div class=\"header\">");
+        html.append("            <h1>📋 New Donation Request Requires Approval</h1>");
+        html.append("            <p>Action Required</p>");
+        html.append("        </div>");
+        html.append("        <div class=\"content\">");
+        html.append("            <h2>Hello Admin,</h2>");
+        html.append("            <p>A new donation request has been submitted and requires your approval.</p>");
+        html.append("            ");
+        html.append("            <div class=\"section\">");
+        html.append("                <h3 class=\"section-title\">Request Details</h3>");
+        html.append("                <div class=\"info-item\"><span class=\"info-label\">Request ID:</span> #").append(donateRequest.getId()).append("</div>");
+        html.append("                <div class=\"info-item\"><span class=\"info-label\">Item:</span> ").append(donateItem.getItemName()).append("</div>");
+        html.append("                <div class=\"info-item\"><span class=\"info-label\">Category:</span> ").append(donateItem.getItemType()).append("</div>");
+        html.append("                <div class=\"info-item\"><span class=\"info-label\">Condition:</span> ").append(donateItem.getItemCondition()).append("</div>");
+        html.append("                <div class=\"info-item\"><span class=\"info-label\">Quantity:</span> ").append(donateItem.getQuantity()).append("</div>");
+        html.append("                <div class=\"info-item\"><span class=\"info-label\">Pickup Address:</span> ").append(donateItem.getPickupAddress()).append("</div>");
+        html.append("                <div class=\"info-item\"><span class=\"info-label\">Request Date:</span> ").append(donateRequest.getRequestedDate()).append("</div>");
+        html.append("            </div>");
+        html.append("            ");
+        html.append("            <div class=\"section\">");
+        html.append("                <h3 class=\"section-title\">Donor Information</h3>");
+        html.append("                <div class=\"info-item\"><span class=\"info-label\">Name:</span> ").append(donor.getFirstName()).append(" ").append(donor.getLastName()).append("</div>");
+        html.append("                <div class=\"info-item\"><span class=\"info-label\">Email:</span> ").append(donor.getEmail()).append("</div>");
+        html.append("            </div>");
+        html.append("            ");
+        html.append("            <div class=\"section\">");
+        html.append("                <h3 class=\"section-title\">Receiver Information</h3>");
+        html.append("                <div class=\"info-item\"><span class=\"info-label\">Name:</span> ").append(receiver.getFirstName()).append(" ").append(receiver.getLastName()).append("</div>");
+        html.append("                <div class=\"info-item\"><span class=\"info-label\">Email:</span> ").append(receiver.getEmail()).append("</div>");
+        html.append("            </div>");
+        html.append("            ");
+        html.append("            <div class=\"button-container\">");
+        html.append("                <a href=\"").append(approveLink).append("\" class=\"button approve-btn\">✅ Approve Request</a>");
+        html.append("                <a href=\"").append(rejectLink).append("\" class=\"button reject-btn\">❌ Reject Request</a>");
+        html.append("            </div>");
+        html.append("            ");
+        html.append("            <p>Please review this request and take appropriate action.</p>");
+        html.append("        </div>");
+        html.append("        <div class=\"footer\">");
+        html.append("            <p>&copy; ").append(java.time.Year.now().getValue()).append(" Care & Share. All rights reserved.</p>");
+        html.append("            <p>This is an automated email, please do not reply.</p>");
+        html.append("        </div>");
+        html.append("    </div>");
+        html.append("</body>");
+        html.append("</html>");
+
+        return html.toString();
+    }
+
+    // KEEPING YOUR EXISTING DONATION EMAIL TEMPLATES FOR BACKWARD COMPATIBILITY
+    // (These can be used if needed, but enhanced versions are recommended)
+
+    /**
+     * Original donor approval email HTML content
+     */
+    private String buildDonorApprovalEmail(DonateRequest donateRequest, DonateItem donateItem,
+                                           User donor, User receiver) {
+        StringBuilder html = new StringBuilder();
+        html.append("<!DOCTYPE html>");
+        html.append("<html>");
+        html.append("<head>");
+        html.append("    <meta charset=\"UTF-8\">");
+        html.append("    <style>");
+        html.append("        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; }");
+        html.append("        .container { max-width: 600px; margin: 0 auto; background: #ffffff; }");
+        html.append("        .header { background: linear-gradient(135deg, #28a745, #218838); padding: 30px; text-align: center; color: white; }");
+        html.append("        .content { padding: 30px; background: #f8f9fa; }");
+        html.append("        .item-details { background: white; padding: 20px; margin: 20px 0; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }");
+        html.append("        .receiver-info { background: white; padding: 20px; margin: 20px 0; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }");
+        html.append("        .footer { text-align: center; padding: 20px; background: #343a40; color: white; font-size: 12px; }");
+        html.append("        .info-item { margin: 10px 0; }");
+        html.append("        .info-label { font-weight: bold; color: #28a745; }");
+        html.append("        .status-badge { display: inline-block; padding: 5px 15px; background: #28a745; color: white; border-radius: 20px; font-weight: bold; }");
+        html.append("    </style>");
+        html.append("</head>");
+        html.append("<body>");
+        html.append("    <div class=\"container\">");
+        html.append("        <div class=\"header\">");
+        html.append("            <h1>✅ Donation Request Approved!</h1>");
+        html.append("            <p>Your generous donation has been approved</p>");
+        html.append("        </div>");
+        html.append("        <div class=\"content\">");
+        html.append("            <h2>Hello, ").append(donor.getFirstName()).append("!</h2>");
+        html.append("            <p>Great news! Your donation item has been requested and approved by our admin team.</p>");
+        html.append("            ");
+        html.append("            <div class=\"item-details\">");
+        html.append("                <h3>📦 Donation Item Details</h3>");
+        html.append("                <div class=\"info-item\"><span class=\"info-label\">Item Name:</span> ").append(donateItem.getItemName()).append("</div>");
+        html.append("                <div class=\"info-item\"><span class=\"info-label\">Item Type:</span> ").append(donateItem.getItemType()).append("</div>");
+        html.append("                <div class=\"info-item\"><span class=\"info-label\">Quantity:</span> ").append(donateItem.getQuantity()).append("</div>");
+        html.append("                <div class=\"info-item\"><span class=\"info-label\">Condition:</span> ").append(donateItem.getItemCondition()).append("</div>");
+        html.append("                <div class=\"info-item\"><span class=\"info-label\">Status:</span> <span class=\"status-badge\">CLAIMED</span></div>");
+        html.append("            </div>");
+        html.append("            ");
+        html.append("            <div class=\"receiver-info\">");
+        html.append("                <h3>👤 Receiver Information</h3>");
+        html.append("                <div class=\"info-item\"><span class=\"info-label\">Name:</span> ").append(receiver.getFirstName()).append(" ").append(receiver.getLastName()).append("</div>");
+        html.append("                <div class=\"info-item\"><span class=\"info-label\">Email:</span> ").append(receiver.getEmail()).append("</div>");
+        if (donateRequest.getDescription() != null && !donateRequest.getDescription().isEmpty()) {
+            html.append("                <div class=\"info-item\"><span class=\"info-label\">Receiver's Message:</span> ").append(donateRequest.getDescription()).append("</div>");
+        }
+        html.append("            </div>");
+        html.append("            ");
+        html.append("            <div style=\"background: #e7f3ff; padding: 20px; border-radius: 10px; margin: 20px 0;\">");
+        html.append("                <h3>📦 Next Steps for Delivery</h3>");
+        html.append("                <p><strong>Please prepare your item for donation:</strong></p>");
+        html.append("                <ul>");
+        html.append("                    <li>Ensure the item is clean and in good condition</li>");
+        html.append("                    <li>Package it securely for transport</li>");
+        html.append("                    <li>Contact the receiver to arrange pickup/delivery details</li>");
+        html.append("                </ul>");
+        html.append("                <p>You can use our chat feature to communicate directly with the receiver.</p>");
+        html.append("                <p><strong>Pickup Address:</strong> ").append(donateItem.getPickupAddress()).append("</p>");
+        html.append("            </div>");
+        html.append("            ");
+        html.append("            <p>Thank you for your generosity and being part of the <strong>Care & Share</strong> community!</p>");
+        html.append("            <p>Your donation will make a meaningful difference.</p>");
+        html.append("        </div>");
+        html.append("        <div class=\"footer\">");
+        html.append("            <p>&copy; ").append(java.time.Year.now().getValue()).append(" Care & Share. All rights reserved.</p>");
+        html.append("            <p>This is an automated email, please do not reply.</p>");
+        html.append("        </div>");
+        html.append("</body>");
+        html.append("</html>");
+
+        return html.toString();
+    }
+
+    /**
+     * Original receiver approval email HTML content
+     */
+    private String buildReceiverApprovalEmail(DonateRequest donateRequest, DonateItem donateItem,
+                                              User donor, User receiver) {
+        StringBuilder html = new StringBuilder();
+        html.append("<!DOCTYPE html>");
+        html.append("<html>");
+        html.append("<head>");
+        html.append("    <meta charset=\"UTF-8\">");
+        html.append("    <style>");
+        html.append("        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; }");
+        html.append("        .container { max-width: 600px; margin: 0 auto; background: #ffffff; }");
+        html.append("        .header { background: linear-gradient(135deg, #007bff, #0056b3); padding: 30px; text-align: center; color: white; }");
+        html.append("        .content { padding: 30px; background: #f8f9fa; }");
+        html.append("        .item-details { background: white; padding: 20px; margin: 20px 0; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }");
+        html.append("        .donor-info { background: white; padding: 20px; margin: 20px 0; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }");
+        html.append("        .footer { text-align: center; padding: 20px; background: #343a40; color: white; font-size: 12px; }");
+        html.append("        .info-item { margin: 10px 0; }");
+        html.append("        .info-label { font-weight: bold; color: #007bff; }");
+        html.append("        .status-badge { display: inline-block; padding: 5px 15px; background: #28a745; color: white; border-radius: 20px; font-weight: bold; }");
+        html.append("    </style>");
+        html.append("</head>");
+        html.append("<body>");
+        html.append("    <div class=\"container\">");
+        html.append("        <div class=\"header\">");
+        html.append("            <h1>✅ Donation Request Approved!</h1>");
+        html.append("            <p>Your request has been approved by admin. Item will Deliver soon</p>");
+        html.append("        </div>");
+        html.append("        <div class=\"content\">");
+        html.append("            <h2>Hello, ").append(receiver.getFirstName()).append("!</h2>");
+        html.append("            <p>Great news! Your donation request has been approved by our admin team.</p>");
+        html.append("            ");
+        html.append("            <div class=\"item-details\">");
+        html.append("                <h3>📦 Donation Item Details</h3>");
+        html.append("                <div class=\"info-item\"><span class=\"info-label\">Item Name:</span> ").append(donateItem.getItemName()).append("</div>");
+        html.append("                <div class=\"info-item\"><span class=\"info-label\">Item Type:</span> ").append(donateItem.getItemType()).append("</div>");
+        html.append("                <div class=\"info-item\"><span class=\"info-label\">Quantity:</span> ").append(donateItem.getQuantity()).append("</div>");
+        html.append("                <div class=\"info-item\"><span class=\"info-label\">Condition:</span> ").append(donateItem.getItemCondition()).append("</div>");
+        html.append("                <div class=\"info-item\"><span class=\"info-label\">Status:</span> <span class=\"status-badge\">APPROVED</span></div>");
+        html.append("                <div class=\"info-item\"><span class=\"info-label\">Approval Date:</span> ").append(donateRequest.getRequestedDate()).append("</div>");
+        html.append("            </div>");
+        html.append("            ");
+        html.append("            <div class=\"donor-info\">");
+        html.append("                <h3>👤 Donor Information</h3>");
+        html.append("                <div class=\"info-item\"><span class=\"info-label\">Name:</span> ").append(donor.getFirstName()).append(" ").append(donor.getLastName()).append("</div>");
+        html.append("                <div class=\"info-item\"><span class=\"info-label\">Email:</span> ").append(donor.getEmail()).append("</div>");
+        html.append("            </div>");
+        html.append("            ");
+        html.append("            <div style=\"background: #e7f3ff; padding: 20px; border-radius: 10px; margin: 20px 0;\">");
+        html.append("                <h3>📦 Next Steps</h3>");
+        html.append("                <p><strong>Contact the donor:</strong> Please reach out to the donor to arrange pickup/delivery details.</p>");
+        html.append("                <p><strong>Pickup Address:</strong> ").append(donateItem.getPickupAddress()).append("</p>");
+        html.append("                <p>You can also use our chat feature to communicate directly with the donor.</p>");
+        html.append("            </div>");
+        html.append("            ");
+        html.append("            <div style=\"background: #d4edda; padding: 20px; border-radius: 10px; margin: 20px 0;\">");
+        html.append("                <h3>🎉 Thank You Note</h3>");
+        html.append("                <p>This donation is made possible by the generosity of our community members.</p>");
+        html.append("                <p>Please be respectful and responsive when coordinating with the donor.</p>");
+        html.append("                <p>If you have any questions, please contact our support team.</p>");
+        html.append("            </div>");
+        html.append("            ");
+        html.append("            <p>Thank you for being part of the <strong>Care & Share</strong> community!</p>");
+        html.append("        </div>");
+        html.append("        <div class=\"footer\">");
+        html.append("            <p>&copy; ").append(java.time.Year.now().getValue()).append(" Care & Share. All rights reserved.</p>");
+        html.append("            <p>This is an automated email, please do not reply.</p>");
+        html.append("        </div>");
+        html.append("    </div>");
+        html.append("</body>");
+        html.append("</html>");
+
+        return html.toString();
+    }
+
+    // EXCHANGE EMAIL TEMPLATES
 
     /**
      * Build exchange request email to owner HTML content
@@ -777,7 +1427,7 @@ public class EmailService {
         html.append("            <p>Thank you for using <strong>Care & Share</strong>!</p>");
         html.append("        </div>");
         html.append("        <div class=\"footer\">");
-        html.append("            <p>&copy; 2025 Care & Share. All rights reserved.</p>");
+        html.append("            <p>&copy; ").append(java.time.Year.now().getValue()).append(" Care & Share. All rights reserved.</p>");
         html.append("            <p>This is an automated email, please do not reply.</p>");
         html.append("        </div>");
         html.append("    </div>");
@@ -844,7 +1494,7 @@ public class EmailService {
         html.append("            <p>Thank you for using <strong>Care & Share</strong>!</p>");
         html.append("        </div>");
         html.append("        <div class=\"footer\">");
-        html.append("            <p>&copy; 2025 Care & Share. All rights reserved.</p>");
+        html.append("            <p>&copy; ").append(java.time.Year.now().getValue()).append(" Care & Share. All rights reserved.</p>");
         html.append("            <p>This is an automated email, please do not reply.</p>");
         html.append("        </div>");
         html.append("    </div>");
@@ -901,7 +1551,7 @@ public class EmailService {
         html.append("            <p>Thank you for using <strong>Care & Share</strong>!</p>");
         html.append("        </div>");
         html.append("        <div class=\"footer\">");
-        html.append("            <p>&copy; 2025 Care & Share. All rights reserved.</p>");
+        html.append("            <p>&copy; ").append(java.time.Year.now().getValue()).append(" Care & Share. All rights reserved.</p>");
         html.append("            <p>This is an automated email, please do not reply.</p>");
         html.append("        </div>");
         html.append("</body>");
@@ -977,7 +1627,7 @@ public class EmailService {
         html.append("            <p>Thank you for using <strong>Care & Share</strong>!</p>");
         html.append("        </div>");
         html.append("        <div class=\"footer\">");
-        html.append("            <p>&copy; 2025 Care & Share. All rights reserved.</p>");
+        html.append("            <p>&copy; ").append(java.time.Year.now().getValue()).append(" Care & Share. All rights reserved.</p>");
         html.append("            <p>This is an automated email, please do not reply.</p>");
         html.append("        </div>");
         html.append("    </div>");
@@ -1002,8 +1652,6 @@ public class EmailService {
                 return "pending";
         }
     }
-
-    // EXCHANGE EMAIL TEMPLATES END HERE
 
     /**
      * Build password reset email HTML content
@@ -1040,7 +1688,7 @@ public class EmailService {
         html.append("            <p><strong>Note:</strong> This link will expire in 1 hour for security reasons.</p>");
         html.append("        </div>");
         html.append("        <div class=\"footer\">");
-        html.append("            <p>&copy; 2025 Care & Share. All rights reserved.</p>");
+        html.append("            <p>&copy; ").append(java.time.Year.now().getValue()).append(" Care & Share. All rights reserved.</p>");
         html.append("            <p>This is an automated email, please do not reply.</p>");
         html.append("        </div>");
         html.append("</body>");
@@ -1105,7 +1753,7 @@ public class EmailService {
         html.append("            <p>Thank you for choosing <strong>Care & Share</strong>!</p>");
         html.append("        </div>");
         html.append("        <div class=\"footer\">");
-        html.append("            <p>&copy; 2025 Care & Share. All rights reserved.</p>");
+        html.append("            <p>&copy; ").append(java.time.Year.now().getValue()).append(" Care & Share. All rights reserved.</p>");
         html.append("            <p>This is an automated email, please do not reply.</p>");
         html.append("        </div>");
         html.append("    </div>");
@@ -1171,7 +1819,7 @@ public class EmailService {
         html.append("            <p>Thank you for being part of <strong>Care & Share</strong> community!</p>");
         html.append("        </div>");
         html.append("        <div class=\"footer\">");
-        html.append("            <p>&copy; 2025 Care & Share. All rights reserved.</p>");
+        html.append("            <p>&copy; ").append(java.time.Year.now().getValue()).append(" Care & Share. All rights reserved.</p>");
         html.append("            <p>This is an automated email, please do not reply.</p>");
         html.append("        </div>");
         html.append("    </div>");
