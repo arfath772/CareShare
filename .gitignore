@@ -32,3 +32,11 @@ build/
 ### VS Code ###
 .vscode/
 /bin/
+
+### Security - Sensitive Files ###
+.env
+.env.local
+.env.*.local
+application-local.properties
+**/application-local.properties
+secrets.properties
