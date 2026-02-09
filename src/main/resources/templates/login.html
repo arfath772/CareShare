@@ -416,14 +416,22 @@
           }
           showAlert('Login successful! Redirecting...', 'success');
 
-          // Redirect to dashboard
+          // Redirect based on user role
           setTimeout(() => {
-            window.location.href = '/dashboard';
+            if (data.isAdmin) {
+              window.location.href = '/admin';
+            } else {
+              window.location.href = '/dashboard';
+            }
           }, 1000);
         } else {
           showAlert('Login successful! Redirecting...', 'success');
           setTimeout(() => {
-            window.location.href = '/dashboard';
+            if (data.isAdmin) {
+              window.location.href = '/admin';
+            } else {
+              window.location.href = '/dashboard';
+            }
           }, 1000);
         }
       } catch (err) {
@@ -447,6 +455,15 @@
         })
         .then(response => {
           if (response.ok) {
+            return response.json();
+          }
+          throw new Error('Invalid token');
+        })
+        .then(userData => {
+          // Redirect based on user role
+          if (userData.isAdmin) {
+            window.location.href = '/admin';
+          } else {
             window.location.href = '/dashboard';
           }
         })

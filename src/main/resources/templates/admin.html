@@ -2966,6 +2966,31 @@
             return;
         }
 
+        // Verify user is admin
+        try {
+            const userResponse = await fetch('/api/user/me', {
+                headers: apiHeaders
+            });
+            
+            if (!userResponse.ok) {
+                window.location.href = '/login';
+                return;
+            }
+            
+            const userData = await userResponse.json();
+            
+            // Check if user is admin
+            if (!userData.isAdmin) {
+                alert('Access Denied: Admin privileges required');
+                window.location.href = '/dashboard';
+                return;
+            }
+        } catch (error) {
+            console.error('Error verifying admin access:', error);
+            window.location.href = '/login';
+            return;
+        }
+
         console.log("JWT Token exists:", token ? "Yes" : "No");
         console.log("Starting to load all data...");
 
