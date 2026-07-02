@@ -1,5 +1,5 @@
 require('dotenv').config();
-const sequelize = require('../config/db.config');
+const { connectMongoDB, mongoose } = require('../models');
 
 /**
  * Quick environment and database check script
@@ -10,15 +10,9 @@ console.log('🔍 Environment Configuration Check\n');
 
 // Check required environment variables
 const requiredEnvVars = [
-  'DB_NAME',
-  'DB_USER',
-  'DB_PASSWORD',
-  'DB_HOST',
+  'MONGODB_URI',
   'JWT_SECRET',
-  'MAIL_HOST',
-  'MAIL_PORT',
-  'MAIL_USER',
-  'MAIL_PASSWORD'
+  'APP_BASE_URL'
 ];
 
 let missingVars = [];
@@ -45,39 +39,16 @@ console.log('\n');
 console.log('🗄️  Database Connection Test:');
 (async () => {
   try {
-    await sequelize.authenticate();
+    await connectMongoDB();
     console.log('  ✅ Database connection successful!\n');
 
-    // Check if users table exists and its structure
-    const [results] = await sequelize.query("SHOW TABLES LIKE 'users'");
-    
-    if (results.length === 0) {
-      console.log('⚠️  Users table does not exist yet. Server will create it on first run.\n');
-    } else {
-      console.log('  ✅ Users table exists');
-      
-      // Check table structure
-      const [columns] = await sequelize.query("DESCRIBE users");
-      const columnNames = columns.map(col => col.Field);
-      
-      console.log('\n📊 Users Table Structure:');
-      const requiredColumns = ['id', 'email', 'password', 'firstName', 'lastName', 'roles', 'resetToken', 'resetTokenExpiry', 'isAdmin'];
-      
-      const missingColumns = requiredColumns.filter(col => !columnNames.includes(col));
-      const existingColumns = requiredColumns.filter(col => columnNames.includes(col));
-      
-      existingColumns.forEach(col => {
-        console.log(`  ✅ ${col}`);
-      });
-      
-      if (missingColumns.length > 0) {
-        console.log('\n⚠️  Missing columns (need migration):');
-        missingColumns.forEach(col => {
-          console.log(`  ❌ ${col}`);
-        });
-        console.log('\n💡 Run: npm run migrate');
-      }
-    }
+    const usersExists = (await mongoose.connection.db.listCollections({ name: 'users' }).toArray()).length > 0;
+    const productsExists = (await mongoose.connection.db.listCollections({ name: 'products' }).toArray()).length > 0;
+
+    console.log(`  ${usersExists ? '✅' : '⚠️ '} users collection ${usersExists ? 'exists' : 'not found yet (created on first write)'}`);
+    console.log(`  ${productsExists ? '✅' : '⚠️ '} products collection ${productsExists ? 'exists' : 'not found yet (created on first write)'}`);
+
+    await mongoose.connection.close();
 
     console.log('\n' + '='.repeat(60));
     
@@ -89,10 +60,6 @@ console.log('🗄️  Database Connection Test:');
       console.log('\n📝 Please update your .env file with actual values.');
       console.log('   See .env.example and TROUBLESHOOTING.md for guidance.\n');
       process.exit(1);
-    } else if (results.length > 0 && missingColumns && missingColumns.length > 0) {
-      console.log('\n⚠️  Database schema needs updating!\n');
-      console.log('Run: npm run migrate\n');
-      process.exit(1);
     } else {
       console.log('\n✅ All checks passed! Your environment is ready.\n');
       console.log('Start the server with: npm start\n');
@@ -102,16 +69,18 @@ console.log('🗄️  Database Connection Test:');
   } catch (error) {
     console.log('  ❌ Database connection failed!');
     console.log(`  Error: ${error.message}\n`);
-    
-    if (error.code === 'ER_ACCESS_DENIED_ERROR') {
-      console.log('💡 Fix: Check your DB_USER and DB_PASSWORD in .env file');
-    } else if (error.code === 'ER_BAD_DB_ERROR') {
-      console.log('💡 Fix: Create the database first:');
-      console.log(`   mysql -u root -p -e "CREATE DATABASE ${process.env.DB_NAME}"`);
-    } else if (error.code === 'ECONNREFUSED') {
-      console.log('💡 Fix: Make sure MySQL server is running');
+
+    if (error.message.includes('not allowed to do action')) {
+      console.log('💡 Fix: Grant readWrite role to your Atlas DB user on database careshare');
+    } else if (error.message.includes('bad auth')) {
+      console.log('💡 Fix: Check username/password in MONGODB_URI');
+    } else if (error.message.includes('ECONNREFUSED') || error.message.includes('Server selection timed out')) {
+      console.log('💡 Fix: Check Atlas network access and cluster availability');
     }
-    
+
+    if (mongoose.connection.readyState === 1) {
+      await mongoose.connection.close();
+    }
     console.log('\nSee TROUBLESHOOTING.md for detailed help.\n');
     process.exit(1);
   }

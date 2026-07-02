@@ -1,77 +1,19 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../config/db.config');
+const mongoose = require('mongoose');
 
-const Product = sequelize.define('Product', {
-  id: {
-    type: DataTypes.BIGINT,
-    primaryKey: true,
-    autoIncrement: true
-  },
-  name: {
-    type: DataTypes.STRING,
-    allowNull: false
-  },
-  price: {
-    type: DataTypes.DOUBLE,
-    allowNull: false
-  },
-  category: {
-    type: DataTypes.STRING,
-    allowNull: false
-  },
-  type: {
-    type: DataTypes.STRING,
-    allowNull: false
-  },
-  description: {
-    type: DataTypes.TEXT,
-    allowNull: true
-  },
-  imagePath: {
-    type: DataTypes.STRING,
-    allowNull: true
-  },
-  imagePaths: {
-    type: DataTypes.JSON,
-    defaultValue: []
-  },
-  status: {
-    type: DataTypes.ENUM('PENDING', 'APPROVED', 'REJECTED', 'SOLD'),
-    defaultValue: 'PENDING',
-    allowNull: false
-  },
-  productCondition: {
-    type: DataTypes.STRING,
-    allowNull: false
-  },
-  userId: {
-    type: DataTypes.BIGINT,
-    allowNull: false,
-    references: {
-      model: 'users',
-      key: 'id'
-    }
-  },
-  createdAt: {
-    type: DataTypes.DATE,
-    defaultValue: DataTypes.NOW,
-    allowNull: false
-  },
-  approvedAt: {
-    type: DataTypes.DATE,
-    allowNull: true
-  },
-  rejectedAt: {
-    type: DataTypes.DATE,
-    allowNull: true
-  },
-  rejectionReason: {
-    type: DataTypes.TEXT,
-    allowNull: true
-  }
-}, {
-  tableName: 'products',
-  timestamps: false
-});
+const productSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  price: { type: Number, required: true },
+  category: { type: String, required: true },
+  type: { type: String, required: true },
+  description: String,
+  imagePath: String,
+  imagePaths: { type: [String], default: [] },
+  status: { type: String, enum: ['PENDING', 'APPROVED', 'REJECTED', 'SOLD'], default: 'PENDING' },
+  productCondition: { type: String, required: true },
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  approvedAt: Date,
+  rejectedAt: Date,
+  rejectionReason: String
+}, { timestamps: true });
 
-module.exports = Product;
+module.exports = mongoose.model('Product', productSchema);

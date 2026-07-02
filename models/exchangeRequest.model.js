@@ -1,65 +1,15 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../config/db.config');
+const mongoose = require('mongoose');
 
-const ExchangeRequest = sequelize.define('ExchangeRequest', {
-  id: {
-    type: DataTypes.BIGINT,
-    primaryKey: true,
-    autoIncrement: true
-  },
-  targetProductId: {
-    type: DataTypes.BIGINT,
-    allowNull: false,
-    references: {
-      model: 'products',
-      key: 'id'
-    }
-  },
-  exchangeItemName: {
-    type: DataTypes.STRING,
-    allowNull: false
-  },
-  exchangeItemCategory: {
-    type: DataTypes.STRING,
-    allowNull: false
-  },
-  exchangeItemDescription: {
-    type: DataTypes.TEXT,
-    allowNull: true
-  },
-  exchangeItemImages: {
-    type: DataTypes.JSON,
-    defaultValue: []
-  },
-  additionalMessage: {
-    type: DataTypes.TEXT,
-    allowNull: true
-  },
-  requesterId: {
-    type: DataTypes.BIGINT,
-    allowNull: false,
-    references: {
-      model: 'users',
-      key: 'id'
-    }
-  },
-  status: {
-    type: DataTypes.STRING,
-    defaultValue: 'PENDING',
-    allowNull: false
-  },
-  rejectionReason: {
-    type: DataTypes.TEXT,
-    allowNull: true
-  },
-  createdAt: {
-    type: DataTypes.DATE,
-    defaultValue: DataTypes.NOW,
-    allowNull: false
-  }
-}, {
-  tableName: 'exchange_requests',
-  timestamps: false
-});
+const exchangeRequestSchema = new mongoose.Schema({
+  targetProductId: { type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: true },
+  exchangeItemName: { type: String, required: true },
+  exchangeItemCategory: { type: String, required: true },
+  exchangeItemDescription: String,
+  exchangeItemImages: { type: [String], default: [] },
+  additionalMessage: String,
+  requesterId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  status: { type: String, default: 'PENDING' },
+  rejectionReason: String
+}, { timestamps: true });
 
-module.exports = ExchangeRequest;
+module.exports = mongoose.model('ExchangeRequest', exchangeRequestSchema);

@@ -67,6 +67,28 @@
           width: 100%;
         }
 
+        /* Dropdown menu styling */
+        .dropdown-menu {
+          border: none;
+          box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+          border-radius: 0;
+        }
+        .dropdown-item {
+          color: var(--text-dark);
+          padding: 0.75rem 1.5rem;
+          transition: all 0.3s ease;
+          cursor: pointer;
+        }
+        .dropdown-item:hover {
+          background-color: var(--accent-color);
+          color: var(--primary-color);
+        }
+        .dropdown-item i {
+          margin-right: 0.5rem;
+          width: 20px;
+          text-align: center;
+        }
+
         /* Hide all sections by default */
         .page-section {
           display: none;
@@ -562,6 +584,7 @@
 <nav class="navbar navbar-expand-lg navbar-light navbar-custom fixed-top shadow-sm">
     <div class="container">
         <a class="navbar-brand" href="#">
+            <img src="/images/logo.png" alt="Care & Share Logo" style="height: 40px; margin-right: 10px; vertical-align: middle;">
             <span style="font-weight: 300;">CARE</span> <strong>&</strong> <span style="font-weight: 300;">SHARE</span>
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
@@ -572,11 +595,21 @@
             <div class="navbar-nav ms-auto">
                 <a class="nav-link active" data-target="home-section"><i class="fa-solid fa-house"></i> Home</a>
                 <a class="nav-link" data-target="actions-section"><i class="fa-solid fa-hands-helping"></i> Actions</a>
-                <a class="nav-link" data-target="features-section"><i class="fa-solid fa-list"></i> Features</a>
-                <a class="nav-link" data-target="about-section">About</a>
-                <a class="nav-link" data-target="how-it-works-section"><i class="fa-solid fa-gears"></i> How It Works</a>
-                <a class="nav-link" href="/login"><i class="fa-solid fa-right-to-bracket"></i> Login</a>
-                <a class="nav-link" href="/register"><i class="fa-solid fa-pencil"></i> Register</a>
+                <div class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="learnMoreDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fa-solid fa-info-circle"></i> Learn More
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="learnMoreDropdown">
+                        <li><a class="dropdown-item" data-target="features-section"><i class="fa-solid fa-list"></i> Features</a></li>
+                        <li><a class="dropdown-item" data-target="about-section"><i class="fa-solid fa-user"></i> About</a></li>
+                        <li><a class="dropdown-item" data-target="how-it-works-section"><i class="fa-solid fa-gears"></i> How It Works</a></li>
+                    </ul>
+                </div>
+                <a class="nav-link" href="/login" id="nav-login"><i class="fa-solid fa-right-to-bracket"></i> Login</a>
+                <a class="nav-link" href="/register" id="nav-register"><i class="fa-solid fa-pencil"></i> Register</a>
+                <a class="nav-link d-none" href="/dashboard" id="nav-dashboard"><i class="fa-solid fa-gauge"></i> Dashboard</a>
+                <a class="nav-link d-none" href="/user-management" id="nav-user-management"><i class="fa-solid fa-users-gear"></i> User Management</a>
+                <a class="nav-link d-none" href="#" id="nav-logout"><i class="fa-solid fa-sign-out-alt"></i> Logout</a>
             </div>
         </div>
     </div>
@@ -593,7 +626,7 @@
                 <div class="carousel-caption text-start">
                     <h1>Care & Share</h1>
                     <p>A premium platform for donating, exchanging, and reselling with elegance and purpose.</p>
-                    <a href="/register" class="btn btn-primary">Get Started</a>
+                    <a href="/register" id="hero-cta" class="btn btn-primary">Get Started</a>
                 </div>
             </div>
             <div class="carousel-item">
@@ -905,6 +938,7 @@
     // Navigation functionality
     document.addEventListener('DOMContentLoaded', function() {
         const navLinks = document.querySelectorAll('.nav-link[data-target]');
+        const dropdownItems = document.querySelectorAll('.dropdown-item[data-target]');
         const pageSections = document.querySelectorAll('.page-section');
 
         // Function to show a specific section
@@ -935,6 +969,15 @@
         // Add click event to nav links
         navLinks.forEach(link => {
             link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('data-target');
+                showSection(targetId);
+            });
+        });
+
+        // Add click event to dropdown items
+        dropdownItems.forEach(item => {
+            item.addEventListener('click', function(e) {
                 e.preventDefault();
                 const targetId = this.getAttribute('data-target');
                 showSection(targetId);
@@ -1171,6 +1214,60 @@
       } else {
         navbar.style.background = 'rgba(255, 255, 255, 0.95)';
         navbar.style.boxShadow = '0 2px 10px rgba(0,0,0,0.1)';
+      }
+    });
+
+    // Authentication Check for Navbar
+    window.addEventListener('DOMContentLoaded', () => {
+      const token = localStorage.getItem('jwtToken');
+      const navLogin = document.getElementById('nav-login');
+      const navRegister = document.getElementById('nav-register');
+      const navDashboard = document.getElementById('nav-dashboard');
+      const navLogout = document.getElementById('nav-logout');
+      const heroCta = document.getElementById('hero-cta');
+
+      if (token) {
+        // User is logged in
+        navLogin.classList.add('d-none');
+        navRegister.classList.add('d-none');
+        navDashboard.classList.remove('d-none');
+        navLogout.classList.remove('d-none');
+        
+        if (heroCta) {
+          heroCta.textContent = 'Go to Dashboard';
+          heroCta.href = '/dashboard';
+        }
+
+        // Handle Logout
+        navLogout.addEventListener('click', (e) => {
+          e.preventDefault();
+          localStorage.removeItem('jwtToken');
+          localStorage.removeItem('rememberMe');
+          window.location.reload();
+        });
+
+        // Optionally fetch user info to customize greeting
+        fetch('/api/user/me', {
+          headers: { 'Authorization': 'Bearer ' + token }
+        })
+        .then(res => res.json())
+        .then(user => {
+          if (user && user.firstName) {
+            const welcomeMsg = document.querySelector('#home-section h1');
+            if (welcomeMsg) {
+              welcomeMsg.textContent = `Welcome back, ${user.firstName}!`;
+            }
+            
+            if (user.admin) {
+              const navUserMgmt = document.getElementById('nav-user-management');
+              if (navUserMgmt) navUserMgmt.classList.remove('d-none');
+            }
+          }
+        })
+        .catch(err => {
+          console.error('Session expired');
+          localStorage.removeItem('jwtToken');
+        });
       }
     });
 </script>

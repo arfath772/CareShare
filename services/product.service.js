@@ -1,4 +1,4 @@
-const { Product, User } = require('../models');
+const { Product } = require('../models');
 const path = require('path');
 const fs = require('fs');
 
@@ -7,7 +7,7 @@ class ProductService {
   async addProduct(productData, files, userId) {
     try {
       // Create product
-      const product = await Product.create({
+      const product = new Product({
         name: productData.name,
         price: productData.price,
         category: productData.category,
@@ -15,8 +15,7 @@ class ProductService {
         description: productData.description || '',
         productCondition: productData.condition,
         status: 'PENDING',
-        userId: userId,
-        createdAt: new Date()
+        userId: userId
       });
 
       // Handle images
@@ -24,13 +23,12 @@ class ProductService {
         const imagePaths = files.map(file => `/uploads/products/${file.filename}`);
         product.imagePath = imagePaths[0]; // First image as main
         product.imagePaths = imagePaths;
-        await product.save();
       } else {
         product.imagePath = '/uploads/default-product.png';
-        await product.save();
       }
 
-      return product;
+      await product.save();
+      return await product.populate('userId', 'firstName lastName email');
     } catch (error) {
       console.error('Error adding product:', error);
       throw new Error('Failed to add product: ' + error.message);
@@ -39,74 +37,36 @@ class ProductService {
 
   // Get user products
   async getUserProducts(userId) {
-    return await Product.findAll({
-      where: { userId },
-      include: [{
-        model: User,
-        as: 'user',
-        attributes: ['id', 'firstName', 'lastName', 'email']
-      }],
-      order: [['createdAt', 'DESC']]
-    });
+    return await Product.find({ userId }).populate('userId', 'firstName lastName email').sort({ createdAt: -1 });
   }
 
   // Get user products by status
   async getUserProductsByStatus(userId, status) {
-    return await Product.findAll({
-      where: { userId, status },
-      include: [{
-        model: User,
-        as: 'user',
-        attributes: ['id', 'firstName', 'lastName', 'email']
-      }],
-      order: [['createdAt', 'DESC']]
-    });
+    return await Product.find({ userId, status }).populate('userId', 'firstName lastName email').sort({ createdAt: -1 });
   }
 
   // Get pending products
   async getPendingProducts() {
-    return await Product.findAll({
-      where: { status: 'PENDING' },
-      include: [{
-        model: User,
-        as: 'user',
-        attributes: ['id', 'firstName', 'lastName', 'email']
-      }],
-      order: [['createdAt', 'DESC']]
-    });
+    return await Product.find({ status: 'PENDING' }).populate('userId', 'firstName lastName email').sort({ createdAt: -1 });
   }
 
   // Get approved products
   async getApprovedProducts(type = null, category = null) {
-    const where = { status: 'APPROVED' };
-    if (type && type !== 'all') where.type = type;
-    if (category && category !== 'all') where.category = category;
+    const filter = { status: 'APPROVED' };
+    if (type && type !== 'all') filter.type = type;
+    if (category && category !== 'all') filter.category = category;
 
-    return await Product.findAll({
-      where,
-      include: [{
-        model: User,
-        as: 'user',
-        attributes: ['id', 'firstName', 'lastName', 'email']
-      }],
-      order: [['createdAt', 'DESC']]
-    });
+    return await Product.find(filter).populate('userId', 'firstName lastName email').sort({ createdAt: -1 });
   }
 
   // Get product by ID
   async getProductById(id) {
-    return await Product.findByPk(id, {
-      include: [{
-        model: User,
-        as: 'user',
-        attributes: ['id', 'firstName', 'lastName', 'email']
-      }]
-    });
+    return await Product.findById(id).populate('userId', 'firstName lastName email');
   }
 
   // Approve product
   async approveProduct(productId) {
-    const product = await Product.findByPk(productId);
+    const product = await Product.findById(productId);
     if (!product) {
       throw new Error('Product not found');
     }
@@ -121,7 +81,7 @@ class ProductService {
 
   // Reject product
   async rejectProduct(productId, rejectionReason) {
-    const product = await Product.findByPk(productId);
+    const product = await Product.findById(productId);
     if (!product) {
       throw new Error('Product not found');
     }
@@ -136,12 +96,12 @@ class ProductService {
 
   // Get pending products count
   async getPendingProductsCount() {
-    return await Product.count({ where: { status: 'PENDING' } });
+    return await Product.countDocuments({ status: 'PENDING' });
   }
 
   // Get approved products count
   async getApprovedProductsCount() {
-    return await Product.count({ where: { status: 'APPROVED' } });
+    return await Product.countDocuments({ status: 'APPROVED' });
   }
 }
 

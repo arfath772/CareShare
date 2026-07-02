@@ -4,55 +4,108 @@ const emailService = require('./email.service');
 
 class UserService {
   // Register new user
-  async registerUser(email, password, firstName, lastName) {
+  async registerUser(email, password, firstName, lastName, options = {}) {
+    const {
+      accountType = 'USER',
+      ngoLegalName,
+      ngoDarpanId,
+      ngoPan,
+      ngoOfficeAddress,
+      ngoDocuments = {},
+      hasFcra = false
+    } = options;
+
     // Validate input
     if (!email || !password || !firstName || !lastName) {
       throw new Error('All fields are required');
     }
 
+    const normalizedAccountType = String(accountType || 'USER').toUpperCase();
+
+    if (!['USER', 'NGO'].includes(normalizedAccountType)) {
+      throw new Error('Invalid account type');
+    }
+
+    if (normalizedAccountType === 'NGO') {
+      if (!ngoLegalName || !ngoDarpanId || !ngoPan || !ngoOfficeAddress) {
+        throw new Error('NGO legal details are required');
+      }
+
+      const requiredNgoDocs = [
+        'registrationCertificate',
+        'trustDeedOrMoa',
+        'ngoPanCard',
+        'nitiDarpanRegistration',
+        'certificate12A',
+        'certificate80G',
+        'csr1Registration',
+        'bankAccountProof',
+        'auditedAccounts',
+        'annualReport',
+        'projectProposal',
+        'kycMembers',
+        'officeAddressProof',
+        'governingBodyList'
+      ];
+
+      const missingDocs = requiredNgoDocs.filter((docKey) => !ngoDocuments[docKey]);
+      if (missingDocs.length > 0) {
+        throw new Error('All mandatory NGO documents must be uploaded');
+      }
+
+      if (hasFcra && !ngoDocuments.fcraCertificate) {
+        throw new Error('FCRA certificate is required when foreign contribution is enabled');
+      }
+    }
+
     // Check if user already exists
-    const existingUser = await User.findOne({ where: { email: email.toLowerCase() } });
+    const existingUser = await User.findOne({ email: email.toLowerCase() });
     if (existingUser) {
       throw new Error('Email is already registered!');
     }
 
     // Create user
-    const user = await User.create({
+    const user = new User({
       email: email.toLowerCase().trim(),
       password,
       firstName: firstName.trim(),
       lastName: lastName.trim(),
       roles: ['ROLE_USER'],
-      isAdmin: false
+      isAdmin: false,
+      accountType: normalizedAccountType,
+      ngoStatus: normalizedAccountType === 'NGO' ? 'PENDING' : 'NOT_REQUIRED',
+      ngoLegalName: normalizedAccountType === 'NGO' ? ngoLegalName.trim() : null,
+      ngoDarpanId: normalizedAccountType === 'NGO' ? ngoDarpanId.trim() : null,
+      ngoPan: normalizedAccountType === 'NGO' ? ngoPan.trim() : null,
+      ngoOfficeAddress: normalizedAccountType === 'NGO' ? ngoOfficeAddress.trim() : null,
+      ngoDocuments: normalizedAccountType === 'NGO' ? ngoDocuments : {}
     });
+
+    await user.save();
 
     return user;
   }
 
   // Find user by email
   async findByEmail(email) {
-    return await User.findOne({ 
-      where: { email: email.toLowerCase() } 
-    });
+    return await User.findOne({ email: email.toLowerCase().trim() });
   }
 
   // Find user by ID
   async findById(id) {
-    return await User.findByPk(id, {
-      attributes: { exclude: ['password', 'resetToken', 'resetTokenExpiry'] }
-    });
+    const user = await User.findById(id).select('-password -resetToken -resetTokenExpiry');
+    return user ? user.toJSON() : null;
   }
 
   // Get all users
   async getAllUsers() {
-    return await User.findAll({
-      attributes: { exclude: ['password', 'resetToken', 'resetTokenExpiry'] }
-    });
+    const users = await User.find().select('-password -resetToken -resetTokenExpiry');
+    return users.map(u => u.toJSON());
   }
 
   // Update user role
   async updateUserRole(userId, isAdmin) {
-    const user = await User.findByPk(userId);
+    const user = await User.findById(userId);
     if (!user) {
       throw new Error('User not found');
     }
@@ -67,21 +120,61 @@ class UserService {
 
   // Delete user
   async deleteUser(userId) {
-    const user = await User.findByPk(userId);
+    const user = await User.findById(userId);
     if (!user) {
       throw new Error('User not found');
     }
-    await user.destroy();
+    await user.remove();
   }
 
   // Get total users count
   async getTotalUsers() {
-    return await User.count();
+    return await User.countDocuments();
   }
 
   // Get admin users count
   async getAdminUsersCount() {
-    return await User.count({ where: { isAdmin: true } });
+    return await User.countDocuments({ isAdmin: true });
+  }
+
+  async getPendingNgoUsers() {
+    const users = await User.find({ accountType: 'NGO', ngoStatus: 'PENDING' })
+      .select('-password -resetToken -resetTokenExpiry')
+      .sort({ createdAt: -1 });
+    return users.map(u => u.toJSON());
+  }
+
+  async getAllNgoUsers() {
+    const users = await User.find({ accountType: 'NGO' })
+      .select('-password -resetToken -resetTokenExpiry')
+      .sort({ createdAt: -1 });
+    return users.map(u => u.toJSON());
+  }
+
+  async approveNgoUser(userId) {
+    const user = await User.findById(userId);
+    if (!user || user.accountType !== 'NGO') {
+      throw new Error('NGO user not found');
+    }
+
+    user.ngoStatus = 'APPROVED';
+    user.ngoRejectionReason = null;
+    await user.save();
+
+    return user.toJSON();
+  }
+
+  async rejectNgoUser(userId, reason) {
+    const user = await User.findById(userId);
+    if (!user || user.accountType !== 'NGO') {
+      throw new Error('NGO user not found');
+    }
+
+    user.ngoStatus = 'REJECTED';
+    user.ngoRejectionReason = reason || 'NGO verification failed';
+    await user.save();
+
+    return user.toJSON();
   }
 
   // Create password reset token
@@ -107,7 +200,7 @@ class UserService {
 
   // Validate reset token
   async validateResetToken(resetToken) {
-    const user = await User.findOne({ where: { resetToken } });
+    const user = await User.findOne({ resetToken });
     if (!user) {
       return false;
     }
@@ -121,7 +214,7 @@ class UserService {
 
   // Reset password
   async resetPassword(resetToken, newPassword) {
-    const user = await User.findOne({ where: { resetToken } });
+    const user = await User.findOne({ resetToken });
     if (!user) {
       throw new Error('Invalid reset token');
     }

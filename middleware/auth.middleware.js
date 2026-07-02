@@ -43,11 +43,8 @@ const authenticateToken = async (req, res, next) => {
       return res.status(401).json({ message: 'Invalid token payload' });
     }
 
-    // Find user from decoded token
-    const user = await User.findOne({
-      where: { email: decoded.email },
-      attributes: { exclude: ['password'] }
-    });
+    // Find user from decoded token (Mongoose)
+    const user = await User.findOne({ email: decoded.email }).select('-password');
 
     if (!user) {
       return res.status(401).json({ message: 'User not found' });
@@ -78,10 +75,7 @@ const optionalAuth = async (req, res, next) => {
     if (token) {
       const decoded = verifyToken(token);
       if (decoded) {
-        const user = await User.findOne({
-          where: { email: decoded.email },
-          attributes: { exclude: ['password'] }
-        });
+        const user = await User.findOne({ email: decoded.email }).select('-password');
         if (user) {
           req.user = user;
         }

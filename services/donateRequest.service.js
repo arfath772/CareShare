@@ -5,7 +5,7 @@ class DonateRequestService {
   async createRequest(requestData, userId) {
     try {
       // Check if donation item exists and is approved
-      const donateItem = await DonateItem.findByPk(requestData.donationId);
+      const donateItem = await DonateItem.findById(requestData.donationId);
       if (!donateItem) {
         throw new Error('Donation item not found');
       }
@@ -16,25 +16,24 @@ class DonateRequestService {
 
       // Check if user already has a pending/approved request for this donation
       const existingRequest = await DonateRequest.findOne({
-        where: {
-          donationId: requestData.donationId,
-          receiverUserId: userId,
-          status: ['PENDING', 'APPROVED']
-        }
+        donationId: requestData.donationId,
+        receiverUserId: userId,
+        status: { $in: ['PENDING', 'APPROVED'] }
       });
 
       if (existingRequest) {
         throw new Error('You already have a request for this donation');
       }
 
-      const request = await DonateRequest.create({
+      const request = new DonateRequest({
         donationId: requestData.donationId,
         receiverUserId: userId,
         description: requestData.description || '',
-        status: 'PENDING',
-        requestedDate: new Date()
+        quantity: requestData.quantity || 1,
+        status: 'PENDING'
       });
 
+      await request.save();
       return request;
     } catch (error) {
       console.error('Error creating donation request:', error);
@@ -44,81 +43,40 @@ class DonateRequestService {
 
   // Get user's donation requests
   async getMyRequests(userId) {
-    return await DonateRequest.findAll({
-      where: { receiverUserId: userId },
-      include: [
-        {
-          model: DonateItem,
-          as: 'donateItem',
-          include: [{
-            model: User,
-            as: 'user',
-            attributes: ['id', 'firstName', 'lastName', 'email']
-          }]
-        },
-        {
-          model: User,
-          as: 'receiver',
-          attributes: ['id', 'firstName', 'lastName', 'email']
-        }
-      ],
-      order: [['requestedDate', 'DESC']]
-    });
+    try {
+      const requests = await DonateRequest.find({ receiverUserId: userId })
+        .populate({ path: 'donationId', populate: { path: 'userId', select: 'firstName lastName email' } })
+        .populate('receiverUserId', 'firstName lastName email')
+        .sort({ createdAt: -1 });
+      
+      return requests;
+    } catch (error) {
+      console.error('Error fetching user requests:', error);
+      throw new Error('Failed to fetch donation requests');
+    }
   }
 
   // Get pending requests (for admin)
   async getPendingRequests() {
-    return await DonateRequest.findAll({
-      where: { status: 'PENDING' },
-      include: [
-        {
-          model: DonateItem,
-          as: 'donateItem',
-          include: [{
-            model: User,
-            as: 'user',
-            attributes: ['id', 'firstName', 'lastName', 'email']
-          }]
-        },
-        {
-          model: User,
-          as: 'receiver',
-          attributes: ['id', 'firstName', 'lastName', 'email']
-        }
-      ],
-      order: [['requestedDate', 'DESC']]
-    });
+    return await DonateRequest.find({ status: 'PENDING' })
+      .populate({ path: 'donationId', populate: { path: 'userId', select: 'firstName lastName email' } })
+      .populate('receiverUserId', 'firstName lastName email')
+      .sort({ createdAt: -1 });
   }
 
   // Get all requests (for admin)
   async getAllRequests(status = null) {
-    const where = status ? { status } : {};
+    const filter = status ? { status } : {};
 
-    return await DonateRequest.findAll({
-      where,
-      include: [
-        {
-          model: DonateItem,
-          as: 'donateItem',
-          include: [{
-            model: User,
-            as: 'user',
-            attributes: ['id', 'firstName', 'lastName', 'email']
-          }]
-        },
-        {
-          model: User,
-          as: 'receiver',
-          attributes: ['id', 'firstName', 'lastName', 'email']
-        }
-      ],
-      order: [['requestedDate', 'DESC']]
-    });
+    return await DonateRequest.find(filter)
+      .populate({ path: 'donationId', populate: { path: 'userId', select: 'firstName lastName email' } })
+      .populate('receiverUserId', 'firstName lastName email')
+      .sort({ createdAt: -1 });
   }
 
   // Approve request
   async approveRequest(id) {
-    const request = await DonateRequest.findByPk(id);
+    const request = await DonateRequest.findById(id);
     if (!request) {
       throw new Error('Request not found');
     }
@@ -127,10 +85,9 @@ class DonateRequestService {
     await request.save();
 
     // Update donation status to CLAIMED
-    const donateItem = await DonateItem.findByPk(request.donationId);
+    const donateItem = await DonateItem.findById(request.donationId);
     if (donateItem) {
       donateItem.status = 'CLAIMED';
-      donateItem.updatedAt = new Date();
       await donateItem.save();
     }
 
@@ -139,7 +96,7 @@ class DonateRequestService {
 
   // Reject request
   async rejectRequest(id, reason) {
-    const request = await DonateRequest.findByPk(id);
+    const request = await DonateRequest.findById(id);
     if (!request) {
       throw new Error('Request not found');
     }
@@ -153,7 +110,7 @@ class DonateRequestService {
 
   // Get request count by status
   async getRequestCountByStatus(status) {
-    return await DonateRequest.count({ where: { status } });
+    return await DonateRequest.countDocuments({ status });
   }
 }
 

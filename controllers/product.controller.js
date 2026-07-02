@@ -7,9 +7,19 @@ class ProductController {
       const { name, price, category, type, description, condition } = req.body;
       const files = req.files;
 
-      if (!name || !price || !category || !type || !condition) {
+      if (!name || !category || !type || !condition) {
         return res.status(400).json({ message: 'All required fields must be provided' });
       }
+
+      const normalizedType = String(type).trim();
+      const parsedPrice = Number.parseFloat(price);
+      const requiresPrice = normalizedType === 'Resell';
+
+      if (requiresPrice && (Number.isNaN(parsedPrice) || parsedPrice <= 0)) {
+        return res.status(400).json({ message: 'Price must be greater than 0 for resell products' });
+      }
+
+      console.log(`[Product Create] Type: ${normalizedType}, Price: ${parsedPrice}, RequiresPrice: ${requiresPrice}`);
 
       if (!files || files.length === 0) {
         return res.status(400).json({ message: 'Please upload at least one product image' });
@@ -17,9 +27,9 @@ class ProductController {
 
       const productData = {
         name,
-        price: parseFloat(price),
+        price: requiresPrice ? parsedPrice : 0,
         category,
-        type,
+        type: normalizedType,
         description: description || '',
         condition
       };

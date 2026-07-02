@@ -328,6 +328,8 @@
 
         <div class="register-link">
             Don't have an account? <a href="/register">Create Account</a>
+          <br>
+          Registering as NGO? <a href="/ngo-register">NGO Registration</a>
         </div>
     </div>
 
@@ -351,6 +353,13 @@
 </div>
 
 <script>
+    // Immediate check for existing session
+    if (localStorage.getItem('jwtToken')) {
+        // Hide body to prevent flickering
+        document.body.style.display = 'none';
+        window.location.href = '/dashboard';
+    }
+
     const showAlert = (message, type = 'success') => {
       const alertEl = document.getElementById('alert');
       alertEl.className = 'alert alert-' + type;
@@ -420,6 +429,8 @@
           setTimeout(() => {
             if (data.isAdmin) {
               window.location.href = '/admin';
+            } else if (data.accountType === 'NGO') {
+              window.location.href = '/ngo-dashboard';
             } else {
               window.location.href = '/dashboard';
             }
@@ -429,6 +440,8 @@
           setTimeout(() => {
             if (data.isAdmin) {
               window.location.href = '/admin';
+            } else if (data.accountType === 'NGO') {
+              window.location.href = '/ngo-dashboard';
             } else {
               window.location.href = '/dashboard';
             }
@@ -463,6 +476,8 @@
           // Redirect based on user role
           if (userData.isAdmin) {
             window.location.href = '/admin';
+          } else if (userData.accountType === 'NGO') {
+            window.location.href = '/ngo-dashboard';
           } else {
             window.location.href = '/dashboard';
           }

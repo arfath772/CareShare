@@ -1,32 +1,37 @@
 const { DonateItem, DonateRequest, User } = require('../models');
-const { Op } = require('sequelize');
 
 class DonateItemService {
   // Add donation
   async addDonation(donationData, files, userId) {
     try {
-      // Prepare image URLs
-      let imageUrls = [];
-      let mainImageUrl = null;
-
-      if (files && files.length > 0) {
-        imageUrls = files.map(file => `/uploads/donations/${file.filename}`);
-        mainImageUrl = imageUrls[0];
-      }
+      const donationImages = Array.isArray(files)
+        ? files
+          .filter((file) => file && file.buffer)
+          .map((file) => ({
+            filename: file.originalname,
+            contentType: file.mimetype,
+            data: file.buffer
+          }))
+        : [];
 
       const donation = await DonateItem.create({
         itemType: donationData.itemType,
+        category: donationData.itemType,
         itemName: donationData.itemName,
         quantity: donationData.quantity,
         itemCondition: donationData.itemCondition,
         pickupAddress: donationData.pickupAddress,
-        imageUrls: JSON.stringify(imageUrls),
-        mainImageUrl: mainImageUrl,
+        donationImages,
+        imageUrls: JSON.stringify([]),
+        mainImageUrl: null,
         status: 'PENDING',
-        userId: userId,
-        createdAt: new Date(),
-        updatedAt: new Date()
+        userId: userId
       });
+
+      if (donationImages.length > 0) {
+        donation.mainImageUrl = `/api/donate/${donation._id.toString()}/image/0`;
+        await donation.save();
+      }
 
       return donation;
     } catch (error) {
@@ -35,44 +40,32 @@ class DonateItemService {
     }
   }
 
-  // Get available donations (approved and not claimed)
+  // Get available donations (approved and pending - not rejected/claimed)
   async getAvailableDonations(type = null) {
-    const where = { status: 'APPROVED' };
-    if (type && type !== 'all') where.itemType = type;
+    const filter = {
+      status: { $in: ['APPROVED', 'PENDING'] }
+    };
 
-    return await DonateItem.findAll({
-      where,
-      include: [{
-        model: User,
-        as: 'user',
-        attributes: ['id', 'firstName', 'lastName', 'email']
-      }],
-      order: [['createdAt', 'DESC']]
-    });
+    if (type && type !== 'all') {
+      filter.itemType = type;
+    }
+
+    return await DonateItem.find(filter)
+      .populate('userId', 'id firstName lastName email')
+      .sort({ createdAt: -1 });
   }
 
   // Get user's donations
   async getMyDonations(userId) {
-    return await DonateItem.findAll({
-      where: { userId },
-      include: [{
-        model: User,
-        as: 'user',
-        attributes: ['id', 'firstName', 'lastName', 'email']
-      }],
-      order: [['createdAt', 'DESC']]
-    });
+    return await DonateItem.find({ userId })
+      .populate('userId', 'id firstName lastName email')
+      .sort({ createdAt: -1 });
   }
 
   // Get donation by ID
   async getDonationById(id) {
-    const donation = await DonateItem.findByPk(id, {
-      include: [{
-        model: User,
-        as: 'user',
-        attributes: ['id', 'firstName', 'lastName', 'email']
-      }]
-    });
+    const donation = await DonateItem.findById(id)
+      .populate('userId', 'id firstName lastName email');
 
     if (donation && donation.imageUrls) {
       try {
@@ -85,69 +78,122 @@ class DonateItemService {
     return donation;
   }
 
-  // Delete donation
-  async deleteDonation(id, userId) {
-    const donation = await DonateItem.findByPk(id);
+  // Get donation image by index
+  async getDonationImage(donationId, imageIndex) {
+    const donation = await DonateItem.findById(donationId).select('donationImages imageUrls');
     if (!donation) {
       throw new Error('Donation not found');
     }
 
-    if (donation.userId !== userId) {
+    if (Array.isArray(donation.donationImages) && donation.donationImages.length > 0) {
+      const index = Number.parseInt(imageIndex, 10);
+      if (Number.isNaN(index) || index < 0 || index >= donation.donationImages.length) {
+        throw new Error('Image not found');
+      }
+
+      const img = donation.donationImages[index];
+      return {
+        contentType: img.contentType || 'application/octet-stream',
+        data: img.data
+      };
+    }
+
+    let fallbackUrls = [];
+    if (donation.imageUrls && typeof donation.imageUrls === 'string') {
+      try {
+        const parsed = JSON.parse(donation.imageUrls);
+        if (Array.isArray(parsed)) fallbackUrls = parsed;
+      } catch (error) {
+        fallbackUrls = [];
+      }
+    }
+
+    const fallbackIndex = Number.parseInt(imageIndex, 10);
+    if (!Number.isNaN(fallbackIndex) && fallbackIndex >= 0 && fallbackIndex < fallbackUrls.length) {
+      return { redirectUrl: fallbackUrls[fallbackIndex] };
+    }
+
+    throw new Error('Image not found');
+  }
+
+  // Delete donation
+  async deleteDonation(id, userId) {
+    const donation = await DonateItem.findById(id);
+    if (!donation) {
+      throw new Error('Donation not found');
+    }
+
+    if (donation.userId.toString() !== userId.toString()) {
       throw new Error('You are not authorized to delete this donation');
     }
 
-    await donation.destroy();
+    await DonateItem.findByIdAndDelete(id);
   }
 
   // Get pending donations
   async getPendingDonations() {
-    return await DonateItem.findAll({
-      where: { status: 'PENDING' },
-      include: [{
-        model: User,
-        as: 'user',
-        attributes: ['id', 'firstName', 'lastName', 'email']
-      }],
-      order: [['createdAt', 'DESC']]
-    });
+    return await DonateItem.find({ status: 'PENDING' })
+      .populate('userId', 'id firstName lastName email')
+      .sort({ createdAt: -1 });
   }
 
   // Get all donations
   async getAllDonations() {
-    return await DonateItem.findAll({
-      include: [{
-        model: User,
-        as: 'user',
-        attributes: ['id', 'firstName', 'lastName', 'email']
-      }],
-      order: [['createdAt', 'DESC']]
-    });
+    return await DonateItem.find()
+      .populate('userId', 'id firstName lastName email')
+      .sort({ createdAt: -1 });
   }
 
   // Approve donation
   async approveDonation(id) {
-    const donation = await DonateItem.findByPk(id);
+    const donation = await DonateItem.findByIdAndUpdate(
+      id,
+      { status: 'APPROVED' },
+      { new: true }
+    );
+
     if (!donation) {
       throw new Error('Donation not found');
     }
-
-    donation.status = 'APPROVED';
-    donation.updatedAt = new Date();
-    await donation.save();
 
     return donation;
   }
 
   // Reject donation
   async rejectDonation(id, reason) {
-    const donation = await DonateItem.findByPk(id);
+    const donation = await DonateItem.findByIdAndUpdate(
+      id,
+      { status: 'REJECTED', rejectionReason: reason },
+      { new: true }
+    );
+
     if (!donation) {
       throw new Error('Donation not found');
     }
 
-    donation.status = 'REJECTED';
-    donation.rejectionReason = reason;
-    donation.updatedAt = new Date();
+    return donation;
+  }
+
+  // Adjust donation quantity
+  async adjustDonationQuantity(id, delta) {
+    const donation = await DonateItem.findById(id);
+    if (!donation) {
+      throw new Error('Donation not found');
+    }
+
+    const currentQuantity = Number(donation.quantity || 0);
+    const adjustment = Number(delta || 0);
+
+    if (!Number.isInteger(adjustment) || adjustment === 0) {
+      throw new Error('Quantity adjustment must be a non-zero integer');
+    }
+
+    const nextQuantity = currentQuantity + adjustment;
+    if (nextQuantity < 1) {
+      throw new Error('Donation quantity cannot be less than 1');
+    }
+
+    donation.quantity = nextQuantity;
     await donation.save();
 
     return donation;
@@ -155,7 +201,7 @@ class DonateItemService {
 
   // Get donations count by status
   async getCountByStatus(status) {
-    return await DonateItem.count({ where: { status } });
+    return await DonateItem.countDocuments({ status });
   }
 }
 

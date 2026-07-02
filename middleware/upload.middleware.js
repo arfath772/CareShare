@@ -24,17 +24,7 @@ const productStorage = multer.diskStorage({
 });
 
 // Configure storage for donation images
-const donationStorage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const uploadDir = path.join(__dirname, '..', 'uploads', 'donations');
-    ensureDir(uploadDir);
-    cb(null, uploadDir);
-  },
-  filename: (req, file, cb) => {
-    const uniqueName = `${uuidv4()}_${file.originalname}`;
-    cb(null, uniqueName);
-  }
-});
+const donationStorage = multer.memoryStorage();
 
 // Configure storage for exchange request images
 const exchangeStorage = multer.diskStorage({
@@ -49,6 +39,9 @@ const exchangeStorage = multer.diskStorage({
   }
 });
 
+// Configure storage for NGO registration documents
+const ngoDocsStorage = multer.memoryStorage();
+
 // File filter for images
 const imageFilter = (req, file, cb) => {
   const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
@@ -56,6 +49,22 @@ const imageFilter = (req, file, cb) => {
     cb(null, true);
   } else {
     cb(new Error('Only JPG, PNG, and GIF images are allowed'), false);
+  }
+};
+
+// File filter for NGO documents (PDF + images)
+const ngoDocumentFilter = (req, file, cb) => {
+  const allowedTypes = [
+    'application/pdf',
+    'image/jpeg',
+    'image/jpg',
+    'image/png'
+  ];
+
+  if (allowedTypes.includes(file.mimetype)) {
+    cb(null, true);
+  } else {
+    cb(new Error('Only PDF, JPG, and PNG files are allowed for NGO documents'), false);
   }
 };
 
@@ -84,6 +93,14 @@ const uploadExchange = multer({
   }
 });
 
+const uploadNgoDocuments = multer({
+  storage: ngoDocsStorage,
+  fileFilter: ngoDocumentFilter,
+  limits: {
+    fileSize: parseInt(process.env.MAX_FILE_SIZE) || 10 * 1024 * 1024
+  }
+});
+
 // Error handling middleware for multer
 const multerErrorHandler = (err, req, res, next) => {
   if (err instanceof multer.MulterError) {
@@ -104,5 +121,6 @@ module.exports = {
   uploadProduct,
   uploadDonation,
   uploadExchange,
+  uploadNgoDocuments,
   multerErrorHandler
 };

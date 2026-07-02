@@ -342,6 +342,8 @@
 
         <div class="login">
             Already have an account? <a href="/login">Sign In</a>
+          <br>
+          Registering as an NGO? <a href="/ngo-register">Go to NGO Registration</a>
         </div>
     </div>
 
@@ -365,6 +367,13 @@
 </div>
 
 <script>
+    // Immediate check for existing session
+    if (localStorage.getItem('jwtToken')) {
+        // Hide body to prevent flickering
+        document.body.style.display = 'none';
+        window.location.href = '/dashboard';
+    }
+
     const showAlert = (message, type = 'success') => {
       const alertEl = document.getElementById('alert');
       alertEl.className = 'alert alert-' + type;
@@ -411,7 +420,8 @@
         lastName: lastName,
         email: email,
         password: password,
-        location: location
+        location: location,
+        accountType: 'USER'
       };
 
       try {
@@ -430,7 +440,7 @@
           return;
         }
 
-        showAlert('Registration successful! Redirecting to login...', 'success');
+        showAlert(data.message || 'Registration successful! Redirecting to login...', 'success');
 
         // Redirect to login page
         setTimeout(() => {
@@ -481,6 +491,7 @@
         document.getElementById('registerForm').dispatchEvent(new Event('submit'));
       }
     });
+
 </script>
 
 </body>

@@ -12,6 +12,10 @@ router.use(isAdmin);
 router.get('/users', adminController.getAllUsers);
 router.put('/users/:userId/role', adminController.updateUserRole);
 router.delete('/users/:userId', adminController.deleteUser);
+router.get('/ngo-users/pending', adminController.getPendingNgoUsers);
+router.get('/ngo-users', adminController.getAllNgoUsers);
+router.put('/ngo-users/:userId/approve', adminController.approveNgoUser);
+router.put('/ngo-users/:userId/reject', adminController.rejectNgoUser);
 
 // Statistics
 router.get('/stats', adminController.getAdminStats);
@@ -27,6 +31,8 @@ router.get('/donations/items/pending', adminController.getPendingDonatedItems);
 router.get('/donations/items/all', adminController.getAllDonatedItems);
 router.post('/donations/items/:id/approve', adminController.approveDonatedItem);
 router.post('/donations/items/:id/reject', adminController.rejectDonatedItem);
+router.all('/donations/items/:id/quantity', adminController.adjustDonatedItemQuantity);
+router.all('/donations/items/:id/adjust-quantity', adminController.adjustDonatedItemQuantity);
 
 // Donation request management
 router.get('/donations/requests/pending', adminController.getPendingDonationRequests);
@@ -41,5 +47,10 @@ router.get('/exchange-requests/stats', adminController.getExchangeRequestStats);
 router.put('/exchange-requests/:id/approve', adminController.approveExchangeRequest);
 router.put('/exchange-requests/:id/reject', adminController.rejectExchangeRequest);
 router.delete('/exchange-requests/:id', adminController.deleteExchangeRequest);
+
+// Money donation management
+router.get('/money-donations', adminController.getAllMoneyDonations);
+router.get('/money-donations/stats', adminController.getMoneyDonationStats);
+router.post('/money-donations/:donationId/refund', adminController.refundMoneyDonation);
 
 module.exports = router;

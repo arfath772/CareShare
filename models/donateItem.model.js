@@ -1,70 +1,55 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../config/db.config');
+const mongoose = require('mongoose');
 
-const DonateItem = sequelize.define('DonateItem', {
-  id: {
-    type: DataTypes.BIGINT,
-    primaryKey: true,
-    autoIncrement: true
-  },
-  itemType: {
-    type: DataTypes.STRING,
-    allowNull: false
-  },
-  itemName: {
-    type: DataTypes.STRING,
-    allowNull: false
-  },
-  quantity: {
-    type: DataTypes.INTEGER,
-    allowNull: false
-  },
-  itemCondition: {
-    type: DataTypes.STRING,
-    allowNull: false
-  },
-  pickupAddress: {
-    type: DataTypes.TEXT,
-    allowNull: false
-  },
-  imageUrls: {
-    type: DataTypes.TEXT,
-    allowNull: true
-  },
-  mainImageUrl: {
-    type: DataTypes.TEXT,
-    allowNull: true
-  },
-  status: {
-    type: DataTypes.ENUM('PENDING', 'APPROVED', 'REJECTED', 'CLAIMED'),
-    defaultValue: 'PENDING',
-    allowNull: false
-  },
-  rejectionReason: {
-    type: DataTypes.TEXT,
-    allowNull: true
-  },
-  userId: {
-    type: DataTypes.BIGINT,
-    allowNull: false,
-    references: {
-      model: 'users',
-      key: 'id'
+const donateItemSchema = new mongoose.Schema({
+  itemType: { type: String, required: true },
+  category: { type: String },
+  itemName: { type: String, required: true },
+  quantity: { type: Number, required: true },
+  itemCondition: { type: String, required: true },
+  pickupAddress: { type: String, required: true },
+  donationImages: [{
+    filename: String,
+    contentType: String,
+    data: Buffer
+  }],
+  imageUrls: String,
+  mainImageUrl: String,
+  status: { type: String, enum: ['PENDING', 'APPROVED', 'REJECTED', 'CLAIMED'], default: 'PENDING' },
+  rejectionReason: String,
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }
+}, {
+  timestamps: true,
+  toJSON: {
+    virtuals: true,
+    transform: (_doc, ret) => {
+      ret.id = ret._id.toString();
+
+      const fallbackImageUrls = [];
+      if (ret.imageUrls && typeof ret.imageUrls === 'string') {
+        try {
+          const parsed = JSON.parse(ret.imageUrls);
+          if (Array.isArray(parsed)) {
+            fallbackImageUrls.push(...parsed);
+          }
+        } catch (error) {
+          // Keep fallback list empty on parse errors
+        }
+      }
+
+      if (Array.isArray(ret.donationImages) && ret.donationImages.length > 0) {
+        ret.imageUrls = ret.donationImages.map((_img, index) => `/api/donate/${ret.id}/image/${index}`);
+        ret.mainImageUrl = ret.imageUrls[0];
+      } else {
+        ret.imageUrls = fallbackImageUrls;
+      }
+
+      ret.imageUrl = ret.mainImageUrl || ret.imageUrls[0] || null;
+
+      delete ret.donationImages;
+      return ret;
     }
   },
-  createdAt: {
-    type: DataTypes.DATE,
-    defaultValue: DataTypes.NOW,
-    allowNull: false
-  },
-  updatedAt: {
-    type: DataTypes.DATE,
-    defaultValue: DataTypes.NOW,
-    allowNull: false
-  }
-}, {
-  tableName: 'donate_items',
-  timestamps: false
+  toObject: { virtuals: true }
 });
 
-module.exports = DonateItem;
+module.exports = mongoose.model('DonateItem', donateItemSchema);

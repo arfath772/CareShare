@@ -1,14 +1,14 @@
-const { User } = require('../models');
+const { connectMongoDB, mongoose, User } = require('../models');
 
 async function checkAdmin() {
   try {
-    const admin = await User.findOne({
-      where: { email: 'mohammedarfath46982@gmail.com' },
-      attributes: ['id', 'email', 'firstName', 'lastName', 'isAdmin', 'roles']
-    });
+    await connectMongoDB();
+    const admin = await User.findOne({ email: 'mohammedarfath46982@gmail.com' })
+      .select('_id email firstName lastName isAdmin roles');
 
     if (!admin) {
       console.log('❌ Admin user not found!');
+      await mongoose.connection.close();
       return;
     }
 
@@ -25,10 +25,14 @@ async function checkAdmin() {
     } else {
       console.log('\n❌ Warning: isAdmin is false! Run: npm run create-admin\n');
     }
-    
+
+    await mongoose.connection.close();
     process.exit(0);
   } catch (error) {
     console.error('❌ Error:', error.message);
+    if (mongoose.connection.readyState === 1) {
+      await mongoose.connection.close();
+    }
     process.exit(1);
   }
 }

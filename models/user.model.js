@@ -1,78 +1,74 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../config/db.config');
+const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
-const User = sequelize.define('User', {
-  id: {
-    type: DataTypes.BIGINT,
-    primaryKey: true,
-    autoIncrement: true
-  },
+const userSchema = new mongoose.Schema({
   email: {
-    type: DataTypes.STRING,
+    type: String,
     unique: true,
-    allowNull: false,
-    validate: {
-      isEmail: true
-    }
+    required: true,
+    lowercase: true,
+    validate: { validator: (v) => /^\S+@\S+\.\S+$/.test(v), message: 'Invalid email' }
   },
-  password: {
-    type: DataTypes.STRING,
-    allowNull: false
-  },
-  firstName: {
-    type: DataTypes.STRING,
-    allowNull: false
-  },
-  lastName: {
-    type: DataTypes.STRING,
-    allowNull: false
-  },
-  roles: {
-    type: DataTypes.JSON,
-    defaultValue: ['ROLE_USER']
-  },
-  resetToken: {
-    type: DataTypes.STRING,
-    allowNull: true
-  },
-  resetTokenExpiry: {
-    type: DataTypes.DATE,
-    allowNull: true
-  },
-  isAdmin: {
-    type: DataTypes.BOOLEAN,
-    defaultValue: false,
-    allowNull: false
-  }
-}, {
-  tableName: 'users',
-  timestamps: false,
-  hooks: {
-    beforeCreate: async (user) => {
-      if (user.password) {
-        user.password = await bcrypt.hash(user.password, 10);
-      }
-    },
-    beforeUpdate: async (user) => {
-      if (user.changed('password')) {
-        user.password = await bcrypt.hash(user.password, 10);
-      }
-    }
-  }
+  password: { type: String, required: true },
+  firstName: { type: String, required: true },
+  lastName: { type: String, required: true },
+  roles: { type: [String], default: ['ROLE_USER'] },
+  resetToken: { type: String },
+  resetTokenExpiry: { type: Date },
+  isAdmin: { type: Boolean, default: false },
+  accountType: { type: String, enum: ['USER', 'NGO'], default: 'USER' },
+  ngoStatus: { type: String, enum: ['NOT_REQUIRED', 'PENDING', 'APPROVED', 'REJECTED'], default: 'NOT_REQUIRED' },
+  ngoLegalName: String,
+  ngoDarpanId: String,
+  ngoPan: String,
+  ngoOfficeAddress: String,
+  ngoRejectionReason: String,
+  ngoDocuments: { type: Object, default: {} }
+}, { timestamps: true });
+
+// Hash password before saving
+userSchema.pre('save', async function(next) {
+  if (!this.isModified('password')) return next();
+  this.password = await bcrypt.hash(this.password, 10);
+  next();
 });
 
 // Instance methods
-User.prototype.validatePassword = async function(password) {
+userSchema.methods.validatePassword = async function(password) {
   return await bcrypt.compare(password, this.password);
 };
 
-User.prototype.toJSON = function() {
-  const values = Object.assign({}, this.get());
-  delete values.password;
-  delete values.resetToken;
-  delete values.resetTokenExpiry;
-  return values;
+userSchema.methods.toJSON = function() {
+  const obj = this.toObject();
+  obj.id = obj._id.toString();
+
+  if (obj.ngoDocuments && typeof obj.ngoDocuments === 'object') {
+    const sanitizedDocs = {};
+    Object.entries(obj.ngoDocuments).forEach(([key, value]) => {
+      if (typeof value === 'string') {
+        sanitizedDocs[key] = value;
+        return;
+      }
+
+      if (value && typeof value === 'object') {
+        if (value.storage === 'mongodb' || value.data) {
+          sanitizedDocs[key] = {
+            storage: 'mongodb',
+            filename: value.filename || key,
+            contentType: value.contentType || 'application/octet-stream',
+            url: `/api/auth/ngo-documents/${obj.id}/${key}`
+          };
+          return;
+        }
+      }
+    });
+    obj.ngoDocuments = sanitizedDocs;
+  }
+
+  delete obj.password;
+  delete obj.resetToken;
+  delete obj.resetTokenExpiry;
+  return obj;
 };
 
-module.exports = User;
+module.exports = mongoose.model('User', userSchema);

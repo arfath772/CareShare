@@ -5,19 +5,13 @@ class PurchaseService {
   async createPurchase(purchaseData, buyerEmail) {
     try {
       // Find buyer
-      const buyer = await User.findOne({ where: { email: buyerEmail } });
+      const buyer = await User.findOne({ email: buyerEmail });
       if (!buyer) {
         throw new Error('Buyer not found');
       }
 
       // Find product
-      const product = await Product.findByPk(purchaseData.productId, {
-        include: [{
-          model: User,
-          as: 'user',
-          attributes: ['id', 'firstName', 'lastName', 'email']
-        }]
-      });
+      const product = await Product.findById(purchaseData.productId).populate('userId', 'firstName lastName email');
 
       if (!product) {
         throw new Error('Product not found');
@@ -28,18 +22,19 @@ class PurchaseService {
       }
 
       // Create purchase request
-      const purchase = await PurchaseRequest.create({
+      const purchase = new PurchaseRequest({
         productId: purchaseData.productId,
-        buyerId: buyer.id,
+        buyerId: buyer._id,
         fullName: purchaseData.fullName,
         email: purchaseData.email,
         phone: purchaseData.phone,
         shippingAddress: purchaseData.shippingAddress,
         paymentMethod: purchaseData.paymentMethod,
         amount: product.price,
-        status: 'PENDING',
-        createdAt: new Date()
+        status: 'PENDING'
       });
+
+      await purchase.save();
 
       return {
         success: true,
@@ -54,101 +49,68 @@ class PurchaseService {
 
   // Get purchases by buyer
   async getPurchasesByBuyer(buyerEmail) {
-    const buyer = await User.findOne({ where: { email: buyerEmail } });
+    const buyer = await User.findOne({ email: buyerEmail });
     if (!buyer) {
       throw new Error('Buyer not found');
     }
 
-    return await PurchaseRequest.findAll({
-      where: { buyerId: buyer.id },
-      include: [
-        {
-          model: Product,
-          as: 'product',
-          include: [{
-            model: User,
-            as: 'user',
-            attributes: ['id', 'firstName', 'lastName', 'email']
-          }]
-        },
-        {
-          model: User,
-          as: 'buyer',
-          attributes: ['id', 'firstName', 'lastName', 'email']
-        }
-      ],
-      order: [['createdAt', 'DESC']]
-    });
+    return await PurchaseRequest.find({ buyerId: buyer._id })
+      .populate({
+        path: 'productId',
+        populate: { path: 'userId', select: 'firstName lastName email' }
+      })
+      .populate('buyerId', 'firstName lastName email')
+      .sort({ createdAt: -1 });
   }
 
   // Get sales by seller
   async getSalesBySeller(sellerEmail) {
-    const seller = await User.findOne({ where: { email: sellerEmail } });
+    const seller = await User.findOne({ email: sellerEmail });
     if (!seller) {
       throw new Error('Seller not found');
     }
 
-    return await PurchaseRequest.findAll({
-      include: [
-        {
-          model: Product,
-          as: 'product',
-          where: { userId: seller.id },
-          include: [{
-            model: User,
-            as: 'user',
-            attributes: ['id', 'firstName', 'lastName', 'email']
-          }]
-        },
-        {
-          model: User,
-          as: 'buyer',
-          attributes: ['id', 'firstName', 'lastName', 'email']
-        }
-      ],
-      order: [['createdAt', 'DESC']]
-    });
+    return await PurchaseRequest.find()
+      .populate({
+        path: 'productId',
+        match: { userId: seller._id },
+        populate: { path: 'userId', select: 'firstName lastName email' }
+      })
+      .populate('buyerId', 'firstName lastName email')
+      .sort({ createdAt: -1 });
   }
 
   // Update purchase status
   async updatePurchaseStatus(purchaseId, status, userEmail) {
-    const user = await User.findOne({ where: { email: userEmail } });
+    const user = await User.findOne({ email: userEmail });
     if (!user) {
       throw new Error('User not found');
     }
 
-    const purchase = await PurchaseRequest.findByPk(purchaseId, {
-      include: [
-        {
-          model: Product,
-          as: 'product',
-          include: [{
-            model: User,
-            as: 'user'
-          }]
-        }
-      ]
-    });
+    const purchase = await PurchaseRequest.findById(purchaseId)
+      .populate({
+        path: 'productId',
+        populate: { path: 'userId' }
+      });
 
     if (!purchase) {
       throw new Error('Purchase not found');
     }
 
     // Verify user is either the buyer or the seller
-    const isBuyer = purchase.buyerId === user.id;
-    const isSeller = purchase.product.userId === user.id;
+    const isBuyer = purchase.buyerId.toString() === user._id.toString();
+    const isSeller = purchase.productId.userId._id.toString() === user._id.toString();
 
     if (!isBuyer && !isSeller) {
       throw new Error('You are not authorized to update this purchase');
     }
 
     purchase.status = status;
-    purchase.updatedAt = new Date();
     await purchase.save();
 
     // If purchase is delivered/completed, mark product as SOLD
     if (status === 'DELIVERED') {
-      const product = await Product.findByPk(purchase.productId);
+      const product = await Product.findById(purchase.productId._id);
       if (product) {
         product.status = 'SOLD';
         await product.save();
@@ -160,25 +122,13 @@ class PurchaseService {
 
   // Get all purchases (admin)
   async getAllPurchases() {
-    return await PurchaseRequest.findAll({
-      include: [
-        {
-          model: Product,
-          as: 'product',
-          include: [{
-            model: User,
-            as: 'user',
-            attributes: ['id', 'firstName', 'lastName', 'email']
-          }]
-        },
-        {
-          model: User,
-          as: 'buyer',
-          attributes: ['id', 'firstName', 'lastName', 'email']
-        }
-      ],
-      order: [['createdAt', 'DESC']]
-    });
+    return await PurchaseRequest.find()
+      .populate({
+        path: 'productId',
+        populate: { path: 'userId', select: 'firstName lastName email' }
+      })
+      .populate('buyerId', 'firstName lastName email')
+      .sort({ createdAt: -1 });
   }
 }
 

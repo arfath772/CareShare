@@ -143,6 +143,7 @@
 
 <script>
     const token = localStorage.getItem('jwtToken');
+    const API_BASE = '';
     let currentUserId = null;
 
     // 1. Get the current user's ID
@@ -153,7 +154,7 @@
             return null;
         }
         try {
-            const res = await fetch("http://localhost:8080/api/user/me", {
+            const res = await fetch(`${API_BASE}/api/user/me`, {
                 headers: { 'Authorization': 'Bearer ' + token }
             });
             if (!res.ok) throw new Error("Could not fetch user data.");
@@ -177,7 +178,7 @@
         }
 
         try {
-            const res = await fetch("http://localhost:8080/api/donate/available", {
+            const res = await fetch(`${API_BASE}/api/donate/available`, {
                 headers: { 'Authorization': 'Bearer ' + token }
             });
             if (!res.ok) throw new Error("Could not load donations.");
@@ -193,11 +194,12 @@
             }
 
             items.forEach(item => {
+                const imageSrc = item.mainImageUrl || item.imageUrl || '/uploads/default-product.png';
                 const card = document.createElement("div");
                 card.className = "col-lg-3 col-md-4 col-sm-6 mb-4";
                 card.innerHTML = `
                     <div class="card donation-card">
-                        <img src="${item.imageUrl}" class="card-img-top" alt="${item.itemName}">
+                        <img src="${imageSrc}" class="card-img-top" alt="${item.itemName}">
                         <div class="card-body">
                             <h5 class="card-title">${item.itemName}</h5>
                             <p class="card-text">
@@ -240,13 +242,11 @@
 
         const requestData = {
             donationId: parseInt(itemId),
-            receiverUserId: currentUserId,
-            donationType: itemType,
-            status: "PENDING" // This will be set by the service, but good to be explicit
+            description: `Request for ${itemType} item`
         };
 
         try {
-            const res = await fetch("http://localhost:8080/api/donate/requests/create", {
+            const res = await fetch(`${API_BASE}/api/donate/request`, {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json',

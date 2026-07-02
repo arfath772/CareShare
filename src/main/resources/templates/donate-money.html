@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Donate Money - CareShare</title>
+  <link rel="stylesheet" href="/css/styles.css">
+  <style>
+    .donation-container {
+      max-width: 600px;
+      margin: 40px auto;
+      padding: 30px;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    
+    .amount-presets {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin: 20px 0;
+    }
+    
+    .amount-btn {
+      padding: 12px;
+      border: 2px solid #ddd;
+      background: white;
+      cursor: pointer;
+      border-radius: 5px;
+      font-weight: bold;
+      transition: all 0.3s;
+    }
+    
+    .amount-btn:hover,
+    .amount-btn.active {
+      border-color: #007bff;
+      background: #007bff;
+      color: white;
+    }
+    
+    .form-group {
+      margin: 15px 0;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+    
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-family: inherit;
+      box-sizing: border-box;
+    }
+    
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+      margin: 15px 0;
+    }
+    
+    .checkbox-group input {
+      width: auto;
+      margin-right: 10px;
+    }
+    
+    .amount-display {
+      font-size: 28px;
+      font-weight: bold;
+      color: #007bff;
+      text-align: center;
+      margin: 20px 0;
+    }
+    
+    .btn-donate {
+      width: 100%;
+      padding: 15px;
+      background: #28a745;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    
+    .btn-donate:hover {
+      background: #218838;
+    }
+    
+    .btn-donate:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+    
+    .error-message {
+      color: #dc3545;
+      margin-top: 10px;
+      padding: 12px 15px;
+      background: #f8d7da;
+      border-radius: 5px;
+      border-left: 4px solid #dc3545;
+      display: none;
+      animation: slideIn 0.3s ease;
+    }
+    
+    .success-message {
+      color: #155724;
+      margin-top: 10px;
+      padding: 12px 15px;
+      background: #d4edda;
+      border-radius: 5px;
+      border-left: 4px solid #28a745;
+      display: none;
+      animation: slideIn 0.3s ease;
+    }
+    
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .loading {
+      display: none;
+      text-align: center;
+      padding: 20px;
+    }
+    
+    .spinner {
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #007bff;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 10px;
+    }
+
+    .donation-intro {
+      text-align: center;
+      color: #666;
+      margin-bottom: 20px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="donation-container">
+    <h1>💝 Make a Donation</h1>
+    <p class="donation-intro">Your generosity makes a difference. Donate any amount from ₹1 onwards.</p>
+    
+    <form id="donationForm">
+      <div class="form-group">
+        <label>Select or Enter Amount (₹)</label>
+        <div class="amount-presets">
+          <button type="button" class="amount-btn" data-amount="100">₹100</button>
+          <button type="button" class="amount-btn" data-amount="500">₹500</button>
+          <button type="button" class="amount-btn" data-amount="1000">₹1000</button>
+          <button type="button" class="amount-btn" data-amount="2000">₹2000</button>
+          <button type="button" class="amount-btn" data-amount="5000">₹5000</button>
+          <button type="button" class="amount-btn" data-amount="custom">Custom</button>
+        </div>
+        <input type="number" id="amount" name="amount" placeholder="Enter amount in ₹" min="1" max="100000" required>
+      </div>
+      
+      <div class="amount-display" id="amountDisplay">₹0</div>
+      
+      <div class="form-group">
+        <label for="donorName">Your Name</label>
+        <input type="text" id="donorName" name="donorName" placeholder="Full Name" required>
+      </div>
+      
+      <div class="form-group">
+        <label for="donorEmail">Your Email</label>
+        <input type="email" id="donorEmail" name="donorEmail" placeholder="your@email.com" required>
+      </div>
+      
+      <div class="form-group">
+        <label for="donorPhone">Your Phone (Optional)</label>
+        <input type="text" id="donorPhone" name="donorPhone" placeholder="+91-XXXXXXXXXX">
+      </div>
+      
+      <div class="form-group">
+        <label for="message">Message (Optional)</label>
+        <textarea id="message" name="message" placeholder="Leave a message..." rows="3"></textarea>
+      </div>
+      
+      <div class="checkbox-group">
+        <input type="checkbox" id="isAnonymous" name="isAnonymous">
+        <label for="isAnonymous" style="margin: 0;">Make this donation anonymous</label>
+      </div>
+      
+      <div class="form-group" id="anonymousNameGroup" style="display: none;">
+        <label for="anonymousDonorName">Display Name</label>
+        <input type="text" id="anonymousDonorName" name="anonymousDonorName" placeholder="How should we credit this donation?">
+      </div>
+      
+      <div class="error-message" id="errorMessage"></div>
+      <div class="success-message" id="successMessage"></div>
+      
+      <button type="submit" class="btn-donate" id="submitBtn">Proceed to Payment</button>
+      
+      <div class="loading" id="loadingSpinner">
+        <div class="spinner"></div>
+        <p>Processing donation...</p>
+      </div>
+    </form>
+  </div>
+  
+  <!-- Razorpay Script -->
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  
+  <script>
+    const form = document.getElementById('donationForm');
+    const amountInput = document.getElementById('amount');
+    const amountDisplay = document.getElementById('amountDisplay');
+    const isAnonymousCheckbox = document.getElementById('isAnonymous');
+    const anonymousNameGroup = document.getElementById('anonymousNameGroup');
+    const errorMessage = document.getElementById('errorMessage');
+    const successMessage = document.getElementById('successMessage');
+    const loadingSpinner = document.getElementById('loadingSpinner');
+    const submitBtn = document.getElementById('submitBtn');
+
+    // Auto-fill user details
+    window.addEventListener('DOMContentLoaded', async () => {
+      const token = localStorage.getItem('jwtToken');
+      if (token) {
+        try {
+          const response = await fetch('/api/user/me', {
+            headers: {
+              'Authorization': 'Bearer ' + token
+            }
+          });
+          
+          if (response.ok) {
+            const user = await response.json();
+            document.getElementById('donorName').value = `${user.firstName} ${user.lastName}`;
+            document.getElementById('donorEmail').value = user.email;
+            
+            // If it's an NGO, maybe they want to use the NGO name by default?
+            if (user.accountType === 'NGO' && user.ngoLegalName) {
+              document.getElementById('donorName').value = user.ngoLegalName;
+            }
+          }
+        } catch (error) {
+          console.error('Error fetching user data:', error);
+        }
+      }
+    });
+    
+    // Amount preset buttons
+    document.querySelectorAll('.amount-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const amount = btn.dataset.amount;
+        
+        document.querySelectorAll('.amount-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        
+        if (amount !== 'custom') {
+          amountInput.value = amount;
+        } else {
+          amountInput.value = '';
+          amountInput.focus();
+        }
+        
+        updateAmountDisplay();
+        clearError();
+      });
+    });
+    
+    // Update amount display
+    amountInput.addEventListener('input', () => {
+      updateAmountDisplay();
+      clearError();
+    });
+    
+    // Clear error on input
+    document.getElementById('donorName').addEventListener('input', clearError);
+    document.getElementById('donorEmail').addEventListener('input', clearError);
+    document.getElementById('anonymousDonorName').addEventListener('input', clearError);
+    
+    function updateAmountDisplay() {
+      const amount = parseFloat(amountInput.value) || 0;
+      amountDisplay.textContent = `₹${amount.toFixed(2)}`;
+    }
+    
+    // Anonymous checkbox
+    isAnonymousCheckbox.addEventListener('change', () => {
+      anonymousNameGroup.style.display = isAnonymousCheckbox.checked ? 'block' : 'none';
+    });
+    
+    // Form submission
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const amount = parseFloat(amountInput.value);
+      const donorName = document.getElementById('donorName').value;
+      const donorEmail = document.getElementById('donorEmail').value;
+      const donorPhone = document.getElementById('donorPhone').value;
+      const message = document.getElementById('message').value;
+      const isAnonymous = isAnonymousCheckbox.checked;
+      const anonymousDonorName = document.getElementById('anonymousDonorName').value;
+      
+      // Validation
+      if (amount < 1) {
+        showError('Minimum donation amount is ₹1');
+        return;
+      }
+      
+      if (amount > 100000) {
+        showError('Maximum donation amount is ₹100000');
+        return;
+      }
+      
+      if (!donorName || !donorEmail) {
+        showError('Please fill in all required fields');
+        return;
+      }
+      
+      if (isAnonymous && !anonymousDonorName) {
+        showError('Please enter a display name for anonymous donation');
+        return;
+      }
+      
+      // Show loading
+      loadingSpinner.style.display = 'block';
+      submitBtn.disabled = true;
+      errorMessage.style.display = 'none';
+      
+      try {
+        // Step 1: Initiate donation
+        const initiateResponse = await fetch('/api/donations/money/initiate', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + localStorage.getItem('jwtToken')
+          },
+          body: JSON.stringify({
+            amount,
+            donorName,
+            donorEmail,
+            donorPhone,
+            message,
+            isAnonymous,
+            anonymousDonorName: isAnonymous ? anonymousDonorName : null,
+            paymentMethod: 'RAZORPAY'
+          })
+        });
+        
+        if (!initiateResponse.ok) {
+          throw new Error('Failed to initiate donation');
+        }
+        
+        const initiateData = await initiateResponse.json();
+        
+        if (!initiateData.success) {
+          throw new Error(initiateData.message || 'Failed to initiate donation');
+        }
+        
+        const { donationId, order, razorpayKeyId } = initiateData.data;
+        
+        // Step 2: Open Razorpay checkout
+        openRazorpayCheckout(
+          razorpayKeyId,
+          order.orderId,
+          amount,
+          donorEmail,
+          donorName,
+          donationId
+        );
+        
+      } catch (error) {
+        showError(error.message || 'Failed to process donation');
+      } finally {
+        loadingSpinner.style.display = 'none';
+        submitBtn.disabled = false;
+      }
+    });
+    
+    function openRazorpayCheckout(keyId, orderId, amount, email, name, donationId) {
+      if (keyId === 'mock_key') {
+        showSuccess('Simulating payment... Please wait.');
+        setTimeout(() => {
+          verifyPayment({
+            razorpay_order_id: orderId,
+            razorpay_payment_id: 'pay_mock_' + Date.now(),
+            razorpay_signature: 'mock_signature'
+          }, donationId);
+        }, 1500);
+        return;
+      }
+
+      const options = {
+        key: keyId,
+        amount: Math.round(amount * 100),
+        currency: 'INR',
+        order_id: orderId,
+        name: 'CareShare',
+        description: `Donation - ${name}`,
+        prefill: {
+          name: name,
+          email: email
+        },
+        handler: function(response) {
+          verifyPayment(response, donationId);
+        },
+        modal: {
+          ondismiss: function() {
+            showError('Payment cancelled');
+          }
+        }
+      };
+      
+      const rzp = new Razorpay(options);
+      rzp.open();
+    }
+    
+    async function verifyPayment(response, donationId) {
+      try {
+        loadingSpinner.style.display = 'block';
+        
+        const verifyResponse = await fetch('/api/donations/money/verify-payment', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + localStorage.getItem('jwtToken')
+          },
+          body: JSON.stringify({
+            donationId: donationId,
+            orderId: response.razorpay_order_id,
+            paymentId: response.razorpay_payment_id,
+            signature: response.razorpay_signature
+          })
+        });
+        
+        const verifyData = await verifyResponse.json();
+        
+        if (!verifyData.success) {
+          throw new Error(verifyData.message || 'Payment verification failed');
+        }
+        
+        // Payment successful
+        showSuccess('Thank you! Your donation has been received. Receipt will be downloaded shortly.');
+        
+        // Redirect or download receipt
+        setTimeout(() => {
+          if (verifyData.data.receiptUrl) {
+            window.location.href = verifyData.data.receiptUrl;
+          } else {
+            window.location.href = '/dashboard';
+          }
+        }, 2000);
+        
+      } catch (error) {
+        showError('Payment verification failed: ' + error.message);
+      } finally {
+        loadingSpinner.style.display = 'none';
+      }
+    }
+    
+    function showError(message) {
+      errorMessage.textContent = message;
+      errorMessage.style.display = 'block';
+      successMessage.style.display = 'none';
+    }
+    
+    function showSuccess(message) {
+      successMessage.textContent = message;
+      successMessage.style.display = 'block';
+      errorMessage.style.display = 'none';
+    }
+    
+    function clearError() {
+      errorMessage.style.display = 'none';
+      successMessage.style.display = 'none';
+    }
+  </script>
+</body>
+</html>

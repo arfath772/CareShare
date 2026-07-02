@@ -60,6 +60,23 @@
             border-top: 4px solid var(--donate-color);
             height: 100%;
         }
+        /* Ensure interactive controls inside cards remain clickable
+           even if carousels or overlays exist above them. */
+        .item-card .card-body,
+        .item-card .card-body button {
+            position: relative;
+            z-index: 2;
+            pointer-events: auto;
+        }
+        /* Make carousel container ignore pointer events so buttons underneath
+           receive clicks; keep nav buttons clickable explicitly. */
+        .image-carousel-container {
+            pointer-events: none;
+        }
+        .image-carousel-container .carousel-nav {
+            pointer-events: auto;
+            z-index: 3;
+        }
         .item-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 15px 30px rgba(0,0,0,0.1);
@@ -884,12 +901,12 @@
                             </p>
 
                             <button class="btn btn-view-details"
-                                onclick="viewDetails(${item.id})">
+                                onclick="viewDetails('${item.id}')">
                                 <i class="fa-solid fa-eye me-1"></i> View Details
                             </button>
 
                             <button class="btn btn-request"
-                                onclick="openRequestModal(${item.id}, '${item.itemName.replace(/'/g, "\\'")}', '${donorName.replace(/'/g, "\\'")}')">
+                                onclick="openRequestModal('${item.id}', '${item.itemName.replace(/'/g, "\\'")}', '${donorName.replace(/'/g, "\\'")}')">
                                 <i class="fa-solid fa-hand-holding-heart me-1"></i> Request
                             </button>
                         </div>

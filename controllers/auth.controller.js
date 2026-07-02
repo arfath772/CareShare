@@ -1,5 +1,25 @@
 const userService = require('../services/user.service');
 const { generateToken } = require('../middleware/auth.middleware');
+const { User } = require('../models');
+
+const buildNgoDocumentsFromFiles = (files = {}) => {
+  const documentMap = {};
+
+  Object.keys(files).forEach((key) => {
+    const uploaded = files[key] && files[key][0];
+    if (uploaded) {
+      documentMap[key] = {
+        storage: 'mongodb',
+        filename: uploaded.originalname,
+        contentType: uploaded.mimetype,
+        data: uploaded.buffer,
+        uploadedAt: new Date()
+      };
+    }
+  });
+
+  return documentMap;
+};
 
 class AuthController {
   // Login
@@ -23,6 +43,14 @@ class AuthController {
         return res.status(401).json({ message: 'Invalid email or password' });
       }
 
+      if (user.accountType === 'NGO' && user.ngoStatus !== 'APPROVED') {
+        const statusMessage = user.ngoStatus === 'REJECTED'
+          ? `NGO account rejected: ${user.ngoRejectionReason || 'Please contact admin'}`
+          : 'NGO account is pending admin approval';
+
+        return res.status(403).json({ message: statusMessage });
+      }
+
       // Generate JWT token
       const token = generateToken(user);
 
@@ -40,7 +68,9 @@ class AuthController {
         firstName: user.firstName,
         lastName: user.lastName,
         isAdmin: user.isAdmin,
-        roles: user.roles
+        roles: user.roles,
+        accountType: user.accountType,
+        ngoStatus: user.ngoStatus
       });
     } catch (error) {
       console.error('Login error:', error);
@@ -51,14 +81,41 @@ class AuthController {
   // Register
   async register(req, res) {
     try {
-      const { email, password, firstName, lastName } = req.body;
+      const {
+        email,
+        password,
+        firstName,
+        lastName,
+        accountType,
+        ngoLegalName,
+        ngoDarpanId,
+        ngoPan,
+        ngoOfficeAddress,
+        hasFcra
+      } = req.body;
 
-      const user = await userService.registerUser(email, password, firstName, lastName);
+      const ngoDocuments = buildNgoDocumentsFromFiles(req.files);
+
+      const user = await userService.registerUser(email, password, firstName, lastName, {
+        accountType,
+        ngoLegalName,
+        ngoDarpanId,
+        ngoPan,
+        ngoOfficeAddress,
+        ngoDocuments,
+        hasFcra: String(hasFcra).toLowerCase() === 'true'
+      });
+
+      const isNgo = user.accountType === 'NGO';
 
       return res.json({
-        message: 'User registered successfully!',
+        message: isNgo
+          ? 'NGO registered successfully. You can login after admin approval.'
+          : 'User registered successfully!',
         email: user.email,
-        firstName: user.firstName
+        firstName: user.firstName,
+        accountType: user.accountType,
+        ngoStatus: user.ngoStatus
       });
     } catch (error) {
       console.error('Registration error:', error);
@@ -180,6 +237,47 @@ class AuthController {
         message: 'Error validating token',
         success: false
       });
+    }
+  }
+
+  // Stream NGO document (owner/admin only)
+  async getNgoDocument(req, res) {
+    try {
+      const { userId, docKey } = req.params;
+      const requester = req.user;
+
+      if (!requester) {
+        return res.status(401).json({ message: 'Authentication required' });
+      }
+
+      const isOwner = String(requester._id || requester.id) === String(userId);
+      const isAdmin = !!requester.isAdmin;
+      if (!isOwner && !isAdmin) {
+        return res.status(403).json({ message: 'Not authorized to view this document' });
+      }
+
+      const user = await User.findById(userId).select('ngoDocuments');
+      if (!user || !user.ngoDocuments || !user.ngoDocuments[docKey]) {
+        return res.status(404).json({ message: 'Document not found' });
+      }
+
+      const doc = user.ngoDocuments[docKey];
+
+      if (typeof doc === 'string' && doc.trim().length > 0) {
+        return res.redirect(doc);
+      }
+
+      if (doc && typeof doc === 'object' && doc.data) {
+        const filename = doc.filename || `${docKey}`;
+        res.setHeader('Content-Type', doc.contentType || 'application/octet-stream');
+        res.setHeader('Content-Disposition', `inline; filename="${filename}"`);
+        return res.send(doc.data);
+      }
+
+      return res.status(404).json({ message: 'Document not found' });
+    } catch (error) {
+      console.error('Get NGO document error:', error);
+      return res.status(500).json({ message: 'Error retrieving NGO document' });
     }
   }
 }

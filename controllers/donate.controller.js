@@ -64,6 +64,24 @@ class DonateController {
     }
   }
 
+  // Get donation image by index
+  async getDonationImage(req, res) {
+    try {
+      const { id, index } = req.params;
+      const image = await donateItemService.getDonationImage(id, index);
+
+      if (image.redirectUrl) {
+        return res.redirect(image.redirectUrl);
+      }
+
+      res.setHeader('Content-Type', image.contentType || 'application/octet-stream');
+      return res.send(image.data);
+    } catch (error) {
+      console.error('Get donation image error:', error);
+      return res.status(404).json({ message: error.message || 'Image not found' });
+    }
+  }
+
   // Delete donation
   async deleteDonation(req, res) {
     try {
@@ -81,7 +99,8 @@ class DonateController {
     try {
       const requestData = {
         donationId: req.body.donationId,
-        description: req.body.description
+        description: req.body.description,
+        quantity: req.body.quantity || 1
       };
 
       const request = await donateRequestService.createRequest(requestData, req.user.id);
@@ -95,11 +114,18 @@ class DonateController {
   // Get my donation requests
   async getMyRequests(req, res) {
     try {
+      if (!req.user || !req.user.id) {
+        return res.status(401).json({ message: 'User not authenticated' });
+      }
+      
       const requests = await donateRequestService.getMyRequests(req.user.id);
       return res.json(requests);
     } catch (error) {
       console.error('Get my requests error:', error);
-      return res.status(400).json({ message: error.message });
+      return res.status(500).json({ 
+        message: 'Failed to fetch donation requests',
+        error: error.message 
+      });
     }
   }
 }

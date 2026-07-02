@@ -1,49 +1,22 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../config/db.config');
+const mongoose = require('mongoose');
 
-const DonateRequest = sequelize.define('DonateRequest', {
-  id: {
-    type: DataTypes.BIGINT,
-    primaryKey: true,
-    autoIncrement: true
-  },
-  donationId: {
-    type: DataTypes.BIGINT,
-    allowNull: false,
-    references: {
-      model: 'donate_items',
-      key: 'id'
-    }
-  },
-  receiverUserId: {
-    type: DataTypes.BIGINT,
-    allowNull: false,
-    references: {
-      model: 'users',
-      key: 'id'
-    }
-  },
-  status: {
-    type: DataTypes.ENUM('PENDING', 'APPROVED', 'REJECTED'),
-    defaultValue: 'PENDING',
-    allowNull: false
-  },
-  requestedDate: {
-    type: DataTypes.DATE,
-    defaultValue: DataTypes.NOW,
-    allowNull: false
-  },
-  description: {
-    type: DataTypes.TEXT,
-    allowNull: true
-  },
-  rejectionReason: {
-    type: DataTypes.TEXT,
-    allowNull: true
-  }
+const donateRequestSchema = new mongoose.Schema({
+  donationId: { type: mongoose.Schema.Types.ObjectId, ref: 'DonateItem', required: true },
+  receiverUserId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  status: { type: String, enum: ['PENDING', 'APPROVED', 'REJECTED'], default: 'PENDING' },
+  description: String,
+  rejectionReason: String,
+  quantity: { type: Number, default: 1, min: 1 }
 }, {
-  tableName: 'donate_requests',
-  timestamps: false
+  timestamps: true,
+  toJSON: {
+    virtuals: true,
+    transform: (_doc, ret) => {
+      ret.id = ret._id.toString();
+      return ret;
+    }
+  },
+  toObject: { virtuals: true }
 });
 
-module.exports = DonateRequest;
+module.exports = mongoose.model('DonateRequest', donateRequestSchema);

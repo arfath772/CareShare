@@ -5,7 +5,7 @@ class ExchangeRequestService {
   async submitExchangeRequest(requestData, files, userId) {
     try {
       // Check if target product exists
-      const targetProduct = await Product.findByPk(requestData.targetProductId);
+      const targetProduct = await Product.findById(requestData.targetProductId);
       if (!targetProduct) {
         throw new Error('Target product not found');
       }
@@ -19,7 +19,7 @@ class ExchangeRequestService {
         ? files.map(file => `/uploads/exchange-items/${file.filename}`)
         : [];
 
-      const exchangeRequest = await ExchangeRequest.create({
+      const exchangeRequest = new ExchangeRequest({
         targetProductId: requestData.targetProductId,
         exchangeItemName: requestData.itemName,
         exchangeItemCategory: requestData.category,
@@ -27,31 +27,16 @@ class ExchangeRequestService {
         exchangeItemImages: imagePaths,
         additionalMessage: requestData.additionalMessage || '',
         requesterId: userId,
-        status: 'PENDING',
-        createdAt: new Date()
+        status: 'PENDING'
       });
+
+      await exchangeRequest.save();
 
       // Load relationships
-      await exchangeRequest.reload({
-        include: [
-          {
-            model: Product,
-            as: 'targetProduct',
-            include: [{
-              model: User,
-              as: 'user',
-              attributes: ['id', 'firstName', 'lastName', 'email']
-            }]
-          },
-          {
-            model: User,
-            as: 'requester',
-            attributes: ['id', 'firstName', 'lastName', 'email']
-          }
-        ]
-      });
-
-      return exchangeRequest;
+      return await exchangeRequest.populate([
+        { path: 'targetProductId', populate: { path: 'userId', select: 'firstName lastName email' } },
+        { path: 'requesterId', select: 'firstName lastName email' }
+      ]);
     } catch (error) {
       console.error('Error submitting exchange request:', error);
       throw error;
@@ -60,104 +45,44 @@ class ExchangeRequestService {
 
   // Get user's exchange requests
   async getUserExchangeRequests(userId, status = null) {
-    const where = { requesterId: userId };
-    if (status) where.status = status;
+    const filter = { requesterId: userId };
+    if (status) filter.status = status;
 
-    return await ExchangeRequest.findAll({
-      where,
-      include: [
-        {
-          model: Product,
-          as: 'targetProduct',
-          include: [{
-            model: User,
-            as: 'user',
-            attributes: ['id', 'firstName', 'lastName', 'email']
-          }]
-        },
-        {
-          model: User,
-          as: 'requester',
-          attributes: ['id', 'firstName', 'lastName', 'email']
-        }
-      ],
-      order: [['createdAt', 'DESC']]
-    });
+    return await ExchangeRequest.find(filter)
+      .populate({ path: 'targetProductId', populate: { path: 'userId', select: 'firstName lastName email' } })
+      .populate('requesterId', 'firstName lastName email')
+      .sort({ createdAt: -1 });
   }
 
   // Get received exchange requests (for product owners)
   async getReceivedExchangeRequests(userId, status = null) {
-    const where = status ? { status } : {};
+    const exchangeRequests = await ExchangeRequest.find(status ? { status } : {})
+      .populate({
+        path: 'targetProductId',
+        match: { userId },
+        populate: { path: 'userId', select: 'firstName lastName email' }
+      })
+      .populate('requesterId', 'firstName lastName email')
+      .sort({ createdAt: -1 });
 
-    return await ExchangeRequest.findAll({
-      where,
-      include: [
-        {
-          model: Product,
-          as: 'targetProduct',
-          where: { userId },
-          include: [{
-            model: User,
-            as: 'user',
-            attributes: ['id', 'firstName', 'lastName', 'email']
-          }]
-        },
-        {
-          model: User,
-          as: 'requester',
-          attributes: ['id', 'firstName', 'lastName', 'email']
-        }
-      ],
-      order: [['createdAt', 'DESC']]
-    });
+    return exchangeRequests.filter(req => req.targetProductId);
   }
 
   // Get all exchange requests (admin)
   async getAllExchangeRequests(status = null) {
-    const where = status ? { status } : {};
+    const filter = status ? { status } : {};
 
-    return await ExchangeRequest.findAll({
-      where,
-      include: [
-        {
-          model: Product,
-          as: 'targetProduct',
-          include: [{
-            model: User,
-            as: 'user',
-            attributes: ['id', 'firstName', 'lastName', 'email']
-          }]
-        },
-        {
-          model: User,
-          as: 'requester',
-          attributes: ['id', 'firstName', 'lastName', 'email']
-        }
-      ],
-      order: [['createdAt', 'DESC']]
-    });
+    return await ExchangeRequest.find(filter)
+      .populate({ path: 'targetProductId', populate: { path: 'userId', select: 'firstName lastName email' } })
+      .populate('requesterId', 'firstName lastName email')
+      .sort({ createdAt: -1 });
   }
 
   // Find exchange request by ID
   async findById(id) {
-    return await ExchangeRequest.findByPk(id, {
-      include: [
-        {
-          model: Product,
-          as: 'targetProduct',
-          include: [{
-            model: User,
-            as: 'user',
-            attributes: ['id', 'firstName', 'lastName', 'email']
-          }]
-        },
-        {
-          model: User,
-          as: 'requester',
-          attributes: ['id', 'firstName', 'lastName', 'email']
-        }
-      ]
-    });
+    return await ExchangeRequest.findById(id)
+      .populate({ path: 'targetProductId', populate: { path: 'userId', select: 'firstName lastName email' } })
+      .populate('requesterId', 'firstName lastName email');
   }
 
   // Approve exchange request (admin or owner)
@@ -189,12 +114,12 @@ class ExchangeRequestService {
 
   // Delete exchange request
   async deleteExchangeRequest(id) {
-    const request = await ExchangeRequest.findByPk(id);
+    const request = await ExchangeRequest.findById(id);
     if (!request) {
       throw new Error('Exchange request not found');
     }
 
-    await request.destroy();
+    await request.remove();
   }
 
   // Save exchange request
@@ -204,8 +129,8 @@ class ExchangeRequestService {
 
   // Get exchange request count by status
   async getExchangeRequestCount(status = null) {
-    const where = status ? { status } : {};
-    return await ExchangeRequest.count({ where });
+    const filter = status ? { status } : {};
+    return await ExchangeRequest.countDocuments(filter);
   }
 }
 

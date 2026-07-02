@@ -249,6 +249,12 @@
         return `<span class="badge bg-secondary">${status}</span>`;
     }
 
+    function formatDisplayDate(value) {
+        if (!value) return 'Date not available';
+        const date = new Date(value);
+        return Number.isNaN(date.getTime()) ? 'Date not available' : date.toLocaleDateString();
+    }
+
     // 1. Fetch Donations made by User
     async function fetchMyDonations() {
         const container = document.getElementById('myDonationsList');
@@ -310,20 +316,27 @@
                 return;
             }
 
-            container.innerHTML = requests.map(req => `
+            container.innerHTML = requests.map(req => {
+                // Handle cases where donateItem might be null
+                const itemName = req.donateItem?.itemName || 'Item no longer available';
+                const imageUrl = req.donateItem?.imageUrl || 'https://via.placeholder.com/50';
+                const requestedDate = formatDisplayDate(req.createdAt || req.requestedDate);
+                
+                return `
                 <div class="activity-item">
                     <div class="d-flex align-items-center">
-                        <img src="${req.donateItem.imageUrl || 'https://via.placeholder.com/50'}" class="item-thumb" alt="Item">
+                        <img src="${imageUrl}" class="item-thumb" alt="Item">
                         <div>
-                            <div class="fw-bold">${req.donateItem.itemName}</div>
-                            <small class="text-muted">Requested on ${new Date(req.requestedDate).toLocaleDateString()}</small>
+                            <div class="fw-bold">${itemName}</div>
+                            <small class="text-muted">Requested on ${requestedDate}</small>
                         </div>
                     </div>
                     <div>
                         ${getStatusBadge(req.status)}
                     </div>
                 </div>
-            `).join('');
+                `;
+            }).join('');
 
         } catch (err) {
             console.error(err);
