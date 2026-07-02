@@ -45,11 +45,32 @@ const donateItemSchema = new mongoose.Schema({
 
       ret.imageUrl = ret.mainImageUrl || ret.imageUrls[0] || null;
 
+      ret.donor = {
+        firstName: 'CareShare',
+        lastName: 'Admin',
+        email: 'mohammedarfath46982@gmail.com',
+        phone: '9113611658',
+        phoneNumber: '9113611658'
+      };
+
       delete ret.donationImages;
       return ret;
     }
   },
-  toObject: { virtuals: true }
+  toObject: { 
+    virtuals: true,
+    transform: (_doc, ret) => {
+      ret.id = ret._id.toString();
+      ret.donor = {
+        firstName: 'CareShare',
+        lastName: 'Admin',
+        email: 'mohammedarfath46982@gmail.com',
+        phone: '9113611658',
+        phoneNumber: '9113611658'
+      };
+      return ret;
+    }
+  }
 });
 
 module.exports = mongoose.model('DonateItem', donateItemSchema);

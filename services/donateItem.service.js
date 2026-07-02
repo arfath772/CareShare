@@ -51,21 +51,21 @@ class DonateItemService {
     }
 
     return await DonateItem.find(filter)
-      .populate('userId', 'id firstName lastName email')
+      .populate('userId', 'id firstName lastName email phone phoneNumber')
       .sort({ createdAt: -1 });
   }
 
   // Get user's donations
   async getMyDonations(userId) {
     return await DonateItem.find({ userId })
-      .populate('userId', 'id firstName lastName email')
+      .populate('userId', 'id firstName lastName email phone phoneNumber')
       .sort({ createdAt: -1 });
   }
 
   // Get donation by ID
   async getDonationById(id) {
     const donation = await DonateItem.findById(id)
-      .populate('userId', 'id firstName lastName email');
+      .populate('userId', 'id firstName lastName email phone phoneNumber');
 
     if (donation && donation.imageUrls) {
       try {

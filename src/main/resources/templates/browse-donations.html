@@ -449,13 +449,17 @@
                     </div>
                     <div class="card-body">
                         <div class="row">
-                            <div class="col-md-6 mb-2">
+                            <div class="col-md-4 mb-2">
                                 <small class="text-muted d-block">Donor Name</small>
                                 <strong id="modalDonorName" class="text-dark"></strong>
                             </div>
-                            <div class="col-md-6 mb-2">
+                            <div class="col-md-4 mb-2">
                                 <small class="text-muted d-block">Contact Email</small>
                                 <strong id="modalDonorEmail" class="text-dark"></strong>
+                            </div>
+                            <div class="col-md-4 mb-2">
+                                <small class="text-muted d-block">Contact Phone</small>
+                                <strong id="modalDonorPhone" class="text-dark"></strong>
                             </div>
                         </div>
                     </div>
@@ -552,6 +556,10 @@
                             <div class="detail-item">
                                 <span class="detail-label">Email:</span>
                                 <span class="detail-value" id="detailDonorEmail"></span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Phone:</span>
+                                <span class="detail-value" id="detailDonorPhone"></span>
                             </div>
                         </div>
                     </div>
@@ -955,6 +963,7 @@
             // Get donor info
             const donorName = item.donor ? `${item.donor.firstName} ${item.donor.lastName || ''}` : 'Anonymous';
             const donorEmail = item.donor ? item.donor.email : 'Not available';
+            const donorPhone = item.donor ? (item.donor.phone || item.donor.phoneNumber || 'Not available') : 'Not available';
 
             // Get first image for preview
             const firstImage = item.imageUrls && item.imageUrls.length > 0
@@ -970,6 +979,7 @@
             document.getElementById('modalItemAddress').textContent = item.pickupAddress || 'Not specified';
             document.getElementById('modalDonorName').textContent = donorName;
             document.getElementById('modalDonorEmail').textContent = donorEmail;
+            document.getElementById('modalDonorPhone').textContent = donorPhone;
 
             // Set image preview
             const imgElement = document.getElementById('modalItemImage');
@@ -1009,6 +1019,7 @@
             // Get donor info
             const donorName = item.donor ? `${item.donor.firstName} ${item.donor.lastName || ''}` : 'Anonymous';
             const donorEmail = item.donor ? item.donor.email : 'Not available';
+            const donorPhone = item.donor ? (item.donor.phone || item.donor.phoneNumber || 'Not available') : 'Not available';
 
             // Get images
             const images = item.imageUrls && item.imageUrls.length > 0
@@ -1024,6 +1035,7 @@
             document.getElementById('detailDate').textContent = new Date(item.createdAt).toLocaleDateString();
             document.getElementById('detailDonorName').textContent = donorName;
             document.getElementById('detailDonorEmail').textContent = donorEmail;
+            document.getElementById('detailDonorPhone').textContent = donorPhone;
 
             // Initialize carousel with images
             initModalCarousel(images);
@@ -1068,6 +1080,7 @@
             document.getElementById('modalItemAddress').textContent = currentItemForRequest.pickupAddress || 'Not specified';
             document.getElementById('modalDonorName').textContent = donorName;
             document.getElementById('modalDonorEmail').textContent = currentItemForRequest.donor ? currentItemForRequest.donor.email : 'Not available';
+            document.getElementById('modalDonorPhone').textContent = currentItemForRequest.donor ? (currentItemForRequest.donor.phone || currentItemForRequest.donor.phoneNumber || 'Not available') : 'Not available';
 
             // Set image preview
             const firstImage = currentItemForRequest.imageUrls && currentItemForRequest.imageUrls.length > 0
