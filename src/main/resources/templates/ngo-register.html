@@ -88,6 +88,10 @@
                         <label class="form-label">Office Location (City, State) <span class="required">*</span></label>
                         <input id="location" class="form-control" required>
                     </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Phone Number <span class="required">*</span></label>
+                        <input id="phone" type="tel" class="form-control" required>
+                    </div>
                 </div>
             </div>
 
@@ -232,6 +236,7 @@
         const password = document.getElementById('password').value;
         const confirmPassword = document.getElementById('confirmPassword').value;
         const location = document.getElementById('location').value.trim();
+        const phone = document.getElementById('phone').value.trim();
         const ngoLegalName = document.getElementById('ngoLegalName').value.trim();
         const ngoPan = document.getElementById('ngoPan').value.trim();
         const ngoDarpanId = document.getElementById('ngoDarpanId').value.trim();
@@ -254,6 +259,8 @@
         formData.append('email', email);
         formData.append('password', password);
         formData.append('location', location);
+        formData.append('phone', phone);
+        formData.append('phoneNumber', phone);
         formData.append('accountType', 'NGO');
         formData.append('ngoLegalName', ngoLegalName);
         formData.append('ngoPan', ngoPan);

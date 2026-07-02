@@ -12,7 +12,9 @@ class UserService {
       ngoPan,
       ngoOfficeAddress,
       ngoDocuments = {},
-      hasFcra = false
+      hasFcra = false,
+      phone,
+      phoneNumber
     } = options;
 
     // Validate input
@@ -70,6 +72,8 @@ class UserService {
       password,
       firstName: firstName.trim(),
       lastName: lastName.trim(),
+      phone: phone || phoneNumber,
+      phoneNumber: phoneNumber || phone,
       roles: ['ROLE_USER'],
       isAdmin: false,
       accountType: normalizedAccountType,

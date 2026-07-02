@@ -314,6 +314,11 @@
                 <i class="bi bi-envelope-fill"></i>
             </div>
 
+            <div class="input-box">
+                <input id="phone" name="phone" type="tel" placeholder="Phone Number" required />
+                <i class="bi bi-telephone-fill"></i>
+            </div>
+
             <div class="form-row">
                 <div class="input-box">
                     <input id="password" name="password" type="password" placeholder="Password" required />
@@ -394,13 +399,14 @@
       const firstName = document.getElementById('firstName').value;
       const lastName = document.getElementById('lastName').value;
       const email = document.getElementById('email').value;
+      const phone = document.getElementById('phone').value;
       const password = document.getElementById('password').value;
       const confirmPassword = document.getElementById('confirmPassword').value;
       const location = document.getElementById('location').value;
       const terms = document.getElementById('terms').checked;
 
       // Basic validation
-      if (!firstName || !lastName || !email || !password || !confirmPassword || !location) {
+      if (!firstName || !lastName || !email || !phone || !password || !confirmPassword || !location) {
         showAlert('Please fill in all fields', 'danger');
         return;
       }
@@ -420,6 +426,8 @@
         lastName: lastName,
         email: email,
         password: password,
+        phone: phone,
+        phoneNumber: phone,
         location: location,
         accountType: 'USER'
       };

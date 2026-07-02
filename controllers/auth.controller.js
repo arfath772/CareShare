@@ -91,7 +91,9 @@ class AuthController {
         ngoDarpanId,
         ngoPan,
         ngoOfficeAddress,
-        hasFcra
+        hasFcra,
+        phone,
+        phoneNumber
       } = req.body;
 
       const ngoDocuments = buildNgoDocumentsFromFiles(req.files);
@@ -103,7 +105,9 @@ class AuthController {
         ngoPan,
         ngoOfficeAddress,
         ngoDocuments,
-        hasFcra: String(hasFcra).toLowerCase() === 'true'
+        hasFcra: String(hasFcra).toLowerCase() === 'true',
+        phone: phone || phoneNumber,
+        phoneNumber: phoneNumber || phone
       });
 
       const isNgo = user.accountType === 'NGO';
