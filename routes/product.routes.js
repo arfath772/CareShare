@@ -17,5 +17,6 @@ router.get('/my-products/:status', authenticateToken, productController.getMyPro
 router.get('/available', productController.getAvailableProducts);
 router.get('/available/:type', productController.getAvailableProductsByType);
 router.get('/:id', productController.getProductById);
+router.get('/:id/image/:index', productController.getProductImage);
 
 module.exports = router;

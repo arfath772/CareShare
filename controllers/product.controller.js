@@ -143,6 +143,20 @@ class ProductController {
         return products;
     }
   }
+
+  // Get product image by index
+  async getProductImage(req, res) {
+    try {
+      const { id, index } = req.params;
+      const image = await productService.getProductImage(id, index);
+
+      res.setHeader('Content-Type', image.contentType || 'application/octet-stream');
+      return res.send(image.data);
+    } catch (error) {
+      console.error('Get product image error:', error);
+      return res.status(404).json({ message: error.message || 'Image not found' });
+    }
+  }
 }
 
 module.exports = new ProductController();

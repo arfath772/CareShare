@@ -18,13 +18,25 @@ class ProductService {
         userId: userId
       });
 
-      // Handle images
-      if (files && files.length > 0) {
-        const imagePaths = files.map(file => `/uploads/products/${file.filename}`);
-        product.imagePath = imagePaths[0]; // First image as main
-        product.imagePaths = imagePaths;
+      // Handle memory storage images
+      const productImages = Array.isArray(files)
+        ? files
+          .filter((file) => file && file.buffer)
+          .map((file) => ({
+            filename: file.originalname,
+            contentType: file.mimetype,
+            data: file.buffer
+          }))
+        : [];
+
+      product.productImages = productImages;
+
+      if (productImages.length > 0) {
+        product.imagePath = `/api/products/${product._id.toString()}/image/0`;
+        product.imagePaths = productImages.map((_, index) => `/api/products/${product._id.toString()}/image/${index}`);
       } else {
         product.imagePath = '/uploads/default-product.png';
+        product.imagePaths = [];
       }
 
       await product.save();
@@ -102,6 +114,29 @@ class ProductService {
   // Get approved products count
   async getApprovedProductsCount() {
     return await Product.countDocuments({ status: 'APPROVED' });
+  }
+
+  // Get product image by index
+  async getProductImage(productId, imageIndex) {
+    const product = await Product.findById(productId).select('productImages');
+    if (!product) {
+      throw new Error('Product not found');
+    }
+
+    if (Array.isArray(product.productImages) && product.productImages.length > 0) {
+      const index = Number.parseInt(imageIndex, 10);
+      if (Number.isNaN(index) || index < 0 || index >= product.productImages.length) {
+        throw new Error('Image not found');
+      }
+
+      const img = product.productImages[index];
+      return {
+        contentType: img.contentType || 'application/octet-stream',
+        data: img.data
+      };
+    }
+
+    throw new Error('Product has no images');
   }
 }
 

@@ -70,7 +70,7 @@ const ngoDocumentFilter = (req, file, cb) => {
 
 // Create multer instances
 const uploadProduct = multer({
-  storage: productStorage,
+  storage: multer.memoryStorage(),
   fileFilter: imageFilter,
   limits: {
     fileSize: parseInt(process.env.MAX_FILE_SIZE) || 10 * 1024 * 1024 // 10MB

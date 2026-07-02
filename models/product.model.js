@@ -13,11 +13,38 @@ const productSchema = new mongoose.Schema({
   userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   approvedAt: Date,
   rejectedAt: Date,
-  rejectionReason: String
+  rejectionReason: String,
+  productImages: [{
+    filename: String,
+    contentType: String,
+    data: Buffer
+  }]
 }, { 
   timestamps: true,
-  toJSON: { virtuals: true },
-  toObject: { virtuals: true }
+  toJSON: { 
+    virtuals: true,
+    transform: (doc, ret) => {
+      ret.id = ret._id.toString();
+      if (Array.isArray(ret.productImages) && ret.productImages.length > 0) {
+        ret.imagePaths = ret.productImages.map((_, index) => `/api/products/${ret.id}/image/${index}`);
+        ret.imagePath = ret.imagePaths[0];
+      }
+      delete ret.productImages;
+      return ret;
+    }
+  },
+  toObject: { 
+    virtuals: true,
+    transform: (doc, ret) => {
+      ret.id = ret._id.toString();
+      if (Array.isArray(ret.productImages) && ret.productImages.length > 0) {
+        ret.imagePaths = ret.productImages.map((_, index) => `/api/products/${ret.id}/image/${index}`);
+        ret.imagePath = ret.imagePaths[0];
+      }
+      delete ret.productImages;
+      return ret;
+    }
+  }
 });
 
 productSchema.virtual('user').get(function() {
