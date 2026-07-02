@@ -4,6 +4,8 @@ const exchangeRequestService = require('../services/exchangeRequest.service');
 const donateItemService = require('../services/donateItem.service');
 const donateRequestService = require('../services/donateRequest.service');
 const emailService = require('../services/email.service');
+const moneyDonationService = require('../services/moneyDonation.service');
+const paymentService = require('../services/payment.service');
 
 class AdminController {
   // Get all users
@@ -178,6 +180,19 @@ class AdminController {
     }
   }
 
+  // Adjust donation quantity
+  async adjustDonatedItemQuantity(req, res) {
+    try {
+      const { id } = req.params;
+      const delta = Number.parseInt(req.body.delta, 10);
+      const donation = await donateItemService.adjustDonationQuantity(id, delta);
+      return res.json(donation);
+    } catch (error) {
+      console.error('Adjust donation quantity error:', error);
+      return res.status(400).json({ message: error.message });
+    }
+  }
+
   // Get pending donation requests
   async getPendingDonationRequests(req, res) {
     try {
@@ -341,6 +356,152 @@ class AdminController {
     } catch (error) {
       console.error('Delete exchange request error:', error);
       return res.status(400).json({ message: 'Error deleting exchange request: ' + error.message });
+    }
+  }
+
+  async getPendingNgoUsers(req, res) {
+    try {
+      const ngoUsers = await userService.getPendingNgoUsers();
+      return res.json(ngoUsers);
+    } catch (error) {
+      console.error('Get pending NGO users error:', error);
+      return res.status(400).json({ message: 'Error fetching pending NGO users: ' + error.message });
+    }
+  }
+
+  async getAllNgoUsers(req, res) {
+    try {
+      const ngoUsers = await userService.getAllNgoUsers();
+      return res.json(ngoUsers);
+    } catch (error) {
+      console.error('Get all NGO users error:', error);
+      return res.status(400).json({ message: 'Error fetching NGO users: ' + error.message });
+    }
+  }
+
+  async approveNgoUser(req, res) {
+    try {
+      const { userId } = req.params;
+      const user = await userService.approveNgoUser(userId);
+
+      return res.json({
+        message: 'NGO user approved successfully',
+        user
+      });
+    } catch (error) {
+      console.error('Approve NGO user error:', error);
+      return res.status(400).json({ message: 'Error approving NGO user: ' + error.message });
+    }
+  }
+
+  async rejectNgoUser(req, res) {
+    try {
+      const { userId } = req.params;
+      const { reason } = req.body;
+
+      const user = await userService.rejectNgoUser(userId, reason);
+
+      return res.json({
+        message: 'NGO user rejected successfully',
+        user
+      });
+    } catch (error) {
+      console.error('Reject NGO user error:', error);
+      return res.status(400).json({ message: 'Error rejecting NGO user: ' + error.message });
+    }
+  }
+
+  // Get all money donations
+  async getAllMoneyDonations(req, res) {
+    try {
+      const { status, startDate, endDate, limit, offset } = req.query;
+      
+      const donations = await moneyDonationService.getAllDonations({
+        status,
+        startDate,
+        endDate,
+        limit: parseInt(limit) || 100,
+        offset: parseInt(offset) || 0
+      });
+
+      // Ensure Decimal128 `amount` values are converted to plain numbers/strings
+      const donationsSerialized = donations.map(d => {
+        const obj = (typeof d.toObject === 'function') ? d.toObject() : { ...d };
+        try {
+          if (obj.amount && obj.amount.toString) {
+            // Decimal128 -> string like "123.45"
+            obj.amount = parseFloat(obj.amount.toString());
+          } else {
+            obj.amount = parseFloat(obj.amount) || 0;
+          }
+        } catch (e) {
+          obj.amount = 0;
+        }
+        return obj;
+      });
+
+      return res.json({
+        success: true,
+        data: donationsSerialized
+      });
+    } catch (error) {
+      console.error('Get money donations error:', error);
+      return res.status(400).json({
+        success: false,
+        message: error.message
+      });
+    }
+  }
+
+  // Get money donation statistics
+  async getMoneyDonationStats(req, res) {
+    try {
+      const stats = await moneyDonationService.getDonationStats();
+      return res.json({
+        success: true,
+        data: stats
+      });
+    } catch (error) {
+      console.error('Get stats error:', error);
+      return res.status(400).json({
+        success: false,
+        message: error.message
+      });
+    }
+  }
+
+  // Refund money donation
+  async refundMoneyDonation(req, res) {
+    try {
+      const { donationId } = req.params;
+      const { reason } = req.body;
+
+      const donation = await moneyDonationService.getDonationById(donationId);
+      
+      if (donation.paymentStatus !== 'SUCCESS') {
+        return res.status(400).json({
+          success: false,
+          message: 'Cannot refund a donation that is not successful'
+        });
+      }
+
+      // Refund via payment gateway
+      const refund = await paymentService.refundPayment(donation.paymentId, donation.amount, reason);
+      
+      // Update donation record
+      await moneyDonationService.refundDonation(donationId, reason);
+
+      return res.json({
+        success: true,
+        message: 'Donation refunded successfully',
+        data: { refund }
+      });
+    } catch (error) {
+      console.error('Refund error:', error);
+      return res.status(400).json({
+        success: false,
+        message: error.message
+      });
     }
   }
 }
