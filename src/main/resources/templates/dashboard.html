@@ -3928,10 +3928,17 @@
 
                 const sellerName = product.user ? (product.user.firstName + ' ' + (product.user.lastName || '')) : (product.sellerName || 'Seller');
                 const sellerEmail = product.user ? (product.user.email || '') : (product.sellerEmail || '');
-                const sellerPhone = product.user ? (product.user.phone || '') : (product.sellerPhone || '');
+                const sellerPhone = product.user ? (product.user.phone || product.user.phoneNumber || '') : (product.sellerPhone || '');
 
                 document.getElementById('contactSellerName').textContent = sellerName;
-                document.getElementById('contactSellerMeta').textContent = sellerEmail ? sellerEmail : (sellerPhone ? sellerPhone : 'Contact details not available');
+                
+                let contactInfo = [];
+                if (sellerEmail) contactInfo.push('Email: ' + sellerEmail);
+                if (sellerPhone) contactInfo.push('Phone: ' + sellerPhone);
+                
+                document.getElementById('contactSellerMeta').textContent = contactInfo.length > 0 
+                    ? contactInfo.join(' | ') 
+                    : 'Contact details not available';
 
                 // Prepare mailto link with subject/body from textarea when clicked
                 const mailtoLink = document.getElementById('mailtoSellerLink');

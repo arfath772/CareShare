@@ -14,6 +14,14 @@ const productSchema = new mongoose.Schema({
   approvedAt: Date,
   rejectedAt: Date,
   rejectionReason: String
-}, { timestamps: true });
+}, { 
+  timestamps: true,
+  toJSON: { virtuals: true },
+  toObject: { virtuals: true }
+});
+
+productSchema.virtual('user').get(function() {
+  return this.userId;
+});
 
 module.exports = mongoose.model('Product', productSchema);
