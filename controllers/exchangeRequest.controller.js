@@ -209,6 +209,20 @@ class ExchangeRequestController {
       return res.status(400).json({ error: 'Error fetching exchange request: ' + error.message });
     }
   }
+
+  // Get exchange request image by index
+  async getExchangeRequestImage(req, res) {
+    try {
+      const { id, index } = req.params;
+      const image = await exchangeRequestService.getExchangeRequestImage(id, index);
+
+      res.setHeader('Content-Type', image.contentType || 'application/octet-stream');
+      return res.send(image.data);
+    } catch (error) {
+      console.error('Get exchange request image error:', error);
+      return res.status(404).json({ message: error.message || 'Image not found' });
+    }
+  }
 }
 
 module.exports = new ExchangeRequestController();

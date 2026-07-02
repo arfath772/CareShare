@@ -15,6 +15,7 @@ router.post('/submit',
 router.get('/my-requests', authenticateToken, exchangeRequestController.getMyExchangeRequests);
 router.get('/received', authenticateToken, exchangeRequestController.getReceivedExchangeRequests);
 router.get('/:id', authenticateToken, exchangeRequestController.getExchangeRequestById);
+router.get('/:id/image/:index', authenticateToken, exchangeRequestController.getExchangeRequestImage);
 router.put('/:id/accept', authenticateToken, exchangeRequestController.acceptExchangeRequest);
 router.put('/:id/decline', authenticateToken, exchangeRequestController.declineExchangeRequest);
 router.delete('/:id/cancel', authenticateToken, exchangeRequestController.cancelExchangeRequest);

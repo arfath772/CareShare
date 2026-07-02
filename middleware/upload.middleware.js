@@ -86,7 +86,7 @@ const uploadDonation = multer({
 });
 
 const uploadExchange = multer({
-  storage: exchangeStorage,
+  storage: multer.memoryStorage(),
   fileFilter: imageFilter,
   limits: {
     fileSize: 5 * 1024 * 1024 // 5MB for exchange images

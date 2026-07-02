@@ -14,9 +14,15 @@ class ExchangeRequestService {
         throw new Error('This product is not available for exchange');
       }
 
-      // Prepare image paths
-      const imagePaths = files && files.length > 0 
-        ? files.map(file => `/uploads/exchange-items/${file.filename}`)
+      // Prepare image buffers
+      const exchangeImages = Array.isArray(files)
+        ? files
+          .filter((file) => file && file.buffer)
+          .map((file) => ({
+            filename: file.originalname,
+            contentType: file.mimetype,
+            data: file.buffer
+          }))
         : [];
 
       const exchangeRequest = new ExchangeRequest({
@@ -24,7 +30,8 @@ class ExchangeRequestService {
         exchangeItemName: requestData.itemName,
         exchangeItemCategory: requestData.category,
         exchangeItemDescription: requestData.description,
-        exchangeItemImages: imagePaths,
+        exchangeItemImages: [], // Dynamically mapped via virtual transform
+        exchangeImages: exchangeImages,
         additionalMessage: requestData.additionalMessage || '',
         requesterId: userId,
         status: 'PENDING'
@@ -131,6 +138,29 @@ class ExchangeRequestService {
   async getExchangeRequestCount(status = null) {
     const filter = status ? { status } : {};
     return await ExchangeRequest.countDocuments(filter);
+  }
+
+  // Get exchange request image by index
+  async getExchangeRequestImage(requestId, imageIndex) {
+    const request = await ExchangeRequest.findById(requestId).select('exchangeImages');
+    if (!request) {
+      throw new Error('Exchange request not found');
+    }
+
+    if (Array.isArray(request.exchangeImages) && request.exchangeImages.length > 0) {
+      const index = Number.parseInt(imageIndex, 10);
+      if (Number.isNaN(index) || index < 0 || index >= request.exchangeImages.length) {
+        throw new Error('Image not found');
+      }
+
+      const img = request.exchangeImages[index];
+      return {
+        contentType: img.contentType || 'application/octet-stream',
+        data: img.data
+      };
+    }
+
+    throw new Error('Exchange request has no images');
   }
 }
 
