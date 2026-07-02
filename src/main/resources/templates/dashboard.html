@@ -1901,6 +1901,10 @@
                             <span class="info-value" id="profileEmail" th:text="${user?.email}">Loading...</span>
                         </div>
                         <div class="info-item">
+                            <span class="info-label">Phone Number:</span>
+                            <span class="info-value" id="profilePhone">Loading...</span>
+                        </div>
+                        <div class="info-item">
                             <span class="info-label">User ID:</span>
                             <span class="info-value" id="profileId" th:text="${user?.id}">Loading...</span>
                         </div>
@@ -1938,7 +1942,7 @@
 
                     <div class="quick-actions">
                         <h5>Quick Actions</h5>
-                        <a class="action-btn">
+                        <a class="action-btn" onclick="openEditProfileModal()">
                             <i class="fa-solid fa-pencil me-2"></i><span>Edit Profile</span>
                         </a>
                         <a class="action-btn">
@@ -2382,6 +2386,39 @@
             </div>
         </div>
     </div>
+
+                <!-- Edit Profile Modal -->
+                <div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content text-dark">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="editProfileModalLabel">Edit Profile</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div id="editProfileAlert" class="alert alert-danger d-none"></div>
+                                <form id="editProfileForm">
+                                    <div class="mb-3">
+                                        <label for="editFirstName" class="form-label text-dark">First Name</label>
+                                        <input type="text" class="form-control" id="editFirstName" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="editLastName" class="form-label text-dark">Last Name</label>
+                                        <input type="text" class="form-control" id="editLastName" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="editPhone" class="form-label text-dark">Phone Number</label>
+                                        <input type="tel" class="form-control" id="editPhone" required>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                <button type="button" class="btn btn-primary" onclick="submitEditProfile()">Save Changes</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
                 <!-- Contact Seller Modal -->
                 <div class="modal fade" id="contactSellerModal" tabindex="-1" aria-labelledby="contactSellerModalLabel" aria-hidden="true">
@@ -4760,6 +4797,8 @@
             document.getElementById('dashboardSubtitle').textContent = subtitle;
         }
 
+        let currentUserData = null;
+
         // Function to update profile data and check admin status
         function updateProfileData() {
             const token = localStorage.getItem('jwtToken');
@@ -4778,9 +4817,11 @@
                         return response.json();
                     })
                     .then(user => {
+                        currentUserData = user;
                         document.getElementById('profileFirstName').textContent = user.firstName || 'N/A';
                         document.getElementById('profileLastName').textContent = user.lastName || 'N/A';
                         document.getElementById('profileEmail').textContent = user.email || 'N/A';
+                        document.getElementById('profilePhone').textContent = user.phone || user.phoneNumber || 'Not Entered';
                         document.getElementById('profileId').textContent = user.id || 'N/A';
                         document.getElementById('userName').textContent = user.firstName || 'User';
 
@@ -4824,6 +4865,72 @@
                         localStorage.removeItem('jwtToken');
                         window.location.href = '/';
                     });
+            }
+        }
+
+        // Edit Profile modal helpers
+        function openEditProfileModal() {
+            if (!currentUserData) {
+                showNotification('User profile data is not loaded yet.', 'warning');
+                return;
+            }
+            document.getElementById('editFirstName').value = currentUserData.firstName || '';
+            document.getElementById('editLastName').value = currentUserData.lastName || '';
+            document.getElementById('editPhone').value = currentUserData.phone || currentUserData.phoneNumber || '';
+            
+            document.getElementById('editProfileAlert').classList.add('d-none');
+            
+            const modalEl = document.getElementById('editProfileModal');
+            const modal = new bootstrap.Modal(modalEl);
+            modal.show();
+        }
+
+        async function submitEditProfile() {
+            const firstName = document.getElementById('editFirstName').value.trim();
+            const lastName = document.getElementById('editLastName').value.trim();
+            const phone = document.getElementById('editPhone').value.trim();
+            const token = localStorage.getItem('jwtToken');
+            
+            if (!firstName || !lastName || !phone) {
+                const alertEl = document.getElementById('editProfileAlert');
+                alertEl.textContent = 'All fields are required';
+                alertEl.classList.remove('d-none');
+                return;
+            }
+
+            try {
+                const res = await fetch('/api/user/profile', {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': 'Bearer ' + token,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ firstName, lastName, phone, phoneNumber: phone })
+                });
+
+                const data = await res.json();
+                if (res.ok) {
+                    showNotification('Profile updated successfully!', 'success');
+                    
+                    // Close Modal
+                    const modalEl = document.getElementById('editProfileModal');
+                    const modalInstance = bootstrap.Modal.getInstance(modalEl);
+                    if (modalInstance) {
+                        modalInstance.hide();
+                    }
+                    
+                    // Refresh data
+                    updateProfileData();
+                } else {
+                    const alertEl = document.getElementById('editProfileAlert');
+                    alertEl.textContent = data.message || 'Failed to update profile';
+                    alertEl.classList.remove('d-none');
+                }
+            } catch (err) {
+                console.error(err);
+                const alertEl = document.getElementById('editProfileAlert');
+                alertEl.textContent = 'Network error. Please try again.';
+                alertEl.classList.remove('d-none');
             }
         }
 

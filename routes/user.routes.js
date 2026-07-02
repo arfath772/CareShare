@@ -5,5 +5,6 @@ const { authenticateToken } = require('../middleware/auth.middleware');
 
 // User routes (require authentication)
 router.get('/me', authenticateToken, userController.getCurrentUser);
+router.put('/profile', authenticateToken, userController.updateProfile);
 
 module.exports = router;
