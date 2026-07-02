@@ -237,7 +237,7 @@
         formData.append("quantity", document.getElementById("quantity").value);
         formData.append("itemCondition", document.getElementById("itemCondition").value);
         formData.append("pickupAddress", document.getElementById("pickupAddress").value);
-        formData.append("imageFile", document.getElementById("imageFile").files[0]);
+        formData.append("images", document.getElementById("imageFile").files[0]);
 
         try {
             const response = await fetch("http://localhost:8080/api/donate/add", {

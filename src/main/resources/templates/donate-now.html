@@ -526,9 +526,9 @@
         formData.append("itemCondition", document.getElementById("itemCondition").value);
         formData.append("pickupAddress", document.getElementById("pickupAddress").value);
 
-        // Append all images with parameter name "imageFiles"
+        // Append all images with parameter name "images"
         uploadedImages.forEach((file, index) => {
-            formData.append("imageFiles", file); // Same parameter name for all files
+            formData.append("images", file); // Same parameter name for all files
         });
 
         try {
