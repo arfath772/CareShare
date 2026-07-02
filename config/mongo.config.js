@@ -3,7 +3,7 @@ const dns = require('dns');
 dns.setServers(['8.8.8.8', '8.8.4.4']);
 require('dotenv').config();
 
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/careshare';
+const MONGODB_URI = process.env.MONGODB_URI;
 const MAX_RETRIES = parseInt(process.env.MONGO_MAX_RETRIES || '5', 10);
 let retryCount = 0;
 
@@ -48,11 +48,16 @@ const connectMongoDB = async () => {
   const useInMemory = process.env.USE_IN_MEMORY_DB === 'true';
   let connectionUri = MONGODB_URI;
 
+  if (!connectionUri && !useInMemory) {
+    console.error('❌ MONGODB_URI is not set. Configure the environment variable for this deployment.');
+    return false;
+  }
+
   if (useInMemory && !replSet) {
     try {
       connectionUri = await startInMemoryReplSet();
     } catch (err) {
-      console.warn('⚠️  Could not start in-memory DB, falling back to default URI');
+      console.warn('⚠️  Could not start in-memory DB.');
     }
   } else if (replSet) {
     connectionUri = replSet.getUri();
