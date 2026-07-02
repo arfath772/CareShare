@@ -48,7 +48,7 @@ class PaymentService {
         orderId,
         paymentId,
         signature,
-        paymentConfig.razorpayWebhookSecret
+        paymentConfig.razorpayKeySecret
       );
 
       if (!isValid) {

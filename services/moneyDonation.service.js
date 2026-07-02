@@ -6,6 +6,11 @@ class MoneyDonationService {
   _serializeDonation(donation) {
     if (!donation) return donation;
     const obj = (typeof donation.toObject === 'function') ? donation.toObject() : { ...donation };
+    
+    if (obj._id) {
+      obj.id = obj._id.toString();
+    }
+
     try {
       if (obj.amount && obj.amount.toString) {
         obj.amount = parseFloat(obj.amount.toString());

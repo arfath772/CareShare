@@ -38,6 +38,7 @@ if (process.env.RAZORPAY_KEY_ID && process.env.RAZORPAY_KEY_SECRET) {
 module.exports = {
   razorpay: razorpayInstance,
   razorpayKeyId: process.env.RAZORPAY_KEY_ID || 'mock_key',
+  razorpayKeySecret: process.env.RAZORPAY_KEY_SECRET || 'mock_secret',
   razorpayWebhookSecret: process.env.RAZORPAY_WEBHOOK_SECRET || 'mock_secret',
   minAmount: 1,
   maxAmount: 100000,

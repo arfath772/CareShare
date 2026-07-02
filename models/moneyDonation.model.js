@@ -23,7 +23,9 @@ const moneyDonationSchema = new mongoose.Schema({
   metadata: { type: mongoose.Schema.Types.Mixed }
 }, {
   timestamps: true,
-  collection: 'MoneyDonations'
+  collection: 'MoneyDonations',
+  toObject: { virtuals: true },
+  toJSON: { virtuals: true }
 });
 
 module.exports = mongoose.model('MoneyDonation', moneyDonationSchema);
