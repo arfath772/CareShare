@@ -40,10 +40,10 @@ class DonateItemService {
     }
   }
 
-  // Get available donations (approved and pending - not rejected/claimed)
+  // Get available donations (approved - not pending/rejected/claimed)
   async getAvailableDonations(type = null) {
     const filter = {
-      status: { $in: ['APPROVED', 'PENDING'] }
+      status: 'APPROVED'
     };
 
     if (type && type !== 'all') {
