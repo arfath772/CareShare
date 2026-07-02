@@ -240,7 +240,7 @@
         formData.append("images", document.getElementById("imageFile").files[0]);
 
         try {
-            const response = await fetch("http://localhost:8080/api/donate/add", {
+            const response = await fetch("/api/donate/add", {
                 method: "POST",
                 headers: {
                     'Authorization': 'Bearer ' + token
