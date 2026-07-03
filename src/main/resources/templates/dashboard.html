@@ -3294,6 +3294,9 @@
                 });
         }
 
+        // History state tracking for fullscreen items view
+        let isHistoryPushed = false;
+
         // Function to show fullscreen available items with filtering - FIXED
         function showAvailableItemsFullscreen(type = 'all') {
             currentFilterType = type;
@@ -3320,6 +3323,12 @@
                 typeFilter.value = 'all';
             }
 
+            // Push history state so back button closes the fullscreen view instead of navigating back to login!
+            if (!isHistoryPushed) {
+                history.pushState({ view: 'fullscreen-items' }, '');
+                isHistoryPushed = true;
+            }
+
             loadFullscreenAvailableItems();
         }
 
@@ -3327,8 +3336,26 @@
             document.body.classList.remove('fullscreen-available');
             document.getElementById('fullscreenAvailableItems').classList.remove('active');
             currentFilterType = 'all';
+            
+            // Pop the history state we pushed if we are closing via UI button
+            if (isHistoryPushed) {
+                isHistoryPushed = false;
+                history.back();
+            }
+            
             showDashboardHome();
         }
+
+        // Listen for back/forward browser navigation to close fullscreen modal
+        window.addEventListener('popstate', (event) => {
+            if (document.body.classList.contains('fullscreen-available')) {
+                document.body.classList.remove('fullscreen-available');
+                document.getElementById('fullscreenAvailableItems').classList.remove('active');
+                currentFilterType = 'all';
+                isHistoryPushed = false;
+                showDashboardHome();
+            }
+        });
 
         // Function to hide all sections
         function hideAllSections() {
