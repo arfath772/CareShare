@@ -28,101 +28,101 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: var(--bg-light);
             color: var(--text-dark);
-            padding-top: 80px;
+            padding-top: 100px;
         }
 
         /* Navbar */
         .navbar-custom {
-            background: rgba(255, 255, 255, 0.98);
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            background: #ffffff !important;
+            box-shadow: none !important;
+            border-bottom: 1px solid #e2e8f0;
             position: fixed;
             width: 100%;
             z-index: 1050;
-            border-bottom: 1px solid #e9ecef;
+            height: 70px;
+            padding-top: 0;
+            padding-bottom: 0;
+        }
+
+        .navbar-custom .container {
+            height: 100%;
+            display: flex;
+            align-items: center;
+        }
+
+        .navbar-custom .navbar-collapse {
+            height: 100%;
+        }
+
+        .navbar-custom .navbar-nav {
+            height: 100%;
+            display: flex;
+            align-items: center;
         }
 
         .navbar-brand {
             font-weight: 700;
-            color: var(--primary-color);
-            font-size: 1.5rem;
-        }
-
-        .nav-link {
-            color: var(--text-dark) !important;
-            font-weight: 500;
+            color: var(--primary-color) !important;
+            font-size: 1.6rem;
+            display: flex;
+            align-items: center;
             cursor: pointer;
-            transition: color 0.3s ease;
         }
 
-        .nav-link:hover,
-        .nav-link.active {
+        .navbar-custom .nav-link {
+            color: #64748b !important;
+            font-weight: 600;
+            margin-left: 1.5rem;
+            cursor: pointer;
+            position: relative;
+            padding-top: 22px;
+            padding-bottom: 22px;
+            transition: color 0.3s ease;
+            background: transparent;
+            border: none;
+        }
+
+        .navbar-custom .nav-link:hover,
+        .navbar-custom .nav-link.active {
             color: var(--primary-color) !important;
         }
 
-        /* Header Section */
-        .dashboard-header {
-            background: linear-gradient(135deg, var(--primary-color), #0078b5);
-            color: white;
-            padding: 50px 0;
-            margin-bottom: 40px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .dashboard-header::before {
+        /* Active underline aligned with bottom border of navbar */
+        .navbar-custom .nav-link::after {
             content: '';
             position: absolute;
-            top: 0;
+            width: 0;
+            height: 3px;
+            bottom: 0;
             left: 0;
+            background-color: var(--primary-color);
+            transition: width 0.3s ease;
+        }
+
+        .navbar-custom .nav-link:hover::after,
+        .navbar-custom .nav-link.active::after {
             width: 100%;
-            height: 100%;
-            background: url('https://images.unsplash.com/photo-1559027615-cd4628902d4a?auto=format&fit=crop&w=1350&q=80') no-repeat center center/cover;
-            opacity: 0.1;
-            z-index: 0;
         }
 
-        .dashboard-header .container {
-            position: relative;
-            z-index: 1;
-        }
-
-        .header-content h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 10px;
-        }
-
-        .header-content p {
-            font-size: 1.1rem;
-            opacity: 0.95;
-            margin: 0;
-        }
-
-        /* Tabs */
-        .nav-tabs {
-            border-bottom: 2px solid #e9ecef;
-            margin-bottom: 30px;
-        }
-
-        .nav-tabs .nav-link {
-            color: var(--text-dark);
-            border: none;
-            border-bottom: 3px solid transparent;
-            font-weight: 600;
-            padding: 12px 24px;
-            margin-bottom: -2px;
-            transition: all 0.3s ease;
-        }
-
-        .nav-tabs .nav-link:hover {
-            border-bottom-color: var(--primary-color);
-            color: var(--primary-color);
-        }
-
-        .nav-tabs .nav-link.active {
-            border-bottom-color: var(--primary-color);
-            color: var(--primary-color);
+        /* Exclude dropdown-toggle from bottom underline */
+        .navbar-custom .dropdown-toggle::after {
+            display: inline-block;
+            margin-left: 0.255em;
+            vertical-align: 0.255em;
+            content: "";
+            border-top: 0.3em solid;
+            border-right: 0.3em solid transparent;
+            border-bottom: 0;
+            border-left: 0.3em solid transparent;
+            position: static;
+            width: auto;
+            height: auto;
             background-color: transparent;
+        }
+
+        /* Old Banner is hidden */
+        .dashboard-header {
+            display: none;
         }
 
         /* Filters Section */
@@ -526,62 +526,42 @@
 <body>
 
 <!-- Navbar -->
-<nav class="navbar navbar-expand-lg navbar-custom">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="/">🤝 Care & Share</a>
+<nav class="navbar navbar-expand-lg navbar-light navbar-custom fixed-top">
+    <div class="container">
+        <a class="navbar-brand" href="/">
+            <img src="/images/logo.png" alt="Care & Share Logo" style="height: 40px; margin-right: 10px; vertical-align: middle;">
+            <span style="font-weight: 300;">CARE</span> <strong>&</strong> <span style="font-weight: 300;">SHARE</span>
+        </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item">
-                    <span class="nav-link" id="userName">Welcome</span>
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+            <div class="navbar-nav ms-auto align-items-center" role="tablist">
+                <button class="nav-link active" id="available-tab" data-bs-toggle="tab" data-bs-target="#available"
+                    type="button" role="tab">Available Donations</button>
+                <button class="nav-link" id="requests-tab" data-bs-toggle="tab" data-bs-target="#requests"
+                    type="button" role="tab">My Requests</button>
+                <div class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#" id="navbarDropdown" role="button"
                         data-bs-toggle="dropdown">
-                        <i class="fas fa-user-circle"></i>
+                        <span id="userName">Welcome</span>
+                        <i class="fas fa-user-circle fs-5"></i>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                        <li><a class="dropdown-item" href="/ngo-register">My Profile</a></li>
+                        <li><a class="dropdown-item" href="/ngo-register"><i class="fas fa-user-cog me-2"></i>My Profile</a></li>
                         <li>
                             <hr class="dropdown-divider">
                         </li>
-                        <li><a class="dropdown-item" href="#" id="logoutBtn">Logout</a></li>
+                        <li><a class="dropdown-item" href="#" id="logoutBtn"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
                     </ul>
-                </li>
-            </ul>
+                </div>
+            </div>
         </div>
     </div>
 </nav>
 
-<!-- Header -->
-<div class="dashboard-header">
-    <div class="container">
-        <div class="header-content">
-            <h1>Available Donations</h1>
-            <p>Browse and request items donated to our community</p>
-        </div>
-    </div>
-</div>
-
 <!-- Main Content -->
 <div class="container mb-5">
-    <!-- Tabs -->
-    <ul class="nav nav-tabs" role="tablist">
-        <li class="nav-item" role="presentation">
-            <button class="nav-link active" id="available-tab" data-bs-toggle="tab" data-bs-target="#available"
-                type="button" role="tab">
-                <i class="fas fa-list"></i> Available Donations
-            </button>
-        </li>
-        <li class="nav-item" role="presentation">
-            <button class="nav-link" id="requests-tab" data-bs-toggle="tab" data-bs-target="#requests"
-                type="button" role="tab">
-                <i class="fas fa-clipboard-list"></i> My Requests
-            </button>
-        </li>
-    </ul>
 
     <!-- Tab Content -->
     <div class="tab-content">
