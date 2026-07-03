@@ -1064,6 +1064,7 @@
     document.getElementById('logoutBtn').addEventListener('click', (e) => {
         e.preventDefault();
         localStorage.removeItem('jwtToken');
+        localStorage.removeItem('userRole');
         window.location.href = '/login';
     });
 

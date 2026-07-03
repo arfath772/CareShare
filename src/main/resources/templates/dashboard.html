@@ -4921,11 +4921,13 @@
                 })
                     .then(() => {
                         localStorage.removeItem('jwtToken');
+                        localStorage.removeItem('userRole');
                         window.location.href = '/';
                     })
                     .catch(error => {
                         console.error('Logout error:', error);
                         localStorage.removeItem('jwtToken');
+                        localStorage.removeItem('userRole');
                         window.location.href = '/';
                     });
             }

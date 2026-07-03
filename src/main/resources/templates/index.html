@@ -1264,15 +1264,25 @@
         navDashboard.classList.remove('d-none');
         navLogout.classList.remove('d-none');
         
+        // Initial fallback using cached role
+        const storedRole = localStorage.getItem('userRole');
+        let initialUrl = '/dashboard';
+        if (storedRole === 'Admin') {
+          initialUrl = '/admin';
+        } else if (storedRole === 'NGO') {
+          initialUrl = '/ngo-dashboard';
+        }
+        navDashboard.href = initialUrl;
         if (heroCta) {
           heroCta.textContent = 'Go to Dashboard';
-          heroCta.href = '/dashboard';
+          heroCta.href = initialUrl;
         }
 
         // Handle Logout
         navLogout.addEventListener('click', (e) => {
           e.preventDefault();
           localStorage.removeItem('jwtToken');
+          localStorage.removeItem('userRole');
           localStorage.removeItem('rememberMe');
           window.location.reload();
         });
@@ -1281,15 +1291,34 @@
         fetch('/api/user/me', {
           headers: { 'Authorization': 'Bearer ' + token }
         })
-        .then(res => res.json())
+        .then(res => {
+          if (!res.ok) throw new Error('Invalid token');
+          return res.json();
+        })
         .then(user => {
-          if (user && user.firstName) {
-            const welcomeMsg = document.querySelector('#home-section h1');
-            if (welcomeMsg) {
-              welcomeMsg.textContent = `Welcome back, ${user.firstName}!`;
+          if (user) {
+            const userRole = user.admin || user.isAdmin ? 'Admin' : (user.accountType || 'USER');
+            localStorage.setItem('userRole', userRole);
+            
+            let dashboardUrl = '/dashboard';
+            if (userRole === 'Admin') {
+              dashboardUrl = '/admin';
+            } else if (userRole === 'NGO') {
+              dashboardUrl = '/ngo-dashboard';
+            }
+            navDashboard.href = dashboardUrl;
+            if (heroCta) {
+              heroCta.href = dashboardUrl;
+            }
+
+            if (user.firstName) {
+              const welcomeMsg = document.querySelector('#home-section h1');
+              if (welcomeMsg) {
+                welcomeMsg.textContent = `Welcome back, ${user.firstName}!`;
+              }
             }
             
-            if (user.admin) {
+            if (user.admin || user.isAdmin) {
               const navUserMgmt = document.getElementById('nav-user-management');
               if (navUserMgmt) navUserMgmt.classList.remove('d-none');
             }
@@ -1298,6 +1327,8 @@
         .catch(err => {
           console.error('Session expired');
           localStorage.removeItem('jwtToken');
+          localStorage.removeItem('userRole');
+          window.location.reload();
         });
       }
     });

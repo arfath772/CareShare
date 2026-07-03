@@ -357,7 +357,14 @@
     if (localStorage.getItem('jwtToken')) {
         // Hide body to prevent flickering
         document.body.style.display = 'none';
-        window.location.href = '/dashboard';
+        const userRole = localStorage.getItem('userRole');
+        if (userRole === 'Admin') {
+            window.location.href = '/admin';
+        } else if (userRole === 'NGO') {
+            window.location.href = '/ngo-dashboard';
+        } else {
+            window.location.href = '/dashboard';
+        }
     }
 
     const showAlert = (message, type = 'success') => {
@@ -420,6 +427,8 @@
         if (data.token) {
           // Store token in localStorage for API calls
           localStorage.setItem('jwtToken', data.token);
+          const userRole = data.isAdmin ? 'Admin' : (data.accountType || 'USER');
+          localStorage.setItem('userRole', userRole);
           if (rememberMe) {
             localStorage.setItem('rememberMe', 'true');
           }
@@ -436,6 +445,8 @@
             }
           }, 1000);
         } else {
+          const userRole = data.isAdmin ? 'Admin' : (data.accountType || 'USER');
+          localStorage.setItem('userRole', userRole);
           showAlert('Login successful! Redirecting...', 'success');
           setTimeout(() => {
             if (data.isAdmin) {
@@ -474,6 +485,8 @@
         })
         .then(userData => {
           // Redirect based on user role
+          const userRole = userData.isAdmin ? 'Admin' : (userData.accountType || 'USER');
+          localStorage.setItem('userRole', userRole);
           if (userData.isAdmin) {
             window.location.href = '/admin';
           } else if (userData.accountType === 'NGO') {
@@ -485,6 +498,7 @@
         .catch(() => {
           // Token is invalid, stay on login page
           localStorage.removeItem('jwtToken');
+          localStorage.removeItem('userRole');
         });
       }
 

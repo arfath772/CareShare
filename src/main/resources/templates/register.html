@@ -376,7 +376,14 @@
     if (localStorage.getItem('jwtToken')) {
         // Hide body to prevent flickering
         document.body.style.display = 'none';
-        window.location.href = '/dashboard';
+        const userRole = localStorage.getItem('userRole');
+        if (userRole === 'Admin') {
+            window.location.href = '/admin';
+        } else if (userRole === 'NGO') {
+            window.location.href = '/ngo-dashboard';
+        } else {
+            window.location.href = '/dashboard';
+        }
     }
 
     const showAlert = (message, type = 'success') => {
